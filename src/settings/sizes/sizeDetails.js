@@ -27,7 +27,7 @@ const SizeDetails = ({ size, handleAddSize, deleteSize, updateSize }) => {
                     <Table.Row>
 
                         <Table.HeaderCell>{size.size}</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteSize(size.id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
+                        <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteSize(size._id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -36,7 +36,7 @@ const SizeDetails = ({ size, handleAddSize, deleteSize, updateSize }) => {
                             Size ID
                         </Table.Cell>
                         <Table.Cell>
-                            {size.id}
+                            {size._id}
                         </Table.Cell>
 
                     </Table.Row>
@@ -45,7 +45,7 @@ const SizeDetails = ({ size, handleAddSize, deleteSize, updateSize }) => {
                             Size Name
                         </Table.Cell>
                         <Table.Cell>
-                            {size.size}
+                            {size.sizeName}
                         </Table.Cell>
                         <Table.Cell>
                             <Icon name="edit" onClick={{}}></Icon>
@@ -60,7 +60,7 @@ const SizeDetails = ({ size, handleAddSize, deleteSize, updateSize }) => {
                                 toggle
                                 checked={size.status}
                                 label='is Active'
-                                onChange={() => handleUpdateFunction(size.id, 'status', !size.status)}
+                                onChange={() => handleUpdateFunction(size._id, 'status', !size.status)}
                             />
                         </Table.Cell>
                     </Table.Row>

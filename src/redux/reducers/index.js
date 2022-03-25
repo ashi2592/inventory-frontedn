@@ -10,6 +10,8 @@ import types from './types-reducer';
 import suppliers from './suppliers-reducer';
 import transcation from "./transcation-reducer";
 import sizes from "./sizes-reducer";
+import others from "./other-reducer";
+
 
 
  export default combineReducers({
@@ -21,6 +23,7 @@ import sizes from "./sizes-reducer";
     types,
     suppliers,
     transcation,
-    sizes
+    sizes,
+    others,
 
  })

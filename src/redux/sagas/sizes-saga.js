@@ -10,42 +10,68 @@ import {
     DELETE_SIZE_SUCCESS,
     UPDATE_SIZE,
     UPDATE_SIZE_SUCCESS,
-    SET_LOADING
+    SET_LOADING,
+    SET_ERROR
 } from '../actions/index';
 import { getAdd, getDeatils, DeleteFunction, getList, getUpdate } from '../services/sizes-api'
 
 
 
-function* getSizes() {
-    yield put({ type: SET_LOADING })
-    const data = yield call(getList);
-    yield put({ type: GET_SIZE_LIST_SUCCESS, payload: data })
+function* getSizes({ payload }) {
+    try {
+        yield put({ type: SET_LOADING })
+        const data = yield call(getList, payload.page, payload.count, payload.searchText);
+        yield put({ type: GET_SIZE_LIST_SUCCESS, payload: data })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
 }
 
 function* getSize({ payload }) {
-    yield put({ type: SET_LOADING })
-    const data = yield call(getDeatils, payload.id);
-    yield put({ type: GET_SIZE_DETAILS_SUCCESS, payload: data })
+    try {
+        yield put({ type: SET_LOADING })
+        const data = yield call(getDeatils, payload.id);
+        yield put({ type: GET_SIZE_DETAILS_SUCCESS, payload: data })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
 }
 
 function* addSize({ payload }) {
-    yield put({ type: SET_LOADING })
-    const newdata = yield call(getAdd, payload);
-    yield put({ type: ADD_SIZE_SUCCESS, payload: newdata })
+    try {
+        yield put({ type: SET_LOADING })
+        const newdata = yield call(getAdd, payload);
+        yield put({ type: ADD_SIZE_SUCCESS, payload: newdata })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
 }
 
 function* updateSize({ payload }) {
-    yield put({ type: SET_LOADING })
-    yield call(getUpdate, payload.data, payload.id)
-    yield put({ type: UPDATE_SIZE_SUCCESS, payload: payload })
+    try {
+        yield put({ type: SET_LOADING })
+        yield call(getUpdate, payload.data, payload.id)
+        yield put({ type: UPDATE_SIZE_SUCCESS, payload: payload })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
 }
 
 
 function* deleteSize({ payload }) {
-    console.log(payload)
-    yield put({ type: SET_LOADING })
-    yield call(DeleteFunction, payload);
-    yield put({ type: DELETE_SIZE_SUCCESS, payload: payload })
+    try {
+        yield put({ type: SET_LOADING })
+        yield call(DeleteFunction, payload);
+        yield put({ type: DELETE_SIZE_SUCCESS, payload: payload })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
+
 }
 
 

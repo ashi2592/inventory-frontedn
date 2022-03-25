@@ -10,41 +10,68 @@ import {
     DELETE_TYPE_SUCCESS,
     UPDATE_TYPE,
     UPDATE_TYPE_SUCCESS,
-    SET_LOADING
+    SET_LOADING,
+    SET_ERROR
 } from '../actions/index';
 import { getAdd, getDeatils, DeleteFunction, getList, getUpdate } from '../services/types-api'
 
 
 
-function* getTypes() {
-    yield put({ type: SET_LOADING })
-    const types = yield call(getList);
-    yield put({ type: GET_TYPE_LIST_SUCCESS, payload: types })
+function* getTypes({payload}) {
+    try{
+        yield put({ type: SET_LOADING })
+        const types =yield call(getList,payload.page,payload.count,payload.searchText);
+        yield put({ type: GET_TYPE_LIST_SUCCESS, payload: types })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 function* getType({ payload }) {
-    yield put({ type: SET_LOADING })
-    const type = yield call(getDeatils, payload.id);
-    yield put({ type: GET_TYPE_DETAILS_SUCCESS, payload: type })
+    try{
+        yield put({ type: SET_LOADING })
+        const type = yield call(getDeatils, payload.id);
+        yield put({ type: GET_TYPE_DETAILS_SUCCESS, payload: type })
+    
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
 }
 
 function* addType({ payload }) {
-    yield put({ type: SET_LOADING })
-    const newdata = yield call(getAdd, payload);
-    yield put({ type: ADD_TYPE_SUCCESS, payload: newdata })
+    try{
+        yield put({ type: SET_LOADING })
+        const newdata = yield call(getAdd, payload);
+        yield put({ type: ADD_TYPE_SUCCESS, payload: newdata })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+    
 }
 
 function* updateType({ payload }) {
-    yield put({ type: SET_LOADING })
-    yield call(getUpdate, payload.data, payload.id)
-    yield put({ type: UPDATE_TYPE_SUCCESS, payload: payload })
+    try{
+        yield put({ type: SET_LOADING })
+        yield call(getUpdate, payload.data, payload.id)
+        yield put({ type: UPDATE_TYPE_SUCCESS, payload: payload })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 
 function* deleteType({ payload }) {
-    yield put({ type: SET_LOADING })
+    try{
+        yield put({ type: SET_LOADING })
      yield call(DeleteFunction, payload);
     yield put({ type: DELETE_TYPE_SUCCESS, payload: payload })
+
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+    
 }
 
 

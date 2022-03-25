@@ -14,7 +14,7 @@ import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 
 
-const Product = ({ getProducts, getProduct, products, product }) => {
+const Product = ({ getProducts, getProduct, products, product, pagination,error }) => {
 
     const [createProduct, setCreateProduct] = useState(false)
     const [addProductButton, setAddProductButton] = useState(false)
@@ -22,10 +22,8 @@ const Product = ({ getProducts, getProduct, products, product }) => {
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
-    const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(10);
+ 
     const [totalPages, setTotalPages] = useState(0);
-    const [searchResult, setSearchResult] = useState([])
 
     // Search 
     const [searchText, setSearchText] = useState('')
@@ -44,36 +42,26 @@ const Product = ({ getProducts, getProduct, products, product }) => {
     }
 
     const handlePaginationChange = (e, { activePage }) => {
-        SetActivePage(activePage)
-        setStartIndex((activePage - 1) * 10 + 1)
-        setEndIndex((activePage - 1) * 10 + 10)
-
+        getProducts(activePage,10,searchText)
+    
     }
 
     useEffect(() => {
-        getProducts()
+        getProducts(1,10,searchText)
 
     }, [])
 
     useEffect(() => {
-
-        let totalcount = products.length;
-        let totalPages = Math.ceil(totalcount / 10);
-        let ellipsis = totalPages > 10 ? undefined : null;
+        let ellipsis = pagination.totalPages > 10 ? undefined : null;
         // let activePage = 1
         setEllipsisItem(ellipsis)
-        setTotalPages(totalPages)
-        setSearchResult(products)
+        setTotalPages(pagination.totalPages)
+        SetActivePage(pagination.currentPage)
 
-    }, [products])
+    }, [products,pagination])
 
     useEffect(()=>{
-        if(searchText)
-        {
-            const re = new RegExp(_.escapeRegExp(searchText), 'i')
-            const searchResult1 = products.filter(result => re.test(result.product))
-            setSearchResult(searchResult1)
-        }
+        getProducts(1,10,searchText)
        
     },[searchText])
 
@@ -83,7 +71,7 @@ const Product = ({ getProducts, getProduct, products, product }) => {
     }
 
     const handleSelectSearchedRow = (id) => {
-        setSearchResult([])
+   
         setSearchText('')
         handleViewProduct(id)
     }
@@ -111,18 +99,12 @@ const Product = ({ getProducts, getProduct, products, product }) => {
 
 
                     <TableBody>
-                        {
-                            searchText && 
-                           searchResult.filter((x, i) => i >= startIndex && i <= endIndex)
-                          .map(x => (<TableRow  onClick={()=>{ handleSelectSearchedRow(x.id)}} key={'product-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.productName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell></TableRow>))}
-                        
-                        {!searchText && products.filter((x, i) => i >= startIndex && i <= endIndex)
-                            .map(x => (<TableRow key={'product-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.productName}</TableCell>
+                       {!searchText && products.map(x => (<TableRow key={'product-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.productName}</TableCell>
                         
                             <TableCell >{x.productQty}</TableCell>
-                            <TableCell >{x.productMRP}</TableCell>                          
-                            <TableCell >{x.productSellPrice}</TableCell>
-                            <TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewProduct(x.id) }}></Icon></TableCell></TableRow>))}
+                            <TableCell >{x.productMrp}</TableCell>                          
+                            <TableCell >{x.productPrice}</TableCell>
+                            <TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewProduct(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
                   
                 </Table>
@@ -155,12 +137,14 @@ Product.propTypes = {
 
 const mapStateToProps = (state) => ({
     products: state.products.products,
-    product: state.products.product
+    product: state.products.product,
+    pagination: state.products.pagination,
+    error: state.products.error
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getProducts: () => dispatch({ type: GET_PRODUCT_LIST }),
+    getProducts: (page,count,searchText) => dispatch({ type: GET_PRODUCT_LIST,  payload:{page,count,searchText} }),
     getProduct: (id) => dispatch({ type: GET_PRODUCT_DETAILS, payload: { id } }),
 })
 

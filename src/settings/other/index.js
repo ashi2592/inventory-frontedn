@@ -2,24 +2,23 @@
 import React, { useEffect, useState } from "react";
 import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
-import AddType from "./addType";
-import TypeDetails from "./typeDetails";
+import AddOther from "./addOther";
+import OtherDetails from "./otherDetails";
 import PropTypes from 'prop-types';
 
 
 // bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
-import { GET_TYPE_LIST, GET_TYPE_DETAILS } from "../../redux/actions";
+import { GET_OTHER_DETAILS, GET_OTHER_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
-import AlertMessage from "../../layout/AlretMessage";
 
 
-const Types = ({ getTypes, getType, types, type, pagination, error }) => {
+const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
 
-    const [createtype, setCreatetype] = useState(false)
-    const [addtypeButton, setAddtypeButton] = useState(false)
+    const [createcolor, setCreateOther] = useState(false)
+    const [addOtherButton, setAddOtherButton] = useState(false)
 
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
@@ -29,43 +28,41 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
     // Search 
     const [searchText, setSearchText] = useState('')
 
-    const handleAddType = function (value = true) {
-        setCreatetype(value)
-        setAddtypeButton(value)
+    const handleAddOther = function (value = true) {
+        setCreateOther(value)
+        setAddOtherButton(value)
     }
 
 
 
-    const handleViewType = (id) => {
-        getType(id)
-        setCreatetype(false)
-        setAddtypeButton(false)
+    const handleViewOther = (id) => {
+        getOther(id)
+        setCreateOther(false)
+        setAddOtherButton(false)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
-        getTypes(activePage, 10, searchText)
+        getOthers(activePage, 10, searchText)
 
     }
 
     useEffect(() => {
-        getTypes(1, 10, searchText)
+        getOthers(1, 10, searchText)
 
     }, [])
 
     useEffect(() => {
+
         let ellipsis = pagination.totalPages > 10 ? undefined : null;
         // let activePage = 1
         setEllipsisItem(ellipsis)
         setTotalPages(pagination.totalPages)
         SetActivePage(pagination.currentPage)
-        setCreatetype(false)
-        setAddtypeButton(false)
 
-
-    }, [types, pagination])
+    }, [others, pagination])
 
     useEffect(() => {
-        getTypes(1, 10, searchText)
+        getOthers(1, 10, searchText)
 
     }, [searchText])
 
@@ -75,22 +72,21 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
     }
 
     const handleSelectSearchedRow = (id) => {
+
         setSearchText('')
-        handleViewType(id)
+        handleViewOther(id)
     }
 
     return (<div>
-        <Header>types</Header>
 
         <Segment textAlign="right">
-            <Button active={addtypeButton} onClick={handleAddType}><Icon name="plus"></Icon> Add type</Button>
-        </Segment>
+            <Header textAlign="left">Colors</Header>
 
+            <Button active={addOtherButton} onClick={handleAddOther}><Icon name="plus"></Icon> Add Other Values</Button>
+        </Segment>
 
         <Grid columns={2} celled>
             <Grid.Column>
-
-
 
                 <Input onChange={_.debounce(handleSearchChange, 500, {
                     leading: true,
@@ -101,12 +97,12 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
+                    <TableHeader Headers={['Id', 'Key', 'Value', 'Status', 'Action']}></TableHeader>
 
 
                     <TableBody>
 
-                        {types.map(x => (<TableRow key={'type-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.typeName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewType(x._id) }}></Icon></TableCell></TableRow>))}
+                        {others && others.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.keyName}</TableCell><TableCell >{x.value}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewOther(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -118,8 +114,7 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
                 ></PaginationCompact>
             </Grid.Column>
             <Grid.Column>
-                {error && <AlertMessage title="Unable To Add" desc={error} negative={true}></AlertMessage>}
-                {createtype ? <AddType handleAddType={handleAddType}></AddType> : Object.values(type).length ? <TypeDetails handleAddType={handleAddType}></TypeDetails> : <div></div>}
+                {createcolor ? <AddOther handleAddOther={handleAddOther}></AddOther> : Object.values(other).length ? <OtherDetails handleAddOther={handleAddOther}></OtherDetails> : <div></div>}
 
             </Grid.Column>
         </Grid>
@@ -128,28 +123,27 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
 
 }
 
-Types.propTypes = {
+Color.propTypes = {
     loading: PropTypes.bool,
-    types: PropTypes.array,
-    type: PropTypes.object,
-    getTypes: PropTypes.func.isRequired,
-    getType: PropTypes.func.isRequired
+    others: PropTypes.array,
+    static: PropTypes.object,
+    getOthers: PropTypes.func.isRequired,
+    getOther: PropTypes.func.isRequired
 }
 
 
 
 const mapStateToProps = (state) => ({
-    types: state.types.types,
-    type: state.types.type,
-    pagination: state.types.pagination,
-    error: state.types.error
-
+    others: state.others.others,
+    other: state.others.other,
+    pagination: state.others.pagination,
+    error: state.others.error
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getTypes: (page, count, searchText) => dispatch({ type: GET_TYPE_LIST, payload: { page, count, searchText } }),
-    getType: (id) => dispatch({ type: GET_TYPE_DETAILS, payload: { id } }),
+    getOthers: (page, count, searchText) => dispatch({ type: GET_OTHER_LIST, payload: { page, count, searchText } }),
+    getOther: (id) => dispatch({ type: GET_OTHER_DETAILS, payload: { id } }),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Types);
+export default connect(mapStateToProps, mapDispatchToProps)(Color);

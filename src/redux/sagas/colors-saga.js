@@ -10,42 +10,71 @@ import {
     DELETE_COLOR_SUCCESS,
     UPDATE_COLOR,
     UPDATE_COLOR_SUCCESS,
-    SET_LOADING
+    SET_LOADING,
+    SET_ERROR
 } from '../actions/index';
 import { getAdd, getDeatils, DeleteFunction, getList, getUpdate } from '../services/colors-api'
 
 
 
-function* getColors() {
-    yield put({ type: SET_LOADING })
-    const colors = yield call(getList);
-    yield put({ type: GET_COLOR_LIST_SUCCESS, payload: colors })
+function* getColors({payload}) {
+    try{
+        yield put({ type: SET_LOADING })
+        const colors = yield call(getList,payload.page,payload.count,payload.searchText);
+        yield put({ type: GET_COLOR_LIST_SUCCESS, payload: colors })
+
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 function* getColor({ payload }) {
-    yield put({ type: SET_LOADING })
-    const color = yield call(getDeatils, payload.id);
-    yield put({ type: GET_COLOR_DETAILS_SUCCESS, payload: color })
+    try{
+        yield put({ type: SET_LOADING })
+        const color = yield call(getDeatils, payload.id);
+        yield put({ type: GET_COLOR_DETAILS_SUCCESS, payload: color })
+
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+ 
 }
 
 function* addColor({ payload }) {
-    yield put({ type: SET_LOADING })
-    const newdata = yield call(getAdd, payload);
-    yield put({ type: ADD_COLOR_SUCCESS, payload: newdata })
+    try{
+        yield put({ type: SET_LOADING })
+        const newdata = yield call(getAdd, payload);
+        yield put({ type: ADD_COLOR_SUCCESS, payload: newdata })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+ 
 }
 
 function* updateColor({ payload }) {
-    yield put({ type: SET_LOADING })
-    yield call(getUpdate, payload.data, payload.id)
-    yield put({ type: UPDATE_COLOR_SUCCESS, payload: payload })
+    try{
+        yield put({ type: SET_LOADING })
+        yield call(getUpdate, payload.data, payload.id)
+        yield put({ type: UPDATE_COLOR_SUCCESS, payload: payload })
+
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+   
 }
 
 
 function* deleteColor({ payload }) {
-    console.log(payload)
-    yield put({ type: SET_LOADING })
-    yield call(DeleteFunction, payload);
-    yield put({ type: DELETE_COLOR_SUCCESS, payload: payload })
+    try{
+
+        yield put({ type: SET_LOADING })
+        yield call(DeleteFunction, payload);
+        yield put({ type: DELETE_COLOR_SUCCESS, payload: payload })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+   
 }
 
 

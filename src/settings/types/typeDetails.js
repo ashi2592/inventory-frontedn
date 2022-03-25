@@ -28,7 +28,7 @@ const TypeDetails = ({ type, handleAddType, deleteType,updateType }) => {
                     <Table.Row>
                     
                           <Table.HeaderCell>{type.type}</Table.HeaderCell>
-                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteType(type.id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
+                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteType(type._id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -37,7 +37,7 @@ const TypeDetails = ({ type, handleAddType, deleteType,updateType }) => {
                         type ID
                     </Table.Cell>
                     <Table.Cell>
-                        {type.id}
+                        {type._id}
                     </Table.Cell>
                    
                 </Table.Row>
@@ -46,7 +46,7 @@ const TypeDetails = ({ type, handleAddType, deleteType,updateType }) => {
                         type Name
                     </Table.Cell>
                     <Table.Cell>
-                        {type.type}
+                        {type.typeName}
                     </Table.Cell>
                     <Table.Cell>
                         <Icon name="edit" onClick={{}}></Icon>
@@ -61,7 +61,7 @@ const TypeDetails = ({ type, handleAddType, deleteType,updateType }) => {
                     toggle
                     checked={type.status}
                     label='is Active'
-                    onChange={() => handleUpdateFunction(type.id, 'status',!type.status)}
+                    onChange={() => handleUpdateFunction(type._id, 'status',!type.status)}
                 />
                     </Table.Cell>
                 </Table.Row>

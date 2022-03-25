@@ -40,7 +40,7 @@ const AddColor = ({addColor,handleAddColor}) => {
                     control={Input}
                     placeholder='Enter color Name'
                     onChange={handleChange}
-                    name={'color'}
+                    name={'colorName'}
                 />
 
                 <Checkbox

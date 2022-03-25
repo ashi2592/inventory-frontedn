@@ -28,7 +28,7 @@ const BrandDetails = ({ brand, handleAddBrand, deleteBrand,updateBrand }) => {
                     <Table.Row>
                     
                           <Table.HeaderCell>{brand.brandName}</Table.HeaderCell>
-                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteBrand(brand.id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
+                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteBrand(brand._id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -37,7 +37,7 @@ const BrandDetails = ({ brand, handleAddBrand, deleteBrand,updateBrand }) => {
                         brand ID
                     </Table.Cell>
                     <Table.Cell>
-                        {brand.id}
+                        {brand._id}
                     </Table.Cell>
                    
                 </Table.Row>
@@ -61,7 +61,7 @@ const BrandDetails = ({ brand, handleAddBrand, deleteBrand,updateBrand }) => {
                     toggle
                     checked={brand.status}
                     label='is Active'
-                    onChange={() => handleUpdateFunction(brand.id, 'status',!brand.status)}
+                    onChange={() => handleUpdateFunction(brand._id, 'status',!brand.status)}
                 />
                     </Table.Cell>
                 </Table.Row>

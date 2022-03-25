@@ -1,10 +1,17 @@
-import {  SET_LOADING, GET_SUPPLIER_LIST_SUCCESS, GET_SUPPLIER_DETAILS_SUCCESS, ADD_SUPPLIER_SUCCESS, UPDATE_SUPPLIER_SUCCESS, DELETE_SUPPLIER_SUCCESS } from '../actions/index';
+import { SET_LOADING, GET_SUPPLIER_LIST_SUCCESS, GET_SUPPLIER_DETAILS_SUCCESS, ADD_SUPPLIER_SUCCESS, UPDATE_SUPPLIER_SUCCESS, DELETE_SUPPLIER_SUCCESS, SET_ERROR } from '../actions/index';
 
 
 const initialState = {
     loading: false,
     suppliers: [],
-    supplier: {}
+    supplier: {},
+    pagination: {
+        totalPages: 0,
+        currentPage: 1,
+        limit: 10,
+        totalDocs: 0
+    },
+    error: ''
 }
 
 
@@ -16,12 +23,20 @@ export default (state = initialState, { type, payload }) => {
 
         case SET_LOADING:
             return { ...state, loading: true }
+        case SET_ERROR:
+            return { ...state, loading: false, error: payload.message }
         case GET_SUPPLIER_LIST_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                suppliers:payload,
-                supplier: {}
+                suppliers: payload.docs,
+                supplier: {},
+                pagination: {
+                    totalPages: payload.totalPages,
+                    currentPage: payload.page,
+                    limit: payload.limit,
+                    totalDocs: payload.totalDocs
+                }
             }
         case GET_SUPPLIER_DETAILS_SUCCESS:
             return {
@@ -43,7 +58,7 @@ export default (state = initialState, { type, payload }) => {
                 loading: false,
                 supplier: payload.data,
                 suppliers: state.suppliers.map(x => {
-                    if (x.id === payload.id) {
+                    if (x._id === payload.id) {
                         return payload.data
                     }
                     return x
@@ -53,7 +68,7 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                suppliers: state.suppliers.filter(x => x.id !== payload),
+                suppliers: state.suppliers.filter(x => x._id !== payload),
                 supplier: {}
             }
         default:

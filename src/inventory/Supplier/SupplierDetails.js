@@ -28,7 +28,7 @@ const SupplierDetails = ({ supplier, handleAddSupplier, deleteSupplier,updateSup
                     <Table.Row>
                     
                           <Table.HeaderCell>{supplier.supplierName}</Table.HeaderCell>
-                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteSupplier(supplier.id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
+                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteSupplier(supplier._id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -37,7 +37,7 @@ const SupplierDetails = ({ supplier, handleAddSupplier, deleteSupplier,updateSup
                         Supplier ID
                     </Table.Cell>
                     <Table.Cell>
-                        {supplier.id}
+                        {supplier._id}
                     </Table.Cell>
                    
                 </Table.Row>
@@ -61,7 +61,7 @@ const SupplierDetails = ({ supplier, handleAddSupplier, deleteSupplier,updateSup
                     toggle
                     checked={supplier.status}
                     label='is Active'
-                    onChange={() => handleUpdateFunction(supplier.id, 'status',!supplier.status)}
+                    onChange={() => handleUpdateFunction(supplier._id, 'status',!supplier.status)}
                 />
                     </Table.Cell>
                 </Table.Row>

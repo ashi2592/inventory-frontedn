@@ -10,42 +10,68 @@ import {
     DELETE_SUPPLIER_SUCCESS,
     UPDATE_SUPPLIER,
     UPDATE_SUPPLIER_SUCCESS,
-    SET_LOADING
+    SET_LOADING,
+    SET_ERROR
 } from '../actions/index';
 import { getAdd, getDeatils, DeleteFunction, getList, getUpdate } from '../services/suppliers-api'
 
 
 
-function* getSuppliers() {
-    yield put({ type: SET_LOADING })
-    const suppliers = yield call(getList);
-    yield put({ type: GET_SUPPLIER_LIST_SUCCESS, payload: suppliers })
+function* getSuppliers({payload}) {
+    try{
+        yield put({ type: SET_LOADING })
+        const suppliers = yield call(getList,payload.page,payload.count,payload.searchText);
+        yield put({ type: GET_SUPPLIER_LIST_SUCCESS, payload: suppliers })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
 }
 
 function* getSupplier({ payload }) {
-    yield put({ type: SET_LOADING })
-    const supplier = yield call(getDeatils, payload.id);
-    yield put({ type: GET_SUPPLIER_DETAILS_SUCCESS, payload: supplier })
+    try{
+        yield put({ type: SET_LOADING })
+        const supplier = yield call(getDeatils, payload.id);
+        yield put({ type: GET_SUPPLIER_DETAILS_SUCCESS, payload: supplier })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 function* addSupplier({ payload }) {
-    yield put({ type: SET_LOADING })
-    const newdata = yield call(getAdd, payload);
-    yield put({ type: ADD_SUPPLIER_SUCCESS, payload: newdata })
+    try{
+        yield put({ type: SET_LOADING })
+        const newdata = yield call(getAdd, payload);
+        yield put({ type: ADD_SUPPLIER_SUCCESS, payload: newdata })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 function* updateSupplier({ payload }) {
-    yield put({ type: SET_LOADING })
-    yield call(getUpdate, payload.data, payload.id)
-    yield put({ type: UPDATE_SUPPLIER_SUCCESS, payload: payload })
+    try{
+        yield put({ type: SET_LOADING })
+        yield call(getUpdate, payload.data, payload.id)
+        yield put({ type: UPDATE_SUPPLIER_SUCCESS, payload: payload })
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+  
 }
 
 
 function* deleteSupplier({ payload }) {
-    console.log(payload)
-    yield put({ type: SET_LOADING })
-    yield call(DeleteFunction, payload);
-    yield put({ type: DELETE_SUPPLIER_SUCCESS, payload: payload })
+    try{
+        yield put({ type: SET_LOADING })
+        yield call(DeleteFunction, payload);
+        yield put({ type: DELETE_SUPPLIER_SUCCESS, payload: payload })
+
+    }catch(err){
+        yield put({ type: SET_ERROR, payload: err })
+    }
+   
 }
 
 

@@ -9,7 +9,8 @@ import suppliersSaga from './suppliers-saga';
 import transcationSaga from './transcation-saga';
 import typesSaga from './types-saga';
 import customerSaga from './customer-saga';
-import sizeSaga from './sizes-saga'
+import sizeSaga from './sizes-saga';
+import OtherSaga from './other-saga';
 
 // Export the root saga
 export default function* rootSaga() {
@@ -23,6 +24,8 @@ export default function* rootSaga() {
   yield spawn(customerSaga)
   yield spawn(brandSaga)
   yield spawn(sizeSaga)
+  yield spawn(OtherSaga)
+
 
 
 

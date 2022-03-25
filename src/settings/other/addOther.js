@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, Message, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { ADD_SIZE } from "../../redux/actions";
+import { ADD_OTHER } from "../../redux/actions";
 
-const AddType = ({ addSize, handleAddSize }) => {
+const AddOther = ({ addOther, handleAddOther }) => {
 
     const [formload, setFormLoad] = useState(false);
     const [formError, setFormError] = useState(false);
@@ -22,9 +22,8 @@ const AddType = ({ addSize, handleAddSize }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // alert(JSON.stringify(inputs))
-        addSize(inputs);
-        handleAddSize(false)
+        addOther(inputs);
+        handleAddOther(false)
     }
 
 
@@ -35,20 +34,20 @@ const AddType = ({ addSize, handleAddSize }) => {
     return (
 
         <Form loading={formload} error={formError} onSubmit={handleSubmit}>
-            <Form.Group >
-                <Table>
+            <Form.Group widths='equal'>
+            <Table>
                     <Table.Body>
                         <Table.Row>
                             <Table.Cell>
-                                Size Name
+                                Key Name
                             </Table.Cell>
                             <Table.Cell>
                                 <Form.Field
                                     id="form-input-control-size-name"
                                     control={Input}
-                                    placeholder='Enter size Name'
+                                    placeholder='Enter Key Name'
                                     onChange={handleChange}
-                                    name={'sizeName'}
+                                    name={'keyName'}
                                 />
                             </Table.Cell>
 
@@ -56,7 +55,23 @@ const AddType = ({ addSize, handleAddSize }) => {
 
                         <Table.Row>
                             <Table.Cell>
-                                Size Name
+                                Value
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Form.Field
+                                    id="form-input-control-size-name"
+                                    control={Input}
+                                    placeholder='Enter value'
+                                    onChange={handleChange}
+                                    name={'value'}
+                                />
+                            </Table.Cell>
+
+                        </Table.Row>
+
+                        <Table.Row>
+                            <Table.Cell>
+                                Size status
                             </Table.Cell>
                             <Table.Cell>
                                 <Checkbox
@@ -79,10 +94,6 @@ const AddType = ({ addSize, handleAddSize }) => {
                     </Table.Body>
                 </Table>
 
-
-
-
-
             </Form.Group>
         </Form>
 
@@ -91,7 +102,7 @@ const AddType = ({ addSize, handleAddSize }) => {
 
 
 const mapDispatchToProps = (dispatch) => ({
-    addSize: (data) => dispatch({ type: ADD_SIZE, payload: data })
+    addOther: (data) => dispatch({ type: ADD_OTHER, payload: data })
 })
 
 
@@ -99,4 +110,4 @@ const mapStateToProps = (state) => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddType);
+export default connect(mapStateToProps, mapDispatchToProps)(AddOther);

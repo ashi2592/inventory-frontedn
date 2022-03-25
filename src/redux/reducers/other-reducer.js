@@ -1,10 +1,10 @@
-import { SET_LOADING, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR } from '../actions/index';
+import { SET_LOADING, GET_OTHER_LIST_SUCCESS, GET_OTHER_DETAILS_SUCCESS, ADD_OTHER_SUCCESS, UPDATE_OTHER_SUCCESS, DELETE_OTHER_SUCCESS, SET_ERROR } from '../actions/index';
 
 
 const initialState = {
     loading: false,
-    products: [],
-    product: {},
+    others: [],
+    other: {},
     pagination: {
         totalPages: 0,
         currentPage: 1,
@@ -25,12 +25,12 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, loading: true }
         case SET_ERROR:
             return { ...state, loading: false, error: payload.message }
-        case GET_PRODUCT_LIST_SUCCESS:
+        case GET_OTHER_LIST_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                products: payload.docs,
-                product: {},
+                others: payload.docs,
+                other: {},
                 pagination: {
                     totalPages: payload.totalPages,
                     currentPage: payload.page,
@@ -38,38 +38,38 @@ export default (state = initialState, { type, payload }) => {
                     totalDocs: payload.totalDocs
                 }
             }
-        case GET_PRODUCT_DETAILS_SUCCESS:
+        case GET_OTHER_DETAILS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                product: payload
+                other: payload
             }
 
-        case ADD_PRODUCT_SUCCESS:
+        case ADD_OTHER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                products: [...state.products, payload],
-                product: payload
+                others: [...state.others, payload],
+                other: payload
             }
-        case UPDATE_PRODUCT_SUCCESS:
+        case UPDATE_OTHER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                product: payload.data,
-                products: state.products.map(x => {
+                other: payload.data,
+                others: state.others.map(x => {
                     if (x._id === payload.id) {
                         return payload.data
                     }
                     return x
                 }),
             }
-        case DELETE_PRODUCT_SUCCESS:
+        case DELETE_OTHER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                products: state.products.filter(x => x._id !== payload),
-                product: {}
+                others: state.others.filter(x => x._id !== payload),
+                other: {}
             }
         default:
             return state

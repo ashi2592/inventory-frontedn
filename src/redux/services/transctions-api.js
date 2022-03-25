@@ -1,5 +1,5 @@
 import defaultAxios from 'axios';
-const type ='transcations';
+const type = 'transcation';
 
 const axios = defaultAxios.create({
     baseURL: 'http://localhost:3001/',
@@ -11,14 +11,13 @@ const axios = defaultAxios.create({
  * @returns 
  */
 
-export const getList = async () => {
+export const getList = async (pageno = 1, count = 10, searchText = '') => {
 
     try {
-        const response = await axios.get(`api?type=${type}`);
+        const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
         return response.data
     } catch (error) {
-        // console.log(error)
-        return []
+        throw error;
     }
 
 }
@@ -32,10 +31,10 @@ export const getList = async () => {
 export const getDeatils = async (id) => {
 
     try {
-        const response = await axios.get(`api/${id}?type=${type}`);
+        const response = await axios.get(`${type}/${id}`);
         return response.data;
     } catch (error) {
-        console.log(error)
+        throw error;
     }
 }
 
@@ -45,32 +44,32 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
-        const  response= await axios.post(`api?type=${type}`, data);
+        const response = await axios.post(`${type}`, data);
         return response.data;
 
     } catch (error) {
-        console.log(error)
+        throw error;
     }
 }
 
-export const getUpdate = async (data,id) =>{
+export const getUpdate = async (data, id) => {
     try {
-        const  response= await axios.put(`api/${id}?type=${type}`, data);
+        const response = await axios.put(`${type}/${id}`, data);
         return response.data;
 
     } catch (error) {
-        console.log(error)
+        throw error;
     }
 }
 
 
 
-export const DeleteFunction = async (id) =>{
+export const DeleteFunction = async (id) => {
     try {
-      await axios.delete(`api/${id}?type=${type}`);
-      return true;
+        await axios.delete(`${type}/${id}`);
+        return true;
 
     } catch (error) {
-        console.log("error",error)           
+        console.log("error", error)
     }
 }

@@ -28,7 +28,7 @@ const CustomerDetails = ({ category, handleAddCategory, deleteCategory,updateCat
                     <Table.Row>
                     
                           <Table.HeaderCell>{category.categoryName}</Table.HeaderCell>
-                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteCategory(category.id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
+                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={()=>{ handleDeleteCategory(category._id)}}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell> 
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -37,7 +37,7 @@ const CustomerDetails = ({ category, handleAddCategory, deleteCategory,updateCat
                         Category ID
                     </Table.Cell>
                     <Table.Cell>
-                        {category.id}
+                        {category._id}
                     </Table.Cell>
                    
                 </Table.Row>
@@ -61,7 +61,7 @@ const CustomerDetails = ({ category, handleAddCategory, deleteCategory,updateCat
                     toggle
                     checked={category.status}
                     label='is Active'
-                    onChange={() => handleUpdateFunction(category.id, 'status',!category.status)}
+                    onChange={() => handleUpdateFunction(category._id, 'status',!category.status)}
                 />
                     </Table.Cell>
                 </Table.Row>

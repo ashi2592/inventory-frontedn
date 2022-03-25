@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Checkbox, Icon, Input, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
-import { UPDATE_PRODUCT, DELETE_PRODUCT, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_BRAND_LIST, ADD_PRODUCT } from "../../redux/actions";
+import { UPDATE_PRODUCT, DELETE_PRODUCT, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_BRAND_LIST, ADD_PRODUCT, GET_TYPE_LIST, GET_OTHER_LIST } from "../../redux/actions";
 import _ from "lodash";
 import DropdownSearchSelection from "../../layout/Dropdown";
 // var Barcode = require('react-barcode');
@@ -11,7 +11,8 @@ import Barcode from "react-barcode";
 const ProdutDetails = ({ product, handleAddProduct,
      deleteProduct, updateProduct,addProduct,
     getCategories, categories, colors, getColors,
-    sizes, getSizes, suppliers, getSuppliers, getBrand, brand
+    sizes, getSizes, suppliers, getSuppliers, getBrands, brand,
+    types,others, error,getTypes,getOthers
 }) => {
 
     const [categoriesOptions, setCategoriesOptions] = useState([])
@@ -19,6 +20,11 @@ const ProdutDetails = ({ product, handleAddProduct,
     const [sizeOptions, setsizeOption] = useState([])
     const [supplierOptions, setSupplierOptions] = useState([])
     const [brandOptions, setBrandOptions] = useState([])
+    const [typeOption, setTypeOption] =  useState([])
+    const [seasonOption, setSeasonOption] =  useState([])
+    const [storeOption, setStoreOption] =  useState([])
+
+
 
     useEffect(() => {
         handleAddProduct(false)
@@ -29,11 +35,14 @@ const ProdutDetails = ({ product, handleAddProduct,
     // initial apis
 
     useEffect(() => {
-        getCategories()
-        getColors()
-        getSizes()
-        getSuppliers()
-        getBrand()
+        getCategories(1,100,'')
+        getColors(1,100,'')
+        getSizes(1,100,'')
+        getSuppliers(1,100,'')
+        getBrands(1,100,'')
+        getTypes(1,100,'')
+        getOthers(1,100,'')
+
     }, [])
 
 
@@ -41,33 +50,50 @@ const ProdutDetails = ({ product, handleAddProduct,
     useEffect(() => {
         // getCategories()
 
-        const categoryOpt = _.map(categories, (data, index) => ({ key: data.id, value: data.categoryName }))
+        const categoryOpt = _.map(categories, (data, index) => ({ key: data._id, value: data.categoryName }))
         setCategoriesOptions(categoryOpt)
 
     }, [categories])
 
     useEffect(() => {
-        const colorOpt = _.map(colors, (data, index) => ({ key: data.id, value: data.color }))
+        const colorOpt = _.map(colors, (data, index) => ({ key: data._id, value: data.colorName }))
         setcolorOptions(colorOpt)
 
     }, [colors])
 
 
     useEffect(() => {
-        const sizeOpt = _.map(sizes, (data, index) => ({ key: data.id, value: data.size }))
+        const sizeOpt = _.map(sizes, (data, index) => ({ key: data._id, value: data.sizeName }))
         setsizeOption(sizeOpt)
 
     }, [sizes])
     useEffect(() => {
-        const sizeOpt = _.map(suppliers, (data, index) => ({ key: data.id, value: data.supplierName }))
+        const sizeOpt = _.map(suppliers, (data, index) => ({ key: data._id, value: data.supplierName }))
         setSupplierOptions(sizeOpt)
     }, [suppliers])
 
     useEffect(() => {
-        const brandOpt = _.map(brand, (data, index) => ({ key: data.id, value: data.brandName }))
+        const brandOpt = _.map(brand, (data, index) => ({ key: data._id, value: data.brandName }))
         setBrandOptions(brandOpt)
     }, [brand])
 
+    useEffect(()=>{
+        const typesOpt = _.map(types,(data)=>({key:data._id,value:data.typeName}))
+        setTypeOption(typesOpt)
+    },[types])
+
+    useEffect(()=>{
+        const seasonOpt  = others.filter(data=> data.keyName =='season')
+        .map((data)=>({key:data._id,value:data.value}))
+        setSeasonOption(seasonOpt)
+    },[others])
+
+
+    useEffect(()=>{
+        const seasonOpt  = others.filter(data=> data.keyName =='Store')
+        .map((data)=>({key:data._id,value:data.value}))
+        setStoreOption(seasonOpt)
+    },[others])
 
 
     const handleDeleteProduct = (id) => {
@@ -102,7 +128,7 @@ const ProdutDetails = ({ product, handleAddProduct,
 
     return (
         <div >
-            <Barcode value={product.id} />
+            <Barcode value={product._id} />
             
             <Table>
                 <Table.Header>
@@ -111,8 +137,8 @@ const ProdutDetails = ({ product, handleAddProduct,
                         <Table.HeaderCell>{product.productName} 
                         
                         </Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteProduct(product.id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right"> <Button color='primary' onClick={() => { createDuplicateProduct(product.id) }}> <Icon name="plus"></Icon> Duplicate Product</Button></Table.HeaderCell>
+                        <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteProduct(product._id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
+                        <Table.HeaderCell textAlign="right"> <Button color='primary' onClick={() => { createDuplicateProduct(product._id) }}> <Icon name="plus"></Icon> Duplicate Product</Button></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -121,7 +147,7 @@ const ProdutDetails = ({ product, handleAddProduct,
                             Product ID
                         </Table.Cell>
                         <Table.Cell>
-                            {product.id}
+                            {product._id}
                         </Table.Cell>
 
                     </Table.Row>
@@ -135,7 +161,7 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 labelPosition='right'
                                 placeholder='Enter Product Name...'
                                 name={'productName'}
-                                onChange={(e) => handleUpdateFunction(product.id, 'productName', e.value)}
+                                onChange={(e) => handleUpdateFunction(product._id, 'productName', e.value)}
                                 value={product.productName}
                                 required
                             />
@@ -163,10 +189,37 @@ const ProdutDetails = ({ product, handleAddProduct,
                     </Table.Row>
                     <Table.Row>
                         <Table.Cell>
+                            Product types
+                        </Table.Cell>
+                        <Table.Cell>
+                            <DropdownSearchSelection placeholder={'Product types'} ArrayofObj={typeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'productType'} value={product.productType}></DropdownSearchSelection>
+                        </Table.Cell>
+                    </Table.Row>
+
+                    <Table.Row>
+                        <Table.Cell>
                             Product Size
                         </Table.Cell>
                         <Table.Cell>
                             <DropdownSearchSelection placeholder={'Size'} ArrayofObj={sizeOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSize'} value={product.productSize}></DropdownSearchSelection>
+                        </Table.Cell>
+                    </Table.Row>
+                    
+                    <Table.Row>
+                        <Table.Cell>
+                            Product Season
+                        </Table.Cell>
+                        <Table.Cell>
+                            <DropdownSearchSelection placeholder={'Season'} ArrayofObj={seasonOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'season'} value={product.season}></DropdownSearchSelection>
+                        </Table.Cell>
+                    </Table.Row>
+
+                    <Table.Row>
+                        <Table.Cell>
+                            Product Store
+                        </Table.Cell>
+                        <Table.Cell>
+                            <DropdownSearchSelection placeholder={'Store'} ArrayofObj={storeOption} dropdownName={'store'} value={product.store}></DropdownSearchSelection>
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row>
@@ -180,7 +233,7 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 labelPosition='right'
                                 placeholder='Enter Product qty...'
                                 name={'productQty'}
-                                onChange={(e) => handleUpdateFunction(product.id, 'productQty', e.target.value)}
+                                onChange={(e) => handleUpdateFunction(product._id, 'productQty', e.target.value)}
                                 value={product.productQty}
                                 required
                             />
@@ -197,10 +250,10 @@ const ProdutDetails = ({ product, handleAddProduct,
                                     label={{ basic: true, content: 'RS' }}
                                     labelPosition='right'
                                     placeholder='Enter Product MRP...'
-                                    name={'productPrice'}
-                                    onChange={(e) => handleUpdateFunction(product.id, 'productMRP', e.target.value)}
+                                    name={'productMrp'}
+                                    onChange={(e) => handleUpdateFunction(product._id, 'productMRP', e.target.value)}
                                     required
-                                    value={product.productMRP}
+                                    value={product.productMrp}
                                     
                                 />
                             </Table.Cell>
@@ -217,10 +270,10 @@ const ProdutDetails = ({ product, handleAddProduct,
                                     label={{ basic: true, content: 'RS' }}
                                     labelPosition='right'
                                     placeholder='Enter Product Selling Priice...'
-                                    name={'productSellPrice'}
-                                    value={product.productSellPrice}
+                                    name={'productPrice'}
+                                    value={product.productPrice}
                                     required
-                                    onChange={(e) => handleUpdateFunction(product.id, 'productSellPrice', e.target.value)}
+                                    onChange={(e) => handleUpdateFunction(product._id, 'productPrice', e.target.value)}
                                 />
                             </Table.Cell>
                         </Table.Row>
@@ -253,7 +306,7 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 toggle
                                 checked={product.status}
                                 label='is Active'
-                                onChange={() => handleUpdateFunction(product.id, 'status', !product.status)}
+                                onChange={() => handleUpdateFunction(product._id, 'status', !product.status)}
                             />
                         </Table.Cell>
                     </Table.Row>
@@ -277,17 +330,23 @@ const mapStateToProps = (state) => ({
     colors: state.colors.colors,
     sizes: state.sizes.sizes,
     suppliers: state.suppliers.suppliers,
-    brand: state.brand.brands
+    brand: state.brand.brands,
+    types: state.types.types,
+    others: state.others.others,
+    error: state.products.error
 })
 const mapDispatchToProps = (dispatch) => ({
     deleteProduct: (id) => dispatch({ type: DELETE_PRODUCT, payload: id }),
     updateProduct: (id, data) => dispatch({ type: UPDATE_PRODUCT, payload: { id, data } }),
     addProduct: (data) => dispatch({ type: ADD_PRODUCT, payload: data }),
-    getCategories: () => dispatch({ type: GET_CATEGORY_LIST }),
-    getColors: () => dispatch({ type: GET_COLOR_LIST }),
-    getSizes: () => dispatch({ type: GET_SIZE_LIST }),
-    getSuppliers: () => dispatch({ type: GET_SUPPLIER_LIST }),
-    getBrand: () => dispatch({ type: GET_BRAND_LIST })
+    getCategories: (page,count,searchText) => dispatch({ type: GET_CATEGORY_LIST,payload:{page,count,searchText} }),
+    getColors: (page,count,searchText) => dispatch({ type: GET_COLOR_LIST ,payload:{page,count,searchText}}),
+    getSizes: (page,count,searchText) => dispatch({ type: GET_SIZE_LIST ,payload:{page,count,searchText}}),
+    getSuppliers: (page,count,searchText) => dispatch({ type: GET_SUPPLIER_LIST ,payload:{page,count,searchText}}),
+    getBrands: (page,count,searchText) => dispatch({ type: GET_BRAND_LIST ,payload:{page,count,searchText}}),
+    getTypes: (page,count,searchText) => dispatch({ type: GET_TYPE_LIST ,payload:{page,count,searchText}}),
+    getOthers: (page,count,searchText) => dispatch({ type: GET_OTHER_LIST ,payload:{page,count,searchText}})
+
 
 })
 

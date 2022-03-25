@@ -1,5 +1,5 @@
 import defaultAxios from 'axios';
-const type = 'size';
+const type ='other';
 
 const axios = defaultAxios.create({
     baseURL: 'http://localhost:3001/',
@@ -11,7 +11,7 @@ const axios = defaultAxios.create({
  * @returns 
  */
 
-export const getList = async (pageno = 1, count = 10, searchText = '') => {
+export const getList = async (pageno=1,count=10,searchText = '') => {
 
     try {
         const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
@@ -44,7 +44,17 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
-        const response = await axios.post(`${type}`, data);
+        const  response= await axios.post(`${type}`, data);
+        return response.data;
+
+    } catch (error) {
+      throw error;
+    }
+}
+
+export const getUpdate = async (data,id) =>{
+    try {
+        const  response= await axios.put(`${type}/${id}`, data);
         return response.data;
 
     } catch (error) {
@@ -52,24 +62,14 @@ export const getAdd = async (data) => {
     }
 }
 
-export const getUpdate = async (data, id) => {
+
+
+export const DeleteFunction = async (id) =>{
     try {
-        const response = await axios.put(`${type}/${id}`, data);
-        return response.data;
+      await axios.delete(`${type}/${id}`);
+      return true;
 
     } catch (error) {
-        throw error;
-    }
-}
-
-
-
-export const DeleteFunction = async (id) => {
-    try {
-        await axios.delete(`${type}/${id}`);
-        return true;
-
-    } catch (error) {
-        console.log("error", error)
+        throw error;         
     }
 }

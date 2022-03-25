@@ -37,11 +37,11 @@ const AddType = ({addType,handleAddType}) => {
         <Form loading={formload} error={formError} onSubmit={handleSubmit}>
             <Form.Group widths='equal'>
                 <Form.Field
-                    id="form-input-control-type-name"
+                    id="form-input-control-typeName-name"
                     control={Input}
                     placeholder='Enter type Name'
                     onChange={handleChange}
-                    name={'type'}
+                    name={'typeName'}
                 />
 
                 <Checkbox

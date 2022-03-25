@@ -15,7 +15,7 @@ import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 
 
-const Color = ({ getColors, getColor, colors, color }) => {
+const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
 
     const [createcolor, setCreateColor] = useState(false)
     const [addcolorButton, setAddColorButton] = useState(false)
@@ -23,10 +23,7 @@ const Color = ({ getColors, getColor, colors, color }) => {
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
-    const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
-    const [searchResult, setSearchResult] = useState([])
 
     // Search 
     const [searchText, setSearchText] = useState('')
@@ -45,83 +42,69 @@ const Color = ({ getColors, getColor, colors, color }) => {
     }
 
     const handlePaginationChange = (e, { activePage }) => {
-        SetActivePage(activePage)
-        setStartIndex((activePage - 1) * 10 + 1)
-        setEndIndex((activePage - 1) * 10 + 10)
+        getColors(activePage, 10, searchText)
 
     }
-    
+
     useEffect(() => {
-        getColors()
+        getColors(1, 10, searchText)
 
     }, [])
 
     useEffect(() => {
 
-        let totalcount = colors.length;
-        let totalPages = Math.ceil(totalcount / 10);
-        let ellipsis = totalPages > 10 ? undefined : null;
+        let ellipsis = pagination.totalPages > 10 ? undefined : null;
         // let activePage = 1
         setEllipsisItem(ellipsis)
-        setTotalPages(totalPages)
-        setSearchResult(colors)
+        setTotalPages(pagination.totalPages)
+        SetActivePage(pagination.currentPage)
 
-    }, [colors])
+    }, [colors, pagination])
 
-    useEffect(()=>{
-        if(searchText)
-        {
-            const re = new RegExp(_.escapeRegExp(searchText), 'i')
-            const searchResult1 = colors.filter(result => re.test(result.color))
-            setSearchResult(searchResult1)
-        }
-       
-    },[searchText])
+    useEffect(() => {
+        getColors(1, 10, searchText)
 
-    const handleSearchChange = (e,data) => {
+    }, [searchText])
+
+    const handleSearchChange = (e, data) => {
         setSearchText(data.value)
-      
+
     }
 
     const handleSelectSearchedRow = (id) => {
-        setSearchResult([])
+
         setSearchText('')
         handleViewColors(id)
     }
 
     return (<div>
-        
-        <Segment textAlign="right">
-        <Header textAlign="left">Colors</Header>
 
-            <Button  active={addcolorButton} onClick={handleAddColor}><Icon name="plus"></Icon> Add color</Button>
+        <Segment textAlign="right">
+            <Header textAlign="left">Colors</Header>
+
+            <Button active={addcolorButton} onClick={handleAddColor}><Icon name="plus"></Icon> Add color</Button>
         </Segment>
 
         <Grid columns={2} celled>
             <Grid.Column>
-              
-                <Input onChange={_.debounce(handleSearchChange, 500, {
-                        leading: true,
-                    })} icon="search" value={searchText}></Input>
-               
 
-               <p >
-                  {  searchText && `Search Results of  ${searchText}`} 
-               </p>
+                <Input onChange={_.debounce(handleSearchChange, 500, {
+                    leading: true,
+                })} icon="search" value={searchText}></Input>
+
+
+                <p >
+                    {searchText && `Search Results of  ${searchText}`}
+                </p>
                 <Table celled>
                     <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
 
 
                     <TableBody>
-                        {
-                            searchText && 
-                           searchResult.filter((x, i) => i >= startIndex && i <= endIndex)
-                          .map(x => (<TableRow  onClick={()=>{ handleSelectSearchedRow(x.id)}} key={'color-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.color}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell></TableRow>))}
-                        
-                        {!searchText && colors.filter((x, i) => i >= startIndex && i <= endIndex)
-                            .map(x => (<TableRow key={'color-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.color}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewColors(x.id) }}></Icon></TableCell></TableRow>))}
+
+                        {!searchText && colors.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.colorName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewColors(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
-                  
+
                 </Table>
                 <PaginationCompact
                     activePage={activePage}
@@ -152,12 +135,14 @@ Color.propTypes = {
 
 const mapStateToProps = (state) => ({
     colors: state.colors.colors,
-    color: state.colors.color
+    color: state.colors.color,
+    pagination: state.colors.pagination,
+    error:state.colors.error
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getColors: () => dispatch({ type: GET_COLOR_LIST }),
+    getColors: (page, count, searchText) => dispatch({ type: GET_COLOR_LIST, payload: { page, count, searchText } }),
     getColor: (id) => dispatch({ type: GET_COLOR_DETAILS, payload: { id } }),
 })
 

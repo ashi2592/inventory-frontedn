@@ -14,7 +14,7 @@ import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 
 
-const Category = ({ getCategories, getCategory, categories, category }) => {
+const Category = ({ getCategories, getCategory, categories, category,pagination }) => {
 
     const [createCategory, setCreateCategory] = useState(false)
     const [addCategoryButton, setAddCategoryButton] = useState(false)
@@ -22,8 +22,6 @@ const Category = ({ getCategories, getCategory, categories, category }) => {
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
-    const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [searchResult, setSearchResult] = useState([])
 
@@ -35,45 +33,28 @@ const Category = ({ getCategories, getCategory, categories, category }) => {
         setAddCategoryButton(value)
     }
 
-
-
     const handleViewCategory = (id) => {
         getCategory(id)
         setCreateCategory(false)
         setAddCategoryButton(false)
     }
-
     const handlePaginationChange = (e, { activePage }) => {
-        SetActivePage(activePage)
-        setStartIndex((activePage - 1) * 10 + 1)
-        setEndIndex((activePage - 1) * 10 + 10)
-
+        getCategories(activePage,10,searchText)
     }
 
-    useEffect(() => {
-        getCategories()
-
+   useEffect(() => {
+        getCategories(1,10,searchText)
     }, [])
 
     useEffect(() => {
-
-        let totalcount = categories.length;
-        let totalPages = Math.ceil(totalcount / 10);
-        let ellipsis = totalPages > 10 ? undefined : null;
-        // let activePage = 1
+        let ellipsis = pagination.totalPages > 10 ? undefined : null;
         setEllipsisItem(ellipsis)
-        setTotalPages(totalPages)
-        setSearchResult(categories)
-
-    }, [categories])
+        setTotalPages(pagination.totalPages)
+        SetActivePage(pagination.currentPage)
+    }, [categories,pagination])
 
     useEffect(()=>{
-        if(searchText)
-        {
-            const re = new RegExp(_.escapeRegExp(searchText), 'i')
-            const searchResult1 = categories.filter(result => re.test(result.categoryName))
-            setSearchResult(searchResult1)
-        }
+        getCategories(1,10,searchText)
        
     },[searchText])
 
@@ -111,13 +92,7 @@ const Category = ({ getCategories, getCategory, categories, category }) => {
 
 
                     <TableBody>
-                        {
-                            searchText && 
-                           searchResult.filter((x, i) => i >= startIndex && i <= endIndex)
-                          .map(x => (<TableRow  onClick={()=>{ handleSelectSearchedRow(x.id)}} key={'category-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.categoryName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell></TableRow>))}
-                        
-                        {!searchText && categories.filter((x, i) => i >= startIndex && i <= endIndex)
-                            .map(x => (<TableRow key={'category-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.categoryName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewCategory(x.id) }}></Icon></TableCell></TableRow>))}
+                        { categories.map(x => (<TableRow key={'category-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.categoryName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewCategory(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
                   
                 </Table>
@@ -150,12 +125,13 @@ Category.propTypes = {
 
 const mapStateToProps = (state) => ({
     categories: state.category.categories,
-    category: state.category.category
+    category: state.category.category,
+    pagination: state.category.pagination
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getCategories: () => dispatch({ type: GET_CATEGORY_LIST }),
+    getCategories: (page,count,searchText) => dispatch({ type: GET_CATEGORY_LIST, payload:  {page,count,searchText}}),
     getCategory: (id) => dispatch({ type: GET_CATEGORY_DETAILS, payload: { id } }),
 })
 

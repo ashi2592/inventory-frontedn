@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Button, Grid, Header, Icon, Input,  Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
@@ -15,7 +14,7 @@ import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 
 
-const Brand = ({ getBrands, getBrand, brands, brand }) => {
+const Brand = ({ getBrands, getBrand, brands, brand, pagination}) => {
 
     const [createBrand, setCreateBrand] = useState(false)
     const [addBrandButton, setAddBrandButton] = useState(false)
@@ -23,10 +22,7 @@ const Brand = ({ getBrands, getBrand, brands, brand }) => {
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
-    const [startIndex, setStartIndex] = useState(0);
-    const [endIndex, setEndIndex] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
-    const [searchResult, setSearchResult] = useState([])
 
     // Search 
     const [searchText, setSearchText] = useState('')
@@ -39,42 +35,32 @@ const Brand = ({ getBrands, getBrand, brands, brand }) => {
 
 
     const handleViewBrand = (id) => {
+        console.log(id)
         getBrand(id)
         setCreateBrand(false)
         setAddBrandButton(false)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
-        SetActivePage(activePage)
-        setStartIndex((activePage - 1) * 10 + 1)
-        setEndIndex((activePage - 1) * 10 + 10)
-
+        getBrands(activePage,10,searchText)
+      
     }
 
     useEffect(() => {
-        getBrands()
+        getBrands(1,10,searchText)
 
     }, [])
 
     useEffect(() => {
-
-        let totalcount = brands.length;
-        let totalPages = Math.ceil(totalcount / 10);
-        let ellipsis = totalPages > 10 ? undefined : null;
-        // let activePage = 1
+        let ellipsis = pagination.totalPages > 10 ? undefined : null;
         setEllipsisItem(ellipsis)
-        setTotalPages(totalPages)
-        setSearchResult(brands)
+        setTotalPages(pagination.totalPages)
+        SetActivePage(pagination.currentPage)
 
-    }, [brands])
+    }, [brands,pagination])
 
     useEffect(()=>{
-        if(searchText)
-        {
-            const re = new RegExp(_.escapeRegExp(searchText), 'i')
-            const searchResult1 = brands.filter(result => re.test(result.brandName))
-            setSearchResult(searchResult1)
-        }
+        getBrands(1,10,searchText)
        
     },[searchText])
 
@@ -84,7 +70,6 @@ const Brand = ({ getBrands, getBrand, brands, brand }) => {
     }
 
     const handleSelectSearchedRow = (id) => {
-        setSearchResult([])
         setSearchText('')
         handleViewBrand(id)
     }
@@ -112,13 +97,8 @@ const Brand = ({ getBrands, getBrand, brands, brand }) => {
 
 
                     <TableBody>
-                        {
-                            searchText && 
-                           searchResult.filter((x, i) => i >= startIndex && i <= endIndex)
-                          .map(x => (<TableRow  onClick={()=>{ handleSelectSearchedRow(x.id)}} key={'brand-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.brandName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell></TableRow>))}
-                        
-                        {!searchText && brands.filter((x, i) => i >= startIndex && i <= endIndex)
-                            .map(x => (<TableRow key={'brand-' + x.id}><TableCell >{x.id}</TableCell><TableCell >{x.brandName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewBrand(x.id) }}></Icon></TableCell></TableRow>))}
+                  
+                        { brands.map(x => (<TableRow key={'brand-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.brandName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewBrand(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
                   
                 </Table>
@@ -151,12 +131,13 @@ Brand.propTypes = {
 
 const mapStateToProps = (state) => ({
     brands: state.brand.brands,
-    brand: state.brand.brand
+    brand: state.brand.brand,
+    pagination: state.brand.pagination
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getBrands: () => dispatch({ type: GET_BRAND_LIST }),
+    getBrands: (page,count,searchText) => dispatch({ type: GET_BRAND_LIST , payload:  {page,count,searchText}}),
     getBrand: (id) => dispatch({ type: GET_BRAND_DETAILS, payload: { id } }),
 })
 
