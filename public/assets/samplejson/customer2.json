@@ -1,12 +1,32 @@
 {
 	"id": 2,
-	"name": "ABCD",
-	"email": "abcd@test.com",
-	"phone": "987654321",
-	"city": "Mangalore",
-	"state": "karnataka",
-	"country": "India",
-	"organization": "Company 2",
-	"jobProfile": "Software Developer",
-	"additionalInfo": "Buys Products Rarely"
+	"name": "Ashish Kumar",
+	"phone": "9097873918",
+	"city": "Ghataro",
+	"totalQty":1,
+	"totalPurchase":120,
+	"transcations":[
+		{
+			"transctionId":1,
+			"id":"1",
+			"price":100,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		},
+		{
+			"transctionId":2,
+			"id":"1",
+			"price":120,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		},
+		{
+			"transctionId":3,
+			"id":"1",
+			"price":130,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		}
+	]
+
 }

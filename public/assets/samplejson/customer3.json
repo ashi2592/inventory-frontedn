@@ -1,12 +1,32 @@
 {
 	"id": 3,
-	"name": "Tyrion",
-	"email": "tyrion@test.com",
-	"phone": "123412345",
-	"city": "Chennai",
-	"state": "Tamil Nadu",
-	"country": "India",
-	"organization": "Company 3",
-	"jobProfile": "Software Developer",
-	"additionalInfo": "Buys Lots of Products in general"
+	"name": "Arti sinha",
+	"phone": "909787318",
+	"city": "Ghataro",
+	"totalQty":1,
+	"totalPurchase":120,
+	"transcations":[
+		{
+			"transctionId":1,
+			"id":"1",
+			"price":20,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		},
+		{
+			"transctionId":2,
+			"id":"1",
+			"price":140,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		},
+		{
+			"transctionId":3,
+			"id":"1",
+			"price":120,
+			"purchaseDate":"2022-01-22",
+			"stauts": "complete"
+		}
+	]
+
 }

@@ -1,58 +1,55 @@
-import React, {Component} from 'react';
-import Panel from 'react-bootstrap/lib/Panel'
-import Button from 'react-bootstrap/lib/Button'
+import React, { useEffect, useState } from 'react';
 import CustomerDetails from './CustomerDetails'
 import axios from 'axios'
+import { Grid, Icon, Table } from 'semantic-ui-react';
+import TableHeader from './layout/TableHeader';
 
-export default class Customers extends Component {
+const Customers = () => {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedCustomer: 1
-    }
-  }
+  const [selectedCustomer, setSelectedCustomer] = useState(1);
+  const [customerList, setCustomerList] = useState([]);
 
-  //function which is called the first time the component loads
-  componentDidMount() {
-    this.getCustomerData();
-  }
 
-  //Function to get the Customer Data from json
-  getCustomerData() {
+  useEffect(() => {
     axios.get('assets/samplejson/customerlist.json').then(response => {
-      this.setState({customerList: response})
+      console.log(response.data)
+      setCustomerList(response.data)
     })
-  };
+  }, [])
+  return (
+    <Grid className="addmargin" column={2}>
+      <Grid.Column width={8}>
+        <Table celled>
+          <TableHeader Headers={['Name', 'Phone', 'Action']}></TableHeader>
+          <Table.Body>
+          {
 
-  render() {
-    if (!this.state.customerList)
-      return (<p>Loading data</p>)
-    return (<div className="addmargin">
-      <div className="col-md-3">
-        {
+            customerList.map(customer => {
 
-          this.state.customerList.data.map(customer => <Panel bsStyle="info" key={customer.name} className="centeralign">
-            <Panel.Heading>
-              <Panel.Title componentClass="h3">{customer.name}</Panel.Title>
-            </Panel.Heading>
-            <Panel.Body>
-              <p>{customer.email}</p>
-              <p>{customer.phone}</p>
-              <Button bsStyle="info" onClick={() => this.setState({selectedCustomer: customer.id})}>
+              return (
+               
+                  <Table.Row key={customer.name}>
+                    <Table.Cell>{customer.name}</Table.Cell>
+                    <Table.Cell>{customer.phone}</Table.Cell>
+                    <Table.Cell >
+                      <Icon name='edit' onClick={() => { setSelectedCustomer(customer.id) }}></Icon>
+                    </Table.Cell>
+                  </Table.Row>
+              )
+            })
+          }
+           </Table.Body>
+        </Table>
 
-                Click to View Details
-
-              </Button>
-
-            </Panel.Body>
-          </Panel>)
-        }
-      </div>
-      <div className="col-md-6">
-        <CustomerDetails val={this.state.selectedCustomer}/>
-      </div>
-    </div>)
-  }
+      </Grid.Column>
+      <Grid.Column width={8}>
+        <CustomerDetails val={selectedCustomer} />
+      </Grid.Column>
+    </Grid>
+  )
 
 }
+
+
+
+export default Customers;

@@ -1,56 +1,102 @@
-import React, {Component} from 'react';
-import Panel from 'react-bootstrap/lib/Panel'
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'
+import { Button, Container, Grid, Header, Icon, Image, Label,Segment,Table } from 'semantic-ui-react';
+import SimmerEffect from './layout/simmer';
+import TableHeader from './layout/TableHeader';
 
-//This Component is a child Component of Customers Component
-export default class CustomerDetails extends Component {
+const CustomerDetails = ({ val }) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {}
-  }
+  const [customerDetails, setCustomerDetails] = useState({});
+  const [orderHistory, setOrderHistory] = useState([])
 
-  //Function which is called when the component loads for the first time
-  componentDidMount() {
-    this.getCustomerDetails(this.props.val)
-  }
+  useEffect(() => {
+    axios.get('assets/samplejson/customer' + val + '.json').then(response => {
+      setCustomerDetails(response.data)
+      setOrderHistory(response.data.transcations)
 
-  //Function which is called whenver the component is updated
-  componentDidUpdate(prevProps) {
+    })
+  }, [val])
 
-    //get Customer Details only if props has changed
-    if (this.props.val !== prevProps.val) {
-      this.getCustomerDetails(this.props.val)
-    }
-  }
+  // 
 
   //Function to Load the customerdetails data from json.
-  getCustomerDetails(id) {
-    axios.get('assets/samplejson/customer' + id + '.json').then(response => {
-      this.setState({customerDetails: response})
-    })
-  };
 
-  render() {
-    if (!this.state.customerDetails)
-      return (<p>Loading Data</p>)
-    return (<div className="customerdetails">
-      <Panel bsStyle="info" className="centeralign">
-        <Panel.Heading>
-          <Panel.Title componentClass="h3">{this.state.customerDetails.data.name}</Panel.Title>
-        </Panel.Heading>
-        <Panel.Body>
-          <p>Name : {this.state.customerDetails.data.name}</p>
-          <p>Email : {this.state.customerDetails.data.email}</p>
-          <p>Phone : {this.state.customerDetails.data.phone}</p>
-          <p>City : {this.state.customerDetails.data.city}</p>
-          <p>State : {this.state.customerDetails.data.state}</p>
-          <p>Country : {this.state.customerDetails.data.country}</p>
-          <p>Organization : {this.state.customerDetails.data.organization}</p>
-          <p>Job Profile : {this.state.customerDetails.data.jobProfile}</p>
-          <p>Additional Info : {this.state.customerDetails.data.additionalInfo}</p>
-        </Panel.Body>
-      </Panel>
-    </div>)
-  }
+
+  return (
+    <div className="customerdetails">
+      {/* {customerDetails.transcations} */}
+      <Container bsStyle="info" className="centeralign">
+         <Segment className='header'>
+          <div className='title' componentClass="h3">{customerDetails.name}</div>
+        </Segment>
+     
+        
+
+          <SimmerEffect enable={customerDetails ? false : true}> </SimmerEffect>
+          <Table size='small'>
+            <Table.Body>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.Cell>{customerDetails.name}</Table.Cell>
+                <Table.Cell>
+                  <Label>
+                    <Icon name="edit"></Icon>
+                  </Label>
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.HeaderCell>Phone</Table.HeaderCell>
+                <Table.Cell>{customerDetails.phone}</Table.Cell>
+                <Table.Cell>
+                  <Label>
+                    <Icon name="edit"></Icon>
+                  </Label>
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.HeaderCell>City</Table.HeaderCell>
+                <Table.Cell>{customerDetails.city}</Table.Cell>
+                <Table.Cell>
+                  <Label>
+                    <Icon name="edit"></Icon>
+                  </Label>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+          <Grid>
+            <Grid.Row>
+              <Header>Order History</Header>
+              <Header><Button>
+                <Icon name="plus"></Icon>Add Order</Button></Header>
+            </Grid.Row>
+            <Grid celled>
+              <Table celled>
+                <TableHeader Headers={['Order Id', 'Amount', "Purchase Date", 'Status']}></TableHeader>
+
+
+                <Table.Body>
+                
+                  
+                  {orderHistory.map(or=>
+                    <Table.Row>
+                      <Table.Cell>{or.id}</Table.Cell>
+                      <Table.Cell>{or.price}</Table.Cell>
+                      <Table.Cell>{or.purchaseDate}</Table.Cell>
+                      <Table.Cell>{or.stauts}</Table.Cell>
+
+                    </Table.Row>
+                  )}
+
+                </Table.Body>
+              </Table>
+
+            </Grid>
+          </Grid>
+        
+    </Container>
+    </div>
+  )
 }
+
+export default CustomerDetails;
