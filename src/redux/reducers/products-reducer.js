@@ -1,4 +1,4 @@
-import { SET_LOADING, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR } from '../actions/index';
+import { SET_LOADING, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR, SEARCH_PRODUCT_SUCCESS, GET_PRODUCT_AVAILIBLITY_SUCCESS } from '../actions/index';
 
 
 const initialState = {
@@ -11,7 +11,9 @@ const initialState = {
         limit: 10,
         totalDocs: 0
     },
-    error: ''
+    error: '',
+    searchProduct: [],
+    productAvailability:[]
 }
 
 
@@ -25,6 +27,13 @@ export default (state = initialState, { type, payload }) => {
             return { ...state, loading: true }
         case SET_ERROR:
             return { ...state, loading: false, error: payload.message }
+        case GET_PRODUCT_AVAILIBLITY_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                productAvailability: payload,
+                error: "",
+            }
         case GET_PRODUCT_LIST_SUCCESS:
             return {
                 ...state,
@@ -37,6 +46,12 @@ export default (state = initialState, { type, payload }) => {
                     limit: payload.limit,
                     totalDocs: payload.totalDocs
                 }
+            }
+        case SEARCH_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                searchProduct: payload
             }
         case GET_PRODUCT_DETAILS_SUCCESS:
             return {

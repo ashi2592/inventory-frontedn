@@ -1,8 +1,9 @@
 import defaultAxios from 'axios';
+import { backendUrl } from '../../constant/global';
 const type ='product';
 
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: backendUrl,
     headers: { 'Content-Type': 'application/json' }
 });
 
@@ -16,6 +17,19 @@ export const getList = async (pageno=1,count=10,searchText = '') => {
     try {
         const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
         return response.data
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
+
+export const searchList = async (searchText = '') => {
+    console.log(searchText)
+    try {
+        const response = await axios.get(`${type}/search/?searchText=${searchText}`);
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -71,5 +85,16 @@ export const DeleteFunction = async (id) =>{
 
     } catch (error) {
         console.log("error",error)           
+    }
+}
+
+
+export const getProductAvailiblity = async (id) => {
+    try {
+        const response = await axios.get(`${type}/availiablity?ids=${id}`);
+        return response.data;
+
+    } catch (error) {
+        console.log("error", error)
     }
 }

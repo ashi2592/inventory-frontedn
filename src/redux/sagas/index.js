@@ -19,7 +19,7 @@ export default function* rootSaga() {
   yield spawn(colorSaga)
   yield spawn(productSaga)
   yield spawn(suppliersSaga)
-  // yield spawn(transcationSaga)
+  yield spawn(transcationSaga)
   yield spawn(typesSaga)
   yield spawn(customerSaga)
   yield spawn(brandSaga)

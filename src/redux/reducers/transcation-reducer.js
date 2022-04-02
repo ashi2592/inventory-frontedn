@@ -1,4 +1,4 @@
-import { SET_LOADING, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR } from '../actions/index';
+import { SET_LOADING, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR, GET_PRODUCT_AVAILIBLITY_SUCCESS, UPDATE_TRANSCATION_STATUS_SUCCESS } from '../actions/index';
 
 
 const initialState = {
@@ -36,13 +36,30 @@ export default (state = initialState, { type, payload }) => {
                     currentPage: payload.page,
                     limit: payload.limit,
                     totalDocs: payload.totalDocs
-                }
+                },
+                error: ""
             }
         case GET_TRANSCATION_DETAILS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                transcation: payload
+                transcation: payload,
+                error: "",
+            }
+       
+
+        case UPDATE_TRANSCATION_STATUS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                transcation: payload.data,
+                error: "",
+                transactions: state.transactions.map(x => {
+                    if (x._id === payload.id) {
+                        return payload.data
+                    }
+                    return x
+                }),
             }
 
         case ADD_TRANSCATION_SUCCESS:
@@ -50,13 +67,15 @@ export default (state = initialState, { type, payload }) => {
                 ...state,
                 loading: false,
                 transactions: [...state.transactions, payload],
-                transcation: payload
+                transcation: payload,
+                error: "",
             }
         case UPDATE_TRANSCATION_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 transcation: payload.data,
+                error: "",
                 transactions: state.transactions.map(x => {
                     if (x._id === payload.id) {
                         return payload.data
@@ -69,7 +88,8 @@ export default (state = initialState, { type, payload }) => {
                 ...state,
                 loading: false,
                 transactions: state.transactions.filter(x => x._id !== payload),
-                transcation: {}
+                transcation: {},
+                error: "",
             }
         default:
             return state

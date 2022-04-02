@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom';
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 
 
 
 const LoginForm = () => {
+  const history =  useHistory();
     const [username,setUserName] = useState('');
     const [password,setPassword] = useState('')
 
@@ -12,6 +14,7 @@ const LoginForm = () => {
     useEffect(()=>{
         // console.log(username)
         // console.log(password)
+        history.push('/order')
     },[username,password])
 
     const submitForm = ()=>{

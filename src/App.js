@@ -11,6 +11,10 @@ import Setting from './settings/setting';
 import Supplier from './inventory/Supplier';
 import Product from './inventory/Products'
 import BarcodeScannerComponentExmple from './features/barcodereader';
+import BarCodeExample from './orders/barcode';
+
+import Orders from './orders/orders';
+import BarcodeScanner from './barcode/BarcodeScanner';
 
 
 class App extends Component {
@@ -21,6 +25,9 @@ class App extends Component {
       <Router basename={process.env.PUBLIC_URL}>
         <div className="App">
           <Switch>
+            <Route exact path="/" render={() => (
+              <Redirect to="/login" />
+            )} />
             <Route exact path='/login' component={Login} />
           </Switch>
           <SidebarLayout>
@@ -31,11 +38,10 @@ class App extends Component {
             <Route exact path='/setting' component={Setting} />
             <Route exact path='/supplier' component={Supplier} />
             <Route exact path='/product' component={Product} />
-            <Route exact path='/reader' component={BarcodeScannerComponentExmple} />
+            <Route exact path='/reader' component={BarCodeExample} />
+            <Route exact path='/barcode' component={BarcodeScanner} />
 
-
-
-
+            <Route exact path='/order' component={Orders} />
           </SidebarLayout>
 
 

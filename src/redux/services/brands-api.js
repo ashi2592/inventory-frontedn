@@ -1,8 +1,8 @@
 import defaultAxios from 'axios';
+import { backendUrl } from '../../constant/global';
 const type = 'brand';
-
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: backendUrl,
     headers: { 'Content-Type': 'application/json' }
 });
 

@@ -1,8 +1,9 @@
 import defaultAxios from 'axios';
+import { backendUrl } from '../../constant/global';
 const type = 'transcation';
 
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: backendUrl,
     headers: { 'Content-Type': 'application/json' }
 });
 
@@ -44,6 +45,8 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
+
+        console.log("Transaction", data)
         const response = await axios.post(`${type}`, data);
         return response.data;
 
@@ -73,3 +76,16 @@ export const DeleteFunction = async (id) => {
         console.log("error", error)
     }
 }
+
+
+
+export const updateStatus = async (id,data) => {
+    try {
+        const response = await axios.put(`${type}/status/${id}`, data);
+        return response.data;
+
+    } catch (error) {
+        console.log("error", error)
+    }
+}
+

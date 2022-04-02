@@ -28,6 +28,10 @@ function Navigation() {
             <Link to="/supplier" > <Icon name="cart"></Icon>SUPPLIER</Link>
             <Link to="/product" > <Icon name="cart"></Icon>Product</Link>
             <Link to="/reader" > <Icon name="cart"></Icon>reader</Link>
+            <Link to="/order" > <Icon name="cart"></Icon>order</Link>
+            <Link to="/barcode" > <Icon name="cart"></Icon>barcode</Link>
+
+
         </ui>
     )
 }
