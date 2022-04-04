@@ -53,8 +53,8 @@ function* addProduct({ payload }) {
 function* updateProduct({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        yield call(getUpdate, payload.data, payload.id)
-        yield put({ type: UPDATE_PRODUCT_SUCCESS, payload: payload })
+     const newdata =   yield call(getUpdate, payload.data, payload.id)
+        yield put({ type: UPDATE_PRODUCT_SUCCESS, payload: newdata })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })
     }

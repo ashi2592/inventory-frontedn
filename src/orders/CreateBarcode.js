@@ -15,7 +15,7 @@ const BarcodeColoms = ({ rowCode }) => {
         console.log(rowCode)
     }, [rowCode])
 
-    return (rowCode.map(x => (<TableCell><Barcode height={55} value={x}></Barcode></TableCell>)))
+    return (rowCode.map(x => (<TableCell><Barcode height={64} value={x}></Barcode></TableCell>)))
 }
 const CreateBarCode = React.forwardRef((props, ref) => {
 

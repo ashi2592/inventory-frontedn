@@ -50,9 +50,14 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
     }
 
     useEffect(() => {
+        setOpenAddModal(false)
         getProducts(1, 10, searchText)
 
     }, [])
+
+    useEffect(()=>{
+        setOpenAddModal(false)
+    },[error])
 
     useEffect(() => {
         let ellipsis = pagination.totalPages > 10 ? undefined : null;
@@ -65,7 +70,6 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
     useEffect(() => {
         getProducts(1, 10, searchText)
-
     }, [searchText])
 
     const handleSearchChange = (e, data) => {
@@ -74,7 +78,6 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
     }
 
     const handleSelectSearchedRow = (id) => {
-
         setSearchText('')
         handleViewProduct(id)
     }
@@ -98,18 +101,22 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Id', 'Name', 'Code', 'Qty', 'MRP', 'Selling Price', 'Status', 'Action']}></TableHeader>
+                    <TableHeader Headers={['Name', 'Code','Category', 'Type ','Brand','Color','Size', 'Qty','Selling Price', , 'Action']}></TableHeader>
 
 
                     <TableBody>
-                        {products.map(x => (<TableRow key={'product-' + x._id}>
-                            <TableCell >{x._id}</TableCell>
+                        {products.map(x => (<TableRow  key={'product-' + x._id} error={x.productQty <= 0}>
+                            {/* <TableCell >{x._id}</TableCell> */}
                             <TableCell >{x.productName}</TableCell>
                             <TableCell >{x.productCode}</TableCell>
+                            <TableCell >{x.productCategoryObj?x.productCategoryObj.categoryName:''} </TableCell>
+                            <TableCell >{x.productTypeObj?x.productTypeObj.typeName:''} </TableCell>
+                            <TableCell >{x.productBrandObj?x.productBrandObj.brandName:''} </TableCell>
+                           <TableCell > {x.productColorObj?x.productColorObj.colorName:''}   </TableCell>
+                            <TableCell > {x.productSizeObj?x.productSizeObj.sizeName:''}  </TableCell>
                             <TableCell >{x.productQty}</TableCell>
-                            <TableCell >{x.productMrp}</TableCell>
                             <TableCell >{x.productPrice}</TableCell>
-                            <TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewProduct(x._id) }}></Icon></TableCell></TableRow>))}
+                           <TableCell><Icon name="edit" onClick={() => { handleViewProduct(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -134,7 +141,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                   </Modal.Header>
                 <Modal.Content image>
                   
-                    {createProduct ? <AddProduct handleAddProduct={handleAddProduct}></AddProduct> : Object.values(product).length ? <ProductDetails handleAddProduct={handleAddProduct}></ProductDetails> : <div></div>}
+                    {createProduct ? <AddProduct handleAddProduct={handleAddProduct}></AddProduct> : Object.values(product).length ? <ProductDetails handleAddProduct={handleAddProduct} setOpenAddModal={setOpenAddModal}></ProductDetails> : <div></div>}
                 </Modal.Content>
 
             </Modal>

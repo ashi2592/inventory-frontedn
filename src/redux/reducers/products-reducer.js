@@ -71,12 +71,13 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                product: payload.data,
+                product: payload,
                 products: state.products.map(x => {
-                    if (x._id === payload.id) {
-                        return payload.data
+                    if (x._id == payload._id) {
+                        return payload
                     }
                     return x
+                    
                 }),
             }
         case DELETE_PRODUCT_SUCCESS:

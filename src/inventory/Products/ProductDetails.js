@@ -11,7 +11,8 @@ const ProdutDetails = ({ product, handleAddProduct,
     deleteProduct, updateProduct, addProduct,
     getCategories, categories, colors, getColors,
     sizes, getSizes, suppliers, getSuppliers, getBrands, brand,
-    types, others, error, getTypes, getOthers
+    types, others, error, getTypes, getOthers,
+    setOpenAddModal
 }) => {
 
     const [categoriesOptions, setCategoriesOptions] = useState([])
@@ -22,6 +23,9 @@ const ProdutDetails = ({ product, handleAddProduct,
     const [typeOption, setTypeOption] = useState([])
     const [seasonOption, setSeasonOption] = useState([])
     const [storeOption, setStoreOption] = useState([])
+    const [check, setCheck] = useState(false);
+    const [isChanges, setIsChanges] = useState(false);
+    const [productUpdated, setProductUpdated] =  useState({})
 
 
 
@@ -44,6 +48,10 @@ const ProdutDetails = ({ product, handleAddProduct,
 
     }, [])
 
+
+    useEffect(()=>{
+        setProductUpdated(product)
+    },[product])
 
     // initial value set
     useEffect(() => {
@@ -96,12 +104,12 @@ const ProdutDetails = ({ product, handleAddProduct,
 
 
     const handleDeleteProduct = (id) => {
+        setOpenAddModal(false)
         deleteProduct(id)
     }
 
-    const debounceFn = useCallback(_.debounce(handleDebounceFn, 1000), []);
+    const debounceFn = useCallback(_.debounce(handleDebounceFn, 100), []);
     const handleUpdateFunction = (id, key, value) => {
-        console.log(key, value)
         debounceFn(id, key, value)
     }
 
@@ -109,19 +117,61 @@ const ProdutDetails = ({ product, handleAddProduct,
         let newProduct = product;
         delete newProduct.__v;
         delete newProduct.createdAt
-
-        updateProduct(id, { ...newProduct, [key]: value })
+        delete newProduct.productSupplierObj
+        delete newProduct.productSizeObj
+        delete newProduct.productTypeObj
+        delete newProduct.productColorObj
+        delete newProduct.productCategoryObj
+        delete newProduct.productBrandObj;
+        setIsChanges(true)
+        setProductUpdated({ ...newProduct, [key]: value })
+       
     }
 
-    const handleDropDownChanges = (name, value) => {
+    const handleDropDownChanges = (key, value) => {
         // alert(JSON.stringify({name,value}))
         // setInputs(values => { return { ...values, [name]: value } });
+        let newProduct = product;
+        delete newProduct.__v;
+        delete newProduct.createdAt
+        delete newProduct.productSupplierObj
+        delete newProduct.productSizeObj
+        delete newProduct.productTypeObj
+        delete newProduct.productColorObj
+        delete newProduct.productCategoryObj
+        delete newProduct.productBrandObj
+        setProductUpdated({ ...newProduct, [key]: value })
+        setCheck(true)
+
     }
+
+    const handleCheck = () =>{
+        setCheck(true)
+        setIsChanges(false)
+    }
+
+
+    useEffect(()=>{
+        if(check)
+        {
+            updateProduct(product._id, productUpdated)
+        }
+        
+    },[check])
 
     const createDuplicateProduct = () => {
 
-        let data = { ...product, status: false };
-        addProduct(data)
+        let newProduct = { ...product, status: true };
+        delete newProduct.__v;
+        delete newProduct._id;
+        delete newProduct.createdAt
+        delete newProduct.productSupplierObj
+        delete newProduct.productSizeObj
+        delete newProduct.productTypeObj
+        delete newProduct.productColorObj
+        delete newProduct.productCategoryObj
+        delete newProduct.productBrandObj
+        addProduct(newProduct)
 
     }
 
@@ -139,6 +189,9 @@ const ProdutDetails = ({ product, handleAddProduct,
                         </Table.HeaderCell>
                         <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteProduct(product._id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
                         <Table.HeaderCell textAlign="right"> <Button color='primary' onClick={() => { createDuplicateProduct(product._id) }}> <Icon name="plus"></Icon> Duplicate Product</Button></Table.HeaderCell>
+                        {isChanges && (<Table.HeaderCell textAlign="right"> <Button color='primary' onClick={handleCheck}> <Icon name="plus"></Icon>  Update Save</Button></Table.HeaderCell>)}
+                    
+                    
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -160,7 +213,7 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Input
-                                      
+
                                         placeholder='Enter Product Name...'
                                         name={'productName'}
                                         onChange={(e) => handleUpdateFunction(product._id, 'productName', e.target.value)}
@@ -177,11 +230,11 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Input
-                                     
+
                                         placeholder='Enter Product code...'
                                         name={'productCode'}
                                         onChange={(e) => handleUpdateFunction(product._id, 'productCode', e.target.value)}
-                                        value={product.productCode}
+                                        value={productUpdated.productCode}
                                         required
                                     />
                                 </Table.Cell>
@@ -218,14 +271,14 @@ const ProdutDetails = ({ product, handleAddProduct,
                                     Product Size
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Size'} ArrayofObj={sizeOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSize'} value={product.productSize}></DropdownSearchSelection>
+                                    <DropdownSearchSelection placeholder={'Product Size'} ArrayofObj={sizeOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSize'} value={product.productSize}></DropdownSearchSelection>
                                 </Table.Cell>
                             </Table.Row>
 
-                            
+
                         </Table.Cell>
                         <Table.Cell>
-                          
+
                             <Table.Row>
                                 <Table.Cell>
                                     Product Qty
@@ -233,11 +286,11 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 <Table.Cell>
 
                                     <Input
-                                      
+
                                         placeholder='Enter Product qty...'
                                         name={'productQty'}
                                         onChange={(e) => handleUpdateFunction(product._id, 'productQty', e.target.value)}
-                                        value={product.productQty}
+                                        value={productUpdated.productQty}
                                         required
                                     />
                                 </Table.Cell>
@@ -250,12 +303,12 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 <Table.Cell>
 
                                     <Input
-                                      
+
                                         placeholder='Enter Product MRP...'
                                         name={'productMrp'}
                                         onChange={(e) => handleUpdateFunction(product._id, 'productMRP', e.target.value)}
                                         required
-                                        value={product.productMrp}
+                                        value={productUpdated.productMrp}
 
                                     />
                                 </Table.Cell>
@@ -267,10 +320,10 @@ const ProdutDetails = ({ product, handleAddProduct,
                                 <Table.Cell>
 
                                     <Input
-                                     
+
                                         placeholder='Enter Product Selling Priice...'
                                         name={'productPrice'}
-                                        value={product.productPrice}
+                                        value={productUpdated.productPrice}
                                         required
                                         onChange={(e) => handleUpdateFunction(product._id, 'productPrice', e.target.value)}
                                     />
