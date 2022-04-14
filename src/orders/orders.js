@@ -1,29 +1,29 @@
 import _ from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Icon, Segment, Table, Button, TableCell, TableRow, Tab, TableBody } from "semantic-ui-react";
+import { Icon, Segment, Table, Button, TableCell, TableRow, Tab, TableBody, Input, FormInput } from "semantic-ui-react";
 import DropdownSearchSelection from "../layout/Dropdown";
 import DropdownExampleSearchQuery from "../layout/Dropdown-query";
 
 import TableHeader from "../layout/TableHeader"
-import { ADD_CUSTOMER, ADD_TRANSCATION, GET_CUSTOMER_DETAILS, GET_CUSTOMER_LIST, GET_OTHER_LIST, GET_PRODUCT_AVAILIBLITY, GET_PRODUCT_LIST, GET_SIZE_LIST, SEARCH_PRODUCT, UPDATE_TRANSCATION_STATUS } from "../redux/actions";
+import { ADD_CUSTOMER, ADD_TRANSCATION, BARCODE_PRODUCT, GET_CUSTOMER_DETAILS, GET_CUSTOMER_LIST, GET_OTHER_LIST, GET_PRODUCT_AVAILIBLITY, GET_PRODUCT_LIST, GET_SIZE_LIST, SEARCH_PRODUCT, UPDATE_TRANSCATION_STATUS } from "../redux/actions";
 
 
-const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers, customers, customer, getCustomer, addCustomer, sizes, getSizes, getProductAvailiblity, addTranscation,others,getOthers }) => {
+const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
+    getProductAvailiblity, addTranscation, others, getOthers, barcodeProduct, barcodeData, updateTranscationStatus, transcation }) => {
 
     const [transcationData, setTranscation] = useState({})
-    const [selectedProducts, setSelectedProducts] = useState({})
-    const [productObjs, setProductsObj] = useState([])
     const [cart, setCart] = useState([])
-    const [totalVal, setTotalVal] = useState(0);
     const [totalQty, setTotalQty] = useState(0);
     const [totalMrp, setTotalMrp] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const customerObj = _.map(customers, (data) => ({ key: data._id, value: `${data.mobile} - ${data.customerName}` }))
     const [steps, setSteps] = useState(1);
     const [orderRecords, setOrderRecords] = useState([])
-
-    const [sizesArr, setSizeArr] = useState([])
+    const [barcode, setBarcode] = useState('');
+    const [scanedbarcode, setScanBarcodd] = useState('');
+    const [discount, SetDiscount] = useState(0);
+    const [selectedProducts, setSelectedProducts] = useState({})
 
     const handleCustomerChange = (name, id) => {
         getCustomer(id);
@@ -34,20 +34,61 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
     }
 
 
+    /**
+     * Barcode Scanner
+     */
+    const barcodeDebounce = useCallback(_.debounce(handleDebounBarcodeceFn, 1000), []);
+
+    const handleBarcodeChnages = (e, { value }) => {
+        setBarcode(value);
+    }
+
+    useEffect(() => {
+        barcodeDebounce(barcode);
+    }, [barcode])
+
+
+    function handleDebounBarcodeceFn(value) {
+        if (value) {
+            setScanBarcodd(value)
+        }
+    }
+
+
+    useEffect(() => {
+        if (scanedbarcode) {
+            barcodeProduct({ barcode: scanedbarcode });
+            setTimeout(() => {
+                setBarcode('');
+            }, [300])
+        }
+    }, [scanedbarcode])
+
+
+    useEffect(() => {
+        if (Object.keys(barcodeData).length) {
+            setSelectedProducts(barcodeData)
+        }
+
+    }, [barcodeData])
+
+
+    /**
+     * 
+     * barcode enf
+     */
+
+
     useEffect(() => {
         let qty = 0;
         let mrp = 0;
         let price = 0;
-        let value = 0;
 
         cart.map(x => {
             qty += x.productQty;
             mrp += x.productMrp;
             price += x.productPrice;
-            value += x.productVal;
         })
-
-        setTotalVal(value)
         setTotalQty(qty)
         setTotalPrice(price)
         setTotalMrp(mrp)
@@ -55,27 +96,11 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
     }, [cart])
 
 
-    useEffect(() => {
-        const productObj = _.map(searchProduct, (data) => {
-            let sizeIndex = sizes.findIndex(x => x._id == data.productSize);
-            let sizeName = sizes[sizeIndex].sizeName;
-            return { key: data._id, value: data._id, text: data.productCode + ' - ' + data.productName + '-' + sizeName }
-        }
-
-        );
-        setProductsObj(productObj)
-    }, [searchProduct, sizes])
-
-
-
 
 
     useEffect(() => {
-        getSizes(1, 100, '')
-        getProducts(1, 100, '')
-        getCustomers(1, 100, '')
-        getOthers(1,100,'')
-
+        getCustomers(1, 1000, '')
+        getOthers(1, 100, '')
     }, [])
 
 
@@ -86,14 +111,10 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
     }, [selectedProducts])
 
 
-    const handleSelectedProduct = (value) => {
-        // console.log(name,value)
-        const data = products.filter(x => (x._id == value))
-        setSelectedProducts(data[0])
-
-        // setTimeout(handleAddToCart,1000)
-
-    }
+    // const handleSelectedProduct = (value) => {  
+    //     const data = products.filter(x => (x._id == value))
+    //     setSelectedProducts(data[0])
+    // }
 
 
 
@@ -104,7 +125,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
             let cartvalue = cart.map(x => {
                 if (x.productId === selectedProducts._id) {
                     x.productQty = x.productQty + 1;
-                    x.value = selectedProducts.productPrice * x.productQty;
+                    x.productPrice = selectedProducts.productPrice * x.productQty;
                 }
                 return x
             });
@@ -118,15 +139,13 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
                 productMrp: selectedProducts.productMrp,
                 productPrice: selectedProducts.productPrice,
                 productQty: 1,
-                productVal: selectedProducts.productPrice,
                 productCode: selectedProducts.productCode,
                 productBrand: selectedProducts.productBrand,
                 productCategory: selectedProducts.productCategory,
                 productColor: selectedProducts.productColor,
                 productSize: selectedProducts.productSize,
                 productType: selectedProducts.productType,
-               
-
+                productVal: 0
             }];
             setSelectedProducts({})
             setCart(cartvalue)
@@ -136,18 +155,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
     }
 
 
-    const handleSearchChange = (searchQuery) => {
-        debounceFn(searchQuery)
-
-    }
-
-    const debounceFn = useCallback(_.debounce(handleDebounceFn, 1000), []);
-
-    function handleDebounceFn(searchQuery) {
-        searchList(searchQuery)
-        // setSearchText(searchQuery)
-    }
-
+  
     const handleDelete = (id) => {
         let cartvalue = cart.filter(x => x.productId !== id);
         setCart(cartvalue)
@@ -159,7 +167,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
         let cartvalue = cart.map(x => {
             if (x.productId === id) {
                 x.productQty = x.productQty + 1;
-                x.productVal = x.productPrice * x.productQty;
+                x.productPrice = x.productPrice * x.productQty;
             }
             return x
         });
@@ -170,7 +178,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
         let cartvalue = cart.map(x => {
             if (x.productId === id) {
                 x.productQty = x.productQty - 1;
-                x.productVal = x.productPrice * x.productQty;
+                x.productPrice = x.productPrice * x.productQty;
             }
             return x
         });
@@ -178,9 +186,14 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
     }
 
 
-    useEffect(() => {
-        // alert(JSON.stringify(transcationData))
-    }, [transcationData])
+
+    const handleDiscount = (value, totalPrice) => {
+        SetDiscount(value)
+        setTotalPrice(parseInt(totalPrice) - parseInt(value))
+    }
+
+
+
 
 
     const handleCartSteps = () => {
@@ -199,7 +212,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
         switch (steps) {
 
             case 1:
-                setOrderRecords(['Product', 'Qty', 'Price', 'Total', 'Action']);
+                setOrderRecords(['Product', 'Qty', 'MRP', 'Price', 'Action']);
                 break;
 
             case 2:
@@ -215,16 +228,22 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
                 }
 
                 break;
+            case 4:
+
+                updateTranscationStatus(transcation._id, true)
+                break;
         }
     }, [steps])
 
+
+
+
     const handleConfirmPurchse = () => {
         // setNextToCart(!nextTocart)
+        const store = others.filter(x => x.keyName === 'store');
+        const season = others.filter(x => x.keyName === 'season');
 
-        const store =  others.filter(x=> x.keyName === 'Store');
-        const season =  others.filter(x=> x.keyName === 'season');
 
-        
         // console.log()
 
         let fcustumer = {
@@ -234,24 +253,33 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
         }
 
         let transcation = {
-            customer:fcustumer,
+            customer: fcustumer,
             products: cart,
-            totalVal: totalVal,
             totalQty: totalQty,
             totalMrp: totalMrp,
             totalPrice: totalPrice,
             store: store[0]._id,
-            season: season[0]._id
+            season: season[0]._id,
+            totalVal: 0
         }
         setTranscation(transcation)
-        
+
 
     }
 
-    useEffect(()=>{
-        addTranscation(transcationData)
-    },[transcationData])
 
+    useEffect(() => {
+        if(Object.keys(transcationData).length)
+        {
+            addTranscation(transcationData)
+        }
+    }, [transcationData])
+
+
+
+    useEffect(()=>{
+        console.log(transcation)
+    },[transcation])
     return (<div>
         <Segment>
             Orders
@@ -268,7 +296,7 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
                 </Table.Row>)}
 
                 {
-                    ((steps == 2 && steps == 3) && Object.keys(customer).length > 0) && (
+                    ((steps == 2 || steps == 3) && Object.keys(customer).length > 0) && (
                         <Table>
                             <TableBody>
                                 <TableRow>
@@ -292,15 +320,26 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
                             </TableBody>
                         </Table>)
                 }
+
+
                 {steps === 1 && (<Table.Row>
                     <Table.Cell>
                         Select  Product
                     </Table.Cell>
                     <Table.Cell>
-                        <DropdownExampleSearchQuery placeholder={'product'} ArrayofObj={productObjs} handleDropDownChanges={handleSelectedProduct} dropdownName={'product'} value={selectedProducts._id} handleSearchChange={handleSearchChange}></DropdownExampleSearchQuery>
+                        <Input
+                            value={barcode}
+                            autoFocus
+                            placeholder='Search barcode'
+                            name={'barcode'}
+                            onChange={handleBarcodeChnages}
+
+                        />
+
                     </Table.Cell>
 
                 </Table.Row>)}
+
 
                 <Table.Row>
 
@@ -329,28 +368,50 @@ const Orders = ({ products, getProducts, searchProduct, searchList, getCustomers
                 {cart.map((x, i) => (<TableRow key={'cart-' + i + x.productId}>
                     <TableCell >{x.productName} -({x.productCode})</TableCell>
                     <TableCell >{x.productQty} x</TableCell>
-                    <TableCell >{x.productPrice}</TableCell>
-                    <TableCell>{x.productVal}</TableCell>
+                    <TableCell >{x.productMrp}</TableCell>
+                    <TableCell>{x.productPrice}</TableCell>
                     <TableCell>
                         {(steps < 3) && <Button color="green" onClick={() => handleAddMore(x.productId)}>+1 More</Button>}
-                        {(steps < 3 && x.qty > 1) && <Button color="orange" onClick={() => handleRemoveMore(x.productId)}>-1 More</Button>}
+                        {(steps < 3 && x.productQty > 1) && <Button color="orange" onClick={() => handleRemoveMore(x.productId)}>-1 More</Button>}
                         {(steps < 3) && <Button color="red" onClick={() => handleDelete(x.productId)}>Delete</Button>}
                     </TableCell>
                 </TableRow>))}
 
                 {cart.length > 0 && (<TableRow>
-                    <TableCell ></TableCell>
-                    <TableCell>
+                    <TableCell></TableCell>
+                    <TableCell collapsig={2}>
                         Total Qty:  {totalQty}
                     </TableCell>
                     <TableCell>
-                        Total Price : {totalPrice}
+                        Total MRP : {totalMrp}
                     </TableCell>
                     <TableCell>
-                        Total Value: {totalVal}
+                        Total Price: {totalPrice}
                     </TableCell>
                 </TableRow>)}
+                {(cart.length > 0 && steps == 3) && (<TableRow>
+                    <TableCell ></TableCell>
+                    <TableCell>
 
+                    </TableCell>
+                    <TableCell>
+
+                    </TableCell>
+
+                    <TableCell>
+                        Discount
+                    </TableCell>
+                    <TableCell>
+                        <Input
+                            value={discount}
+
+                            placeholder='Discount'
+                            name={'Discount'}
+                            onChange={(e, { value }) => { handleDiscount(value, totalPrice) }}
+
+                        />
+                    </TableCell>
+                </TableRow>)}
 
 
             </Table.Body>
@@ -365,11 +426,15 @@ const mapStateToProps = (state) => ({
     customer: state.customers.customer,
     sizes: state.sizes.sizes,
     productAvailability: state.products.productAvailability,
-    others: state.others.others
+    others: state.others.others,
+    barcodeData: state.products.barcodeData,
+    transcations: state.transcation.transcations,
+    transcation: state.transcation.transcation
 })
 
 const mapDispatchToProps = (dispatch) => ({
     getProducts: ({ page, count, searchText }) => dispatch({ type: GET_PRODUCT_LIST, payload: { page, count, searchText } }),
+    barcodeProduct: ({ barcode }) => dispatch({ type: BARCODE_PRODUCT, payload: { barcode } }),
     getSizes: ({ page, count, searchText }) => dispatch({ type: GET_SIZE_LIST, payload: { page, count, searchText } }),
     searchList: (searchText) => dispatch({ type: SEARCH_PRODUCT, payload: { searchText } }),
     getCustomers: ({ page, count, searchText }) => dispatch({ type: GET_CUSTOMER_LIST, payload: { page, count, searchText } }),
@@ -379,6 +444,6 @@ const mapDispatchToProps = (dispatch) => ({
     addTranscation: (data) => dispatch({ type: ADD_TRANSCATION, payload: data }),
     updateTranscationStatus: (id, status) => dispatch({ type: UPDATE_TRANSCATION_STATUS, payload: { id, data: { status } } }),
     getOthers: (page, count, searchText) => dispatch({ type: GET_OTHER_LIST, payload: { page, count, searchText } }),
-   
+
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Orders);

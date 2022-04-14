@@ -14,7 +14,12 @@ const LoginForm = () => {
     useEffect(()=>{
         // console.log(username)
         // console.log(password)
-        history.push('/order')
+    
+        (username == 'ashish' && password == 'ashish')
+        {
+          localStorage.setItem('storeId',"thefashionhub");
+          history.push('/order')
+        }
     },[username,password])
 
     const submitForm = ()=>{

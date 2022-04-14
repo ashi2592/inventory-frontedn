@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { Label, Menu, Segment, Icon } from "semantic-ui-react";
 // import { useNavigate } from 'react-router-dom';
 import { Link, useHistory } from "react-router-dom";
+import { NavLink, withRouter } from 'react-router-dom'
 
 function Navigation() {
 
     const [activeItem, setActiveItem] = useState('Product');
 
-    function handleChange(eventname) {
+
+
+    function handleItemClick(eventname) {
         // console.log(eventname)
         // let historyObj = useHistory();
         // historyObj.push("/"+eventname);
@@ -15,24 +18,50 @@ function Navigation() {
     }
 
     return (
+        <Menu secondary>
+            <Menu.Item
+                as={NavLink} to="/dashboard"
+                name='Dashboard'
+                icon="home"
+                active={activeItem === 'home'}
+                onClick={handleItemClick}
+            />
+             <Menu.Item
+                as={NavLink} to="/order"
+                name='Order'
+                icon="add to cart"
+                active={activeItem === 'product'}
+                onClick={handleItemClick}
+            />  
 
-        <ui>
-            <li> <Link to="/category" > <Icon name="cart"></Icon>category</Link>
+             <Menu.Item
+                as={NavLink} to="/product"
+                name='Product'
+                icon="cart"
+                active={activeItem === 'product'}
+                onClick={handleItemClick}
+            />
 
-            </li>
-            <li>
-                <Link to="/brand" > <Icon name="cart"></Icon>Brand</Link>
+<Menu.Item
+                as={NavLink} to="/catalog"
+                name='Catalogs'
+                icon="cart"
+                active={activeItem === 'product'}
+                onClick={handleItemClick}
+            />
+    
+            <Menu.Item
+                as={NavLink} to="/setting"
+                name='setting'
+                icon="settings"
+                active={activeItem === 'setting'}
+                onClick={handleItemClick}
+            />
+           
 
-            </li>
-            <Link to="/setting" > <Icon name="cart"></Icon>Setting</Link>
-            <Link to="/supplier" > <Icon name="cart"></Icon>SUPPLIER</Link>
-            <Link to="/product" > <Icon name="cart"></Icon>Product</Link>
-            <Link to="/reader" > <Icon name="cart"></Icon>reader</Link>
-            <Link to="/order" > <Icon name="cart"></Icon>order</Link>
-            <Link to="/barcode" > <Icon name="cart"></Icon>barcode</Link>
 
+        </Menu >
 
-        </ui>
     )
 }
 

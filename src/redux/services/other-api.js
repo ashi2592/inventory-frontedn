@@ -4,7 +4,7 @@ const type ='other';
 
 const axios = defaultAxios.create({
     baseURL: backendUrl,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json',storeId: localStorage.getItem('storeId')?localStorage.getItem('storeId'):null }
 });
 
 /**

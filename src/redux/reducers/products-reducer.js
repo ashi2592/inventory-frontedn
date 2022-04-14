@@ -1,4 +1,4 @@
-import { SET_LOADING, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR, SEARCH_PRODUCT_SUCCESS, GET_PRODUCT_AVAILIBLITY_SUCCESS } from '../actions/index';
+import { SET_LOADING, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR, SEARCH_PRODUCT_SUCCESS, GET_PRODUCT_AVAILIBLITY_SUCCESS, BARCODE_PRODUCT_SUCCESS } from '../actions/index';
 
 
 const initialState = {
@@ -13,7 +13,8 @@ const initialState = {
     },
     error: '',
     searchProduct: [],
-    productAvailability:[]
+    productAvailability:[],
+    barcodeData: {}
 }
 
 
@@ -33,6 +34,7 @@ export default (state = initialState, { type, payload }) => {
                 loading: false,
                 productAvailability: payload,
                 error: "",
+                barcodeData:{}
             }
         case GET_PRODUCT_LIST_SUCCESS:
             return {
@@ -45,19 +47,22 @@ export default (state = initialState, { type, payload }) => {
                     currentPage: payload.page,
                     limit: payload.limit,
                     totalDocs: payload.totalDocs
-                }
+                },
+                barcodeData:{}
             }
         case SEARCH_PRODUCT_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                searchProduct: payload
+                searchProduct: payload,
+                barcodeData:{}
             }
         case GET_PRODUCT_DETAILS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                product: payload
+                product: payload,
+                barcodeData:{}
             }
 
         case ADD_PRODUCT_SUCCESS:
@@ -65,13 +70,15 @@ export default (state = initialState, { type, payload }) => {
                 ...state,
                 loading: false,
                 products: [...state.products, payload],
-                product: payload
+                product: payload,
+                barcodeData:{}
             }
         case UPDATE_PRODUCT_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 product: payload,
+                barcodeData:{},
                 products: state.products.map(x => {
                     if (x._id == payload._id) {
                         return payload
@@ -80,12 +87,21 @@ export default (state = initialState, { type, payload }) => {
                     
                 }),
             }
+
+
+        case BARCODE_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                barcodeData: payload
+            }
         case DELETE_PRODUCT_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 products: state.products.filter(x => x._id !== payload),
-                product: {}
+                product: {},
+                barcodeData:{}
             }
         default:
             return state

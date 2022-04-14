@@ -11,6 +11,9 @@ import suppliers from './suppliers-reducer';
 import transcation from "./transcation-reducer";
 import sizes from "./sizes-reducer";
 import others from "./other-reducer";
+import barcodes from './barcode-reducer'
+import dashboard from './dashboard-reducer'
+
 
 
 
@@ -25,5 +28,6 @@ import others from "./other-reducer";
     transcation,
     sizes,
     others,
-
+    barcodes,
+    dashboard
  })

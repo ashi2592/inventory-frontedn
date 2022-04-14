@@ -3,7 +3,7 @@ import { SET_LOADING, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCC
 
 const initialState = {
     loading: false,
-    transactions: [],
+    transcations: [],
     transcation: {},
     pagination: {
         totalPages: 0,
@@ -29,7 +29,7 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                transactions: payload.docs,
+                transcations: payload.docs,
                 transcation: {},
                 pagination: {
                     totalPages: payload.totalPages,
@@ -54,7 +54,7 @@ export default (state = initialState, { type, payload }) => {
                 loading: false,
                 transcation: payload.data,
                 error: "",
-                transactions: state.transactions.map(x => {
+                transcations: state.transcations.map(x => {
                     if (x._id === payload.id) {
                         return payload.data
                     }
@@ -66,7 +66,7 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                transactions: [...state.transactions, payload],
+                transcations: [...state.transcations, payload],
                 transcation: payload,
                 error: "",
             }
@@ -76,7 +76,7 @@ export default (state = initialState, { type, payload }) => {
                 loading: false,
                 transcation: payload.data,
                 error: "",
-                transactions: state.transactions.map(x => {
+                transcations: state.transcations.map(x => {
                     if (x._id === payload.id) {
                         return payload.data
                     }
@@ -87,7 +87,7 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                transactions: state.transactions.filter(x => x._id !== payload),
+                transcations: state.transcations.filter(x => x._id !== payload),
                 transcation: {},
                 error: "",
             }

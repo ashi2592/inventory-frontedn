@@ -1,11 +1,15 @@
 import React from 'react'
-import { Message } from 'semantic-ui-react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const AlertMessage = ({title='',desc='',negative=false}) => (
-  <Message  color='red' negative={negative}>
-    <Message.Header>{title}</Message.Header>
-    <p>{desc}</p>
-  </Message>
-)
+const AlertMessage = ({title='',desc='',negative=false}) =>{
+  const notify = () => toast("Wow so easy!");
+  return(
+    <div>
+          <button onClick={notify}>Notify!</button>
+          <ToastContainer />
+        </div>
+  )
+} 
 
 export default AlertMessage

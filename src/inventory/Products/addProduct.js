@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Checkbox, Message, Table } from "semantic-ui-react";
+import { Form, Input, Button, Checkbox, Message, Table, Tab } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { ADD_PRODUCT, GET_BRAND_LIST, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_OTHER_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_TYPE_LIST } from "../../redux/actions";
 import DropdownSearchSelection from "../../layout/Dropdown";
@@ -20,6 +20,8 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
     const [seasonOption, setSeasonOption] = useState([])
     const [storeOption, setStoreOption] = useState([])
     const [typeOption, setTypeOption] = useState([])
+    const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' },{ key: 'discount', value: 'Discount On MRP' }])
+
 
     // initial apis
 
@@ -73,7 +75,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
 
 
     useEffect(() => {
-        const seasonOpt = others.filter(data => data.keyName == 'Store')
+        const seasonOpt = others.filter(data => data.keyName == 'store')
             .map((data) => ({ key: data._id, value: data.value }))
         setStoreOption(seasonOpt)
     }, [others])
@@ -110,7 +112,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
     const handleSubmit = (event) => {
         event.preventDefault();
         addProduct(inputs);
-        handleAddProduct(false)
+        // handleAddProduct(false)
     }
 
 
@@ -122,6 +124,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                 header='Action Forbidden'
                 content='You can only sign up for an account once with a given e-mail address.'
             />
+
             <Form.Group >
                 <Table>
                     <Table.Body>
@@ -193,6 +196,15 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                     </Table.Cell>
                                 </Table.Row>
 
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Product Type
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <DropdownSearchSelection placeholder={'Product Type'} ArrayofObj={typeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'productType'} value={inputs.productType}></DropdownSearchSelection>
+
+                                    </Table.Cell>
+                                </Table.Row>
 
                                 <Table.Row>
                                     <Table.Cell>
@@ -213,7 +225,6 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                     <Table.Cell>
 
                                         <Input
-
                                             labelPosition='right'
                                             placeholder='Enter Product MRP...'
                                             name={'productMrp'}
@@ -222,11 +233,20 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                         />
                                     </Table.Cell>
                                 </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Price Type
+                                    </Table.Cell>
+                                    <Table.Cell>
 
+                                    <DropdownSearchSelection placeholder={'Price type'} ArrayofObj={pricetypeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'priceType'} value={inputs.priceType}></DropdownSearchSelection>
+                         
+                                    </Table.Cell>
+                                </Table.Row>
 
                                 <Table.Row>
                                     <Table.Cell>
-                                        Product Sell Price
+                                        Product Price/Percent
                                     </Table.Cell>
                                     <Table.Cell>
 
@@ -238,6 +258,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                         />
                                     </Table.Cell>
                                 </Table.Row>
+
                                 <Table.Row>
                                     <Table.Cell>
                                         Product Qty
@@ -255,7 +276,8 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
 
 
 
-                                <Table.Row>
+
+                                {/* <Table.Row>
                                     <Table.Cell>
                                         Product Status
                                     </Table.Cell>
@@ -267,7 +289,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                             onChange={() => handleCheckbox('status', (inputs.status ? inputs.status : false))}
                                         />
                                     </Table.Cell>
-                                </Table.Row>
+                                </Table.Row> */}
                                 <Table.Row>
                                     <Table.Cell>
                                         Product Season
@@ -289,11 +311,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
 
                         </Table.Row>
 
-
-
-
-
-
+                        
 
                         <Table.Row>
                             <Table.Cell>

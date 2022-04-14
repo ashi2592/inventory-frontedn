@@ -15,12 +15,13 @@ const BarcodeColoms = ({ rowCode }) => {
         console.log(rowCode)
     }, [rowCode])
 
-    return (rowCode.map(x => (<TableCell><Barcode height={64} value={x}></Barcode></TableCell>)))
+    return (rowCode.map(x => (<TableCell><Barcode height={55}  value={x}></Barcode></TableCell>)))
 }
 const CreateBarCode = React.forwardRef((props, ref) => {
 
     const [addedProducts, setAddedproduct] = useState([]);
     var s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let inde = Math.floor(Math.random()*25);
     function getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -31,7 +32,7 @@ const CreateBarCode = React.forwardRef((props, ref) => {
         let codes = [];
         let codeArr = []
         for (let i = 0; i < 65; i++) {
-            let x = 'F'+getRandomInt(10, 99)+'A'+getRandomInt(1, 20)
+            let x = 'F'+getRandomInt(0, 99)+s[inde].toUpperCase()+getRandomInt(0, 9)
             codes.push(x)
             if (codes.length == 5) {
 

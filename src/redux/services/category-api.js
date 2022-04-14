@@ -4,7 +4,7 @@ import { backendUrl } from '../../constant/global';
 const type = 'category';
 const axios = defaultAxios.create({
     baseURL: backendUrl,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json',storeId: localStorage.getItem('storeId')?localStorage.getItem('storeId'):null }
 });
 
 /**

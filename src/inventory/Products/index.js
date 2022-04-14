@@ -5,20 +5,23 @@ import TableHeader from "../../layout/TableHeader";
 
 import PropTypes from 'prop-types';
 import AddProduct from "./addProduct";
-import ProductDetails from "./ProductDetails";
 // bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
 import { GET_PRODUCT_DETAILS, GET_PRODUCT_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
+import ProductBarcode from "./Product-barcode";
+import { useHistory } from "react-router-dom";
 
 
 const Product = ({ getProducts, getProduct, products, product, pagination, error }) => {
 
+    const history = useHistory()
     const [createProduct, setCreateProduct] = useState(false)
     const [addProductButton, setAddProductButton] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
+    const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
 
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
@@ -30,18 +33,22 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
     const [searchText, setSearchText] = useState('')
 
     const handleAddProduct = function (value = true) {
-        setCreateProduct(value)
-        setAddProductButton(value)
-        setOpenAddModal(true)
+        // setCreateProduct(value)
+        // setAddProductButton(value)
+        // setOpenAddModal(true)
+
+        history.push(`/add-product`)
+    }
+
+    const handleViewProduct = (id) => {
+             history.push(`/product/${id}`)
+
     }
 
 
-
-    const handleViewProduct = (id) => {
-        setCreateProduct(false)
-        setAddProductButton(false)
+    const handleBarcodeProduct = (id) => {
         getProduct(id)
-        setOpenAddModal(true)
+        setOpenBarcodeModal(true)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
@@ -55,9 +62,9 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         setOpenAddModal(false)
-    },[error])
+    }, [error])
 
     useEffect(() => {
         let ellipsis = pagination.totalPages > 10 ? undefined : null;
@@ -83,10 +90,12 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
     }
 
     return (<div>
-        <Header>product</Header>
+        
 
-        <Segment textAlign="right">
-            <Button active={addProductButton} onClick={handleAddProduct}><Icon name="plus"></Icon> Add product</Button>
+        <Segment >
+        <Header>Product</Header>
+
+            <Button active={true} onClick={handleAddProduct}><Icon name="plus"></Icon> Add product</Button>
         </Segment>
 
         <Grid >
@@ -101,22 +110,26 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Name', 'Code','Category', 'Type ','Brand','Color','Size', 'Qty','Selling Price', , 'Action']}></TableHeader>
+                    <TableHeader Headers={['Name', 'Code', 'Category', 'Type ', 'Brand', 'Color', 'Size', 'Qty', 'Selling Price', , 'Action']}></TableHeader>
 
 
                     <TableBody>
-                        {products.map(x => (<TableRow  key={'product-' + x._id} error={x.productQty <= 0}>
+                        {products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0}>
                             {/* <TableCell >{x._id}</TableCell> */}
                             <TableCell >{x.productName}</TableCell>
                             <TableCell >{x.productCode}</TableCell>
-                            <TableCell >{x.productCategoryObj?x.productCategoryObj.categoryName:''} </TableCell>
-                            <TableCell >{x.productTypeObj?x.productTypeObj.typeName:''} </TableCell>
-                            <TableCell >{x.productBrandObj?x.productBrandObj.brandName:''} </TableCell>
-                           <TableCell > {x.productColorObj?x.productColorObj.colorName:''}   </TableCell>
-                            <TableCell > {x.productSizeObj?x.productSizeObj.sizeName:''}  </TableCell>
+                            <TableCell >{x.productCategoryObj ? x.productCategoryObj.categoryName : ''} </TableCell>
+                            <TableCell >{x.productTypeObj ? x.productTypeObj.typeName : ''} </TableCell>
+                            <TableCell >{x.productBrandObj ? x.productBrandObj.brandName : ''} </TableCell>
+                            <TableCell > {x.productColorObj ? x.productColorObj.colorName : ''}   </TableCell>
+                            <TableCell > {x.productSizeObj ? x.productSizeObj.sizeName : ''}  </TableCell>
                             <TableCell >{x.productQty}</TableCell>
                             <TableCell >{x.productPrice}</TableCell>
-                           <TableCell><Icon name="edit" onClick={() => { handleViewProduct(x._id) }}></Icon></TableCell></TableRow>))}
+                            <TableCell>
+                                <Icon name="edit" onClick={() => { handleViewProduct(x._id) }}></Icon>
+                                <Icon name="barcode" onClick={() => { handleBarcodeProduct(x._id) }}></Icon>
+
+                            </TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -135,17 +148,32 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                 open={openAddModal}
 
             >
-                  <Modal.Header>
-                       {createProduct ? 'Add Product': 'View & Edit Product'}
-                  
-                  </Modal.Header>
+                <Modal.Header>
+                    {createProduct ? 'Add Product' : 'View & Edit Product'}
+
+                </Modal.Header>
                 <Modal.Content image>
-                  
-                    {createProduct ? <AddProduct handleAddProduct={handleAddProduct}></AddProduct> : Object.values(product).length ? <ProductDetails handleAddProduct={handleAddProduct} setOpenAddModal={setOpenAddModal}></ProductDetails> : <div></div>}
+
+                <AddProduct handleAddProduct={handleAddProduct}></AddProduct> 
                 </Modal.Content>
 
             </Modal>
 
+
+            <Modal
+                onClose={() => setOpenBarcodeModal(false)}
+                onOpen={() => setOpenBarcodeModal(true)}
+                open={openBarcodeModal}
+
+            >
+                <Modal.Header>
+                    {product.productName}
+                </Modal.Header>
+                <Modal.Content>
+                    <ProductBarcode></ProductBarcode>
+                </Modal.Content>
+
+            </Modal>
 
 
         </Grid>

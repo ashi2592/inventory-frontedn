@@ -1,27 +1,31 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 import { Grid, Segment } from "semantic-ui-react";
 import Header from "./Header";
 import Navigation from "./Navigation";
+import ThemeHeader from "./ThemeHeader";
+import AlertMessage from "./AlretMessage";
 
 const Layout = ({ children }) => {
-
+    const history = useHistory();
+    useEffect(() => {
+        if (localStorage.getItem('storeId') !== 'thefashionhub') {
+            history.push('/login')
+        }
+    }, [children])
     return (
-        <React.Fragment>
-            <Header as='h3' textAlign='center' content='Container' />
-            <Grid>
-                <Grid.Column>
-                    <Grid columns={2} doubling stackable>
-                        <Grid.Column width={3}>
-                            <Navigation></Navigation>
-                        </Grid.Column>
-                        <Grid.Column width={13}>
-                            {children}
-                        </Grid.Column>
-                    </Grid>
-                </Grid.Column>
-            </Grid>
+        <div>
+                <AlertMessage></AlertMessage>
+                <Navigation></Navigation>
+                {children}
+           
 
-        </React.Fragment>
+            </div>
+        
+
+
+
     )
 }
 export default Layout;

@@ -1,6 +1,6 @@
 import { takeLatest, put, call, takeEvery } from 'redux-saga/effects';
-import { ADD_PRODUCT, GET_PRODUCT_DETAILS, GET_PRODUCT_LIST, SET_LOADING, UPDATE_PRODUCT, DELETE_PRODUCT, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR, SEARCH_PRODUCT_SUCCESS, SEARCH_PRODUCT, GET_PRODUCT_AVAILIBLITY, GET_PRODUCT_AVAILIBLITY_SUCCESS } from '../actions/index';
-import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, searchList, getProductAvailiblity } from '../services/products-api'
+import { ADD_PRODUCT, GET_PRODUCT_DETAILS, GET_PRODUCT_LIST, SET_LOADING, UPDATE_PRODUCT, DELETE_PRODUCT, GET_PRODUCT_LIST_SUCCESS, GET_PRODUCT_DETAILS_SUCCESS, ADD_PRODUCT_SUCCESS, UPDATE_PRODUCT_SUCCESS, DELETE_PRODUCT_SUCCESS, SET_ERROR, SEARCH_PRODUCT_SUCCESS, SEARCH_PRODUCT, GET_PRODUCT_AVAILIBLITY, GET_PRODUCT_AVAILIBLITY_SUCCESS, BARCODE_PRODUCT_SUCCESS, BARCODE_PRODUCT } from '../actions/index';
+import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, searchList, getProductAvailiblity, barcodelist } from '../services/products-api'
 
 
 
@@ -27,6 +27,17 @@ function* searchProduct({ payload }) {
 
 }
 
+
+function* barcodeProduct({ payload }) {
+    try {
+        yield put({ type: SET_LOADING })
+        const barcodedata = yield call(barcodelist,payload.barcode);
+        yield put({ type: BARCODE_PRODUCT_SUCCESS, payload: barcodedata })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
+}
 
 function* getProduct({ payload }) {
     try {
@@ -95,5 +106,9 @@ export default function* productSaga() {
     yield takeEvery(DELETE_PRODUCT, deleteProduct)
     yield takeLatest(SEARCH_PRODUCT,searchProduct)
     yield takeEvery(GET_PRODUCT_AVAILIBLITY, getProductAvailability)
+    yield takeEvery(BARCODE_PRODUCT, barcodeProduct)
+
+
+    
 
 }

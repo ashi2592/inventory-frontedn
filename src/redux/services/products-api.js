@@ -4,7 +4,7 @@ const type ='product';
 
 const axios = defaultAxios.create({
     baseURL: backendUrl,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' ,storeId: localStorage.getItem('storeId')?localStorage.getItem('storeId'):null}
 });
 
 /**
@@ -26,7 +26,6 @@ export const getList = async (pageno=1,count=10,searchText = '') => {
 
 
 export const searchList = async (searchText = '') => {
-    console.log(searchText)
     try {
         const response = await axios.get(`${type}/search/?searchText=${searchText}`);
         return response.data;
@@ -35,6 +34,19 @@ export const searchList = async (searchText = '') => {
     }
 
 }
+
+
+
+export const barcodelist = async (id = '') => {
+    try {
+        const response = await axios.get(`${type}/barcode/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+
+}
+
 
 /**
  * Get  Details by Id
