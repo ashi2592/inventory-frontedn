@@ -8,7 +8,6 @@
 
 # # production
 /build
-/public/assets/theme
 
 # # misc
 # .DS_Store
