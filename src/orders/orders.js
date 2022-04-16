@@ -1,17 +1,26 @@
-import _ from "lodash";
+import _, { uniqueId } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Icon, Segment, Table, Button, TableCell, TableRow, Tab, TableBody, Input, FormInput } from "semantic-ui-react";
 import DropdownSearchSelection from "../layout/Dropdown";
-import DropdownExampleSearchQuery from "../layout/Dropdown-query";
-
 import TableHeader from "../layout/TableHeader"
 import { ADD_CUSTOMER, ADD_TRANSCATION, BARCODE_PRODUCT, GET_CUSTOMER_DETAILS, GET_CUSTOMER_LIST, GET_OTHER_LIST, GET_PRODUCT_AVAILIBLITY, GET_PRODUCT_LIST, GET_SIZE_LIST, SEARCH_PRODUCT, UPDATE_TRANSCATION_STATUS } from "../redux/actions";
+import OrderCustomerCard from "./customer-card";
 
 
 const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
     getProductAvailiblity, addTranscation, others, getOthers, barcodeProduct, barcodeData, updateTranscationStatus, transcation }) => {
+        const linkTarget = {
+            pathname: `/order?state=${uniqueId()}`,
+            key: uniqueId(), // we could use Math.random, but that's not guaranteed unique.
+            state: {
+              applied: true
+            }
+          };
 
+    const history = useHistory()
     const [transcationData, setTranscation] = useState({})
     const [cart, setCart] = useState([])
     const [totalQty, setTotalQty] = useState(0);
@@ -24,6 +33,7 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
     const [scanedbarcode, setScanBarcodd] = useState('');
     const [discount, SetDiscount] = useState(0);
     const [selectedProducts, setSelectedProducts] = useState({})
+    const [totalVal, setTotalVal] = useState(0)
 
     const handleCustomerChange = (name, id) => {
         getCustomer(id);
@@ -92,6 +102,7 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
         setTotalQty(qty)
         setTotalPrice(price)
         setTotalMrp(mrp)
+        setTotalVal(price)
 
     }, [cart])
 
@@ -145,6 +156,7 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
                 productColor: selectedProducts.productColor,
                 productSize: selectedProducts.productSize,
                 productType: selectedProducts.productType,
+                productPurchasePrice: selectedProducts.productPurchasePrice,
                 productVal: 0
             }];
             setSelectedProducts({})
@@ -189,8 +201,19 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
 
     const handleDiscount = (value, totalPrice) => {
         SetDiscount(value)
-        setTotalPrice(parseInt(totalPrice) - parseInt(value))
+        parseInt(totalPrice) - parseInt(value)
+        console.log("total Price",parseInt(totalPrice))
+        console.log("total value",parseInt(value));
+        if(!isNaN(parseInt(value)))
+        {
+            setTotalVal(parseInt(totalPrice)-parseInt(value))
+        }else{
+            setTotalVal(parseInt(totalPrice))
+        }
+        // setTotalPrice()
     }
+
+
 
 
 
@@ -231,6 +254,11 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
             case 4:
 
                 updateTranscationStatus(transcation._id, true)
+
+                setTimeout(()=>{
+                    history.push('/order');
+                    // navigate("../success", { replace: true });
+                },5000)
                 break;
         }
     }, [steps])
@@ -260,7 +288,10 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
             totalPrice: totalPrice,
             store: store[0]._id,
             season: season[0]._id,
-            totalVal: 0
+            totalVal: totalVal,
+            discount: discount,
+            orderId: _.uniqueId()+_.uniqueId()
+
         }
         setTranscation(transcation)
 
@@ -280,77 +311,53 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
     useEffect(()=>{
         console.log(transcation)
     },[transcation])
-    return (<div>
+    return (<div className="container">
         <Segment>
             Orders
         </Segment>
+
         <Table celled>
             <Table.Body>
-                {steps === 2 && (<Table.Row>
+                { (<Table.Row>
                     <Table.Cell>
-                        Select a Customer
+                        { steps == 1 && "  Select  Product"}
+                     { steps == 2 &&   "Select a Customer" }
                     </Table.Cell>
                     <Table.Cell>
-                        <DropdownSearchSelection placeholder={'customer'} ArrayofObj={customerObj} handleDropDownChanges={handleCustomerChange} dropdownName={'customer'} value={customer._id} allowAdditions={true} handleAdditionChanges={handleAddCustomer}></DropdownSearchSelection>
-                    </Table.Cell>
-                </Table.Row>)}
+                    { steps == 2 && ( <DropdownSearchSelection placeholder={'customer'} ArrayofObj={customerObj} handleDropDownChanges={handleCustomerChange} dropdownName={'customer'} value={customer._id} allowAdditions={true} handleAdditionChanges={handleAddCustomer}></DropdownSearchSelection>)}
 
-                {
-                    ((steps == 2 || steps == 3) && Object.keys(customer).length > 0) && (
-                        <Table>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>
-                                        Customer Name
-                                    </TableCell>
-                                    <TableCell>
-                                        {customer.customerName}
-                                    </TableCell>
-                                </TableRow>
-
-                                <TableRow>
-                                    <TableCell>
-                                        Customer Mobile
-                                    </TableCell>
-                                    <TableCell>
-                                        {customer.mobile}
-                                    </TableCell>
-                                </TableRow>
-
-                            </TableBody>
-                        </Table>)
-                }
-
-
-                {steps === 1 && (<Table.Row>
-                    <Table.Cell>
-                        Select  Product
-                    </Table.Cell>
-                    <Table.Cell>
-                        <Input
+                        { steps == 1 && (  <Input
                             value={barcode}
                             autoFocus
                             placeholder='Search barcode'
                             name={'barcode'}
                             onChange={handleBarcodeChnages}
 
-                        />
+                        />)}
 
                     </Table.Cell>
-
                 </Table.Row>)}
 
-
-                <Table.Row>
-
-
+                    <TableRow>
+                   
+                    <Table.Cell>
+                    { ((steps == 2 || steps == 3) && Object.keys(customer).length > 0) &&  (<OrderCustomerCard customer={customer}></OrderCustomerCard>)}  
+                   
+                    </Table.Cell>
+                    
                     <Table.Cell textAlign="right">
                         {(steps > 1 && steps != 3) && <Button onClick={handleCartBack}> <Icon name="angle double left"></Icon> Back to cart</Button>}
                         {(steps == 1 && cart.length > 0) && <Button onClick={handleCartSteps}> Add a Customer  <Icon name="angle double right"></Icon></Button>}
                         {(steps == 2 && Object.keys(customer).length > 0) && <Button onClick={handleCartSteps}> Back to review <Icon name="angle double right"></Icon></Button>}
-                        {((steps == 3) && cart.length) && <Button onClick={handleCartSteps}> Confirm</Button>}
+                        {((steps == 3) && cart.length) && (
+                         <Button onClick={handleCartSteps}> Confirm</Button>)}
+
+                         {(steps ==4) && (<Link to={linkTarget} > Continue to New Order </Link>)}
                     </Table.Cell>
-                </Table.Row>
+                    </TableRow>
+
+
+
             </Table.Body>
 
 
@@ -366,7 +373,7 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
 
             <Table.Body>
                 {cart.map((x, i) => (<TableRow key={'cart-' + i + x.productId}>
-                    <TableCell >{x.productName} -({x.productCode})</TableCell>
+                    <TableCell >{x.productName} -({x.productCode})-{x.productPurchasePrice}</TableCell>
                     <TableCell >{x.productQty} x</TableCell>
                     <TableCell >{x.productMrp}</TableCell>
                     <TableCell>{x.productPrice}</TableCell>
@@ -389,7 +396,8 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
                         Total Price: {totalPrice}
                     </TableCell>
                 </TableRow>)}
-                {(cart.length > 0 && steps == 3) && (<TableRow>
+                {/* && steps == 3 */}
+                {(cart.length > 0 ) && (<TableRow>
                     <TableCell ></TableCell>
                     <TableCell>
 
@@ -404,12 +412,28 @@ const Orders = ({  getCustomers, customers, customer, getCustomer, addCustomer,
                     <TableCell>
                         <Input
                             value={discount}
-
                             placeholder='Discount'
                             name={'Discount'}
                             onChange={(e, { value }) => { handleDiscount(value, totalPrice) }}
 
                         />
+                    </TableCell>
+                </TableRow>)}
+
+                {(cart.length > 0 ) && (<TableRow>
+                    <TableCell ></TableCell>
+                    <TableCell>
+
+                    </TableCell>
+                    <TableCell>
+
+                    </TableCell>
+
+                    <TableCell>
+                        Final Amount
+                    </TableCell>
+                    <TableCell>
+                        {totalVal}
                     </TableCell>
                 </TableRow>)}
 

@@ -6,7 +6,7 @@ import { ADD_BARCODE, DELETE_BARCODE, GET_BARCODE_LIST, GET_PRODUCT_DETAILS, UPD
 import _ from "lodash";
 import TableHeader from "../../layout/TableHeader";
 
-const ProdutBarcodes = ({ product, error, addBarcode, deleteBarcode }) => {
+const ProdutBarcodes = ({ product, error, addBarcode, deleteBarcode ,isAutofocusEnable}) => {
 
     const [barcode, setBarcode] = useState('');
     const [updatedBarcode, setUpdatedBrcode] = useState('')
@@ -53,7 +53,7 @@ const ProdutBarcodes = ({ product, error, addBarcode, deleteBarcode }) => {
     },[product])
 
     const handleSearchbarcode = () =>{
-        
+
     }
 
 
@@ -72,7 +72,7 @@ const ProdutBarcodes = ({ product, error, addBarcode, deleteBarcode }) => {
                         </Table.Cell>
                         <Table.Cell>
                             <Input
-                                autoFocus
+                                autoFocus ={isAutofocusEnable}
                                 placeholder='Enter Barcode'
                                 name={'barcode'}
                                 value={barcode}
@@ -86,7 +86,7 @@ const ProdutBarcodes = ({ product, error, addBarcode, deleteBarcode }) => {
                      
                         <Table.Cell>
                             <Input
-                                autoFocus
+                        
                                 placeholder='Search barcode'
                                 name={'barcode'}
                                 value={barcode}

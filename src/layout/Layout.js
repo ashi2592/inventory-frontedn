@@ -10,7 +10,8 @@ import AlertMessage from "./AlretMessage";
 const Layout = ({ children }) => {
     const history = useHistory();
     useEffect(() => {
-        if (localStorage.getItem('storeId') !== 'thefashionhub') {
+        console.log(localStorage.getItem('storeId'))
+        if (localStorage.getItem('storeId') === null) {
             history.push('/login')
         }
     }, [children])
@@ -22,10 +23,6 @@ const Layout = ({ children }) => {
            
 
             </div>
-        
-
-
-
     )
 }
 export default Layout;

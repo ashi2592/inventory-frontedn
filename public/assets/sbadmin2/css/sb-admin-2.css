@@ -10970,7 +10970,7 @@ form.user .btn-user {
 
 .error {
   color: #5a5c69;
-  font-size: 7rem;
+  /* font-size: 7rem; */
   position: relative;
   line-height: 1;
   width: 12.5rem;
@@ -11254,7 +11254,7 @@ form.user .btn-user {
 }
 
 .error:before {
-  content: attr(data-text);
+  /* content: attr(data-text); */
   position: absolute;
   left: -2px;
   text-shadow: 1px 0 #4e73df;

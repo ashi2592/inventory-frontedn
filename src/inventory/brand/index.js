@@ -130,9 +130,9 @@ Brand.propTypes = {
 
 
 const mapStateToProps = (state) => ({
-    brands: state.brand.brands,
-    brand: state.brand.brand,
-    pagination: state.brand.pagination
+    brands: state.brands.brands,
+    brand: state.brands.brand,
+    pagination: state.brands.pagination
     // state: state
 })
 

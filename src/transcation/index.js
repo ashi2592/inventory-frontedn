@@ -1,51 +1,35 @@
-
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
-import TableHeader from "../../layout/TableHeader";
+import { Icon, IconGroup, Input, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import PropTypes from 'prop-types';
-
-
-// bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
-import { GET_SUPPLIER_DETAILS, GET_SUPPLIER_LIST } from "../../redux/actions";
-import SupplierDetails from "./transcationDetails";
-import PaginationCompact from "../../layout/pagination";
+import PaginationCompact from "../layout/pagination";
 import _ from "lodash";
+import { GET_TRANSCATION_DETAILS, GET_TRANSCATION_LIST } from "../redux/actions";
+import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 
-const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }) => {
 
-    const [createsupplier, setCreatesupplier] = useState(false)
-    const [addSupplierButton, setAddSupplierButton] = useState(false)
+const Supplier = ({ getTranscations, transcations, pagination }) => {
+
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [searchResult, setSearchResult] = useState([])
-
+    const history = useHistory()
     // Search 
     const [searchText, setSearchText] = useState('')
 
-    const handleAddSupplier = function (value = true) {
-        setCreatesupplier(value)
-        setAddSupplierButton(value)
-    }
 
-
-
-    const handleViewSupplier = (id) => {
-        getSupplier(id)
-        setCreatesupplier(false)
-        setAddSupplierButton(false)
-    }
 
     const handlePaginationChange = (e, { activePage }) => {
-        getSuppliers(activePage, 10, searchText)
+        getTranscations(activePage, 10, searchText)
     }
 
 
     useEffect(() => {
-        getSuppliers(1, 10, searchText)
+        getTranscations(1, 10, searchText)
 
     }, [])
 
@@ -55,10 +39,10 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
         setTotalPages(pagination.totalPages)
         SetActivePage(pagination.currentPage)
 
-    }, [suppliers, pagination])
+    }, [transcations, pagination])
 
     useEffect(() => {
-        getSuppliers(1, 10, searchText)
+        getTranscations(1, 10, searchText)
     }, [searchText])
 
     const handleSearchChange = (e, data) => {
@@ -66,17 +50,15 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
 
     }
 
-    const handleSelectSearchedRow = (id) => {
-        setSearchResult([])
-        setSearchText('')
-        handleViewSupplier(id)
+    const handleInvoiceClick = (id) => {
+        history.push(`/order/print/${id}`)
     }
+
 
     return (
         <div>
-            {/* <Button active={addSupplierButton} onClick={handleAddSupplier}><Icon name="plus"></Icon> Add Supplier</Button> */}
-            <div className="row">
-                <div className="col-6">
+            <div className="container">
+                <div className="row">
                     <Input onChange={_.debounce(handleSearchChange, 500, {
                         leading: true,
                     })} icon="search" value={searchText}></Input>
@@ -86,19 +68,26 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
                         {searchText && `Search Results of  ${searchText}`}
                     </p>
                     <Table celled>
-                        <TableHeader Headers={['Id', 'Name', 'Contact', 'Location', 'Address', 'Action']}></TableHeader>
-
+                        {/* <TableHeader Headers={}></TableHeader> */}
+                        <Table.Header>
+                            <Table.Row>
+                                {['Id', 'Customer', 'Transaction Value', 'Discount', 'Final Amount', 'Action'].map(h => <Table.HeaderCell key={h}>{h}</Table.HeaderCell>)}
+                            </Table.Row>
+                        </Table.Header>
 
                         <TableBody>
 
-                            {suppliers
-                                .map(x => (<TableRow key={'supplier-' + x._id}><TableCell >{x._id}</TableCell>
-                                    <TableCell >{x.supplierName}</TableCell>
-                                    <TableCell >{x.contact}</TableCell>
-                                    <TableCell >{x.location}</TableCell>
-                                    <TableCell >{x.address}</TableCell>
+                            {transcations
+                                .map(x => (<TableRow key={'order-' + x._id} error={x.status == false}><TableCell >{x.orderId}</TableCell>
+                                    <TableCell >{x.customer?x.customer.mobile:""}</TableCell>
+                                    <TableCell >{x.totalPrice}</TableCell>
+                                    <TableCell >{x.discount}</TableCell>
+                                    <TableCell >{x.totalVal}</TableCell>
 
-                                    <TableCell><Icon name="edit" onClick={() => { handleViewSupplier(x._id) }}></Icon></TableCell></TableRow>))}
+                                    <TableCell>
+                                        <IconGroup>
+                                            <Icon name={"file alternate"} onClick={() => handleInvoiceClick(x._id)}></Icon>
+                                        </IconGroup></TableCell></TableRow>))}
                         </TableBody>
 
                     </Table>
@@ -113,32 +102,27 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
 
 
             </div>
-           
+
 
         </div>)
 
 }
 
 Supplier.propTypes = {
-    loading: PropTypes.bool,
-    suppliers: PropTypes.array,
-    supplier: PropTypes.object,
-    getSuppliers: PropTypes.func.isRequired,
-    getSupplier: PropTypes.func.isRequired
+    loading: PropTypes.bool
 }
 
 
 
 const mapStateToProps = (state) => ({
-    suppliers: state.suppliers.suppliers,
-    supplier: state.suppliers.supplier,
-    pagination: state.suppliers.pagination
-    // state: state
+    pagination: state.transcation.pagination,
+    transcations: state.transcation.transcations
+
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getSuppliers: (page, count, searchText) => dispatch({ type: GET_SUPPLIER_LIST, payload: { page, count, searchText } }),
-    getSupplier: (id) => dispatch({ type: GET_SUPPLIER_DETAILS, payload: { id } }),
+    getTranscations: (page, count, searchText) => dispatch({ type: GET_TRANSCATION_LIST, payload: { page, count, searchText } }),
+    // getTranscation: (id) => dispatch({ type: GET_TRANSCATION_DETAILS, payload: { id } }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Supplier);

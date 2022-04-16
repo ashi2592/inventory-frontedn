@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-
-
-
+import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
+import { login } from '../redux/services/user-api';
 
 const LoginForm = () => {
   const history =  useHistory();
@@ -11,19 +9,29 @@ const LoginForm = () => {
     const [password,setPassword] = useState('')
 
     
-    useEffect(()=>{
-        // console.log(username)
-        // console.log(password)
-    
-        (username == 'ashish' && password == 'ashish')
-        {
-          localStorage.setItem('storeId',"thefashionhub");
-          history.push('/order')
-        }
+    useEffect(()=>{        
+    if(localStorage.getItem('store') !== null){
+      history.push('/order')
+    }
     },[username,password])
 
     const submitForm = ()=>{
     
+      if(username && password)
+      {
+        console.log(username,password)
+        login(username,password).then(response=>{
+         
+          Object.keys(response).map((x,i)=>{
+            localStorage.setItem(x,response[x])
+          })
+          history.push('/order')
+
+        }).catch((err)=>{
+          console.log(err)
+        })
+        
+      }
     }
     
     return(

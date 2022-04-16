@@ -12,7 +12,7 @@ const DashboardProducts = ({ productCounts,border }) => {
         setBordercolor(`card  border-left-${border ? border : 'primary'} shadow h-100 py-2`)
     }, [border])
 
-    return (<div className="col-xl-3 col-md-3 mb-4">
+    return (<div className="col-xl-4 col-md-3 mb-4">
         <div className='card'>
         <div className="card-header py-3">
                         <h6 className="m-0 font-weight-bold text-primary">Product Counts</h6>

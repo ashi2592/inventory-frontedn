@@ -1,89 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, Message, Table, Tab } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { ADD_PRODUCT, GET_BRAND_LIST, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_OTHER_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_TYPE_LIST } from "../../redux/actions";
+import { ADD_PRODUCT, ALERT_NOTIFY, GET_BRAND_LIST, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_OTHER_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_TYPE_LIST } from "../../redux/actions";
 import DropdownSearchSelection from "../../layout/Dropdown";
 import _ from "lodash";
+import { useHistory } from "react-router-dom";
+
+import SearchAndSelectCateory from "../../components/SearchAndSelectCateory";
+import SearchAndSelectBrand from "../../components/SearchAndSelectBrand";
+import SearchAndSelectSupplier from "../../components/SearchAndSelectSupplier";
+import SearchAndSelectSize from "../../components/SearchAndSelectSize";
+import SearchAndSelectProductType from "../../components/SearchAndSelectProductType";
+import SearchAndSelectColor from "../../components/SearchAndSelectColor";
+import SearchAndSelectOthers from "../../components/SearchAndSelectOthers";
 
 
-const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, colors, getColors,
-    sizes, getSizes, suppliers, getSuppliers, getBrands, brands, getOthers, getTypes, types, others }) => {
+const AddProduct = ({ addProduct,alertMessage,product }) => {
 
     const [formload, setFormLoad] = useState(false);
     const [formError, setFormError] = useState(false);
     const [inputs, setInputs] = useState({});
-    const [categoriesOptions, setCategoriesOptions] = useState([])
-    const [colorOptions, setcolorOptions] = useState([])
-    const [sizeOptions, setsizeOption] = useState([])
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [brandOptions, setBrandOptions] = useState([])
-    const [seasonOption, setSeasonOption] = useState([])
-    const [storeOption, setStoreOption] = useState([])
-    const [typeOption, setTypeOption] = useState([])
-    const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' },{ key: 'discount', value: 'Discount On MRP' }])
-
+    const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' }])
+    const history = useHistory()
+    const [productName, setProductName] =useState('')
+    const [productNameObj, setProductNameObj] =useState({})
 
     // initial apis
 
     useEffect(() => {
-        getCategories(1, 100, '')
-        getColors(1, 100, '')
-        getSizes(1, 100, '')
-        getSuppliers(1, 100, '')
-        getBrands(1, 100, '')
-        getTypes(1, 100, '')
-        getOthers(1, 100, '')
+       
     }, [])
 
 
-    // initial value set
-    useEffect(() => {
-        // getCategories()
+    const generateCode = () => {
+        var s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let inde = Math.floor(Math.random() * 25);
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        let x = 'F' + getRandomInt(0, 99) + s[inde].toUpperCase() + getRandomInt(0, 9)
 
-        const categoryOpt = _.map(categories, (data, index) => ({ key: data._id, value: data.categoryName }))
-        setCategoriesOptions(categoryOpt)
-
-    }, [categories])
-
-    useEffect(() => {
-        const colorOpt = _.map(colors, (data, index) => ({ key: data._id, value: data.colorName }))
-        setcolorOptions(colorOpt)
-
-    }, [colors])
+        return x;
+    }
 
 
     useEffect(() => {
-        const sizeOpt = _.map(sizes, (data, index) => ({ key: data._id, value: data.sizeName }))
-        setsizeOption(sizeOpt)
-
-    }, [sizes])
-    useEffect(() => {
-        const sizeOpt = _.map(suppliers, (data, index) => ({ key: data._id, value: data.supplierName }))
-        setSupplierOptions(sizeOpt)
-    }, [suppliers])
-
-    useEffect(() => {
-        const brandOpt = _.map(brands, (data, index) => ({ key: data._id, value: data.brandName }))
-        setBrandOptions(brandOpt)
-    }, [brands])
-
-    useEffect(() => {
-        const seasonOpt = others.filter(data => data.keyName == 'season')
-            .map((data) => ({ key: data._id, value: data.value }))
-        setSeasonOption(seasonOpt)
-    }, [others])
-
-
-    useEffect(() => {
-        const seasonOpt = others.filter(data => data.keyName == 'store')
-            .map((data) => ({ key: data._id, value: data.value }))
-        setStoreOption(seasonOpt)
-    }, [others])
-
-    useEffect(() => {
-        const typesOpt = _.map(types, (data) => ({ key: data._id, value: data.typeName }))
-        setTypeOption(typesOpt)
-    }, [types])
+        let x = { ...inputs, productCode: generateCode() }
+        x = { ...x, season: localStorage.getItem('season') }
+        x = { ...x, store: localStorage.getItem('store') }
+        x = { ...x, priceType: 'flat' }
+        setInputs(x)
+    }, [])
 
 
 
@@ -102,18 +71,43 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
     }
 
 
-    const handleDropDownChanges = (name, value) => {
-        // alert(JSON.stringify({name,value}))
-        // setInputs(values => { return { ...values, [name]: value } });
+    const handleDropDownChanges = (name, value,text) => {
         setInputs(values => { return { ...values, [name]: value } })
-        console.log(inputs)
+        if(name !== 'productSupplier')
+        {
+            setProductNameObj(values=> { return { ...values, [name]: text } })
+        }
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        addProduct(inputs);
-        // handleAddProduct(false)
+
+        let name = '';
+        Object.values(productNameObj).map((x,i)=>{
+            if(i !== 0){
+                name +='-' 
+            }
+            name += x 
+        })
+
+        let x = { ...inputs, productName:name }
+        addProduct(x);
+       
     }
+
+
+    useEffect(()=>{
+        if(Object.keys(product).length )
+        {
+            setTimeout(() => {
+                alertMessage('success', 'New Product Added Successfully')
+                history.push(`/product/${product._id}`)
+            }, 1000)
+        }
+        
+    },[product])
+
+
 
 
     return (
@@ -130,7 +124,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                     <Table.Body>
                         <Table.Row>
                             <Table.Cell>
-                                <Table.Row>
+                                {/* <Table.Row>
 
                                     <Table.Cell>
                                         Product Name
@@ -142,6 +136,7 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                             placeholder='Enter Product Name'
                                             onChange={handleChange}
                                             name={'productName'}
+                                            disabled
                                         />
                                     </Table.Cell>
                                 </Table.Row>
@@ -157,16 +152,54 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                             placeholder='Enter Product Code'
                                             onChange={handleChange}
                                             name={'productCode'}
+                                            value={inputs.productCode}
+                                            disabled
                                         />
+                                    </Table.Cell>
+                                </Table.Row> */}
+
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Product Season
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <SearchAndSelectOthers
+                                            placeholder={'season'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'season'}
+                                            value={inputs.season}
+                                            keyName='season'
+                                
+                                        ></SearchAndSelectOthers>
+
                                     </Table.Cell>
                                 </Table.Row>
 
                                 <Table.Row>
                                     <Table.Cell>
+                                        Product Store
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <SearchAndSelectOthers
+                                            placeholder={'Store'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'store'}
+                                            value={inputs.store}
+                                            keyName='store'
+                                        ></SearchAndSelectOthers>
+                                    </Table.Cell>
+                                </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell>
                                         Product Category
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Category'} ArrayofObj={categoriesOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productCategory'} value={inputs.productCategory}></DropdownSearchSelection>
+                                        <SearchAndSelectCateory
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            placeholder={'Category'}
+                                            dropdownName={'productCategory'}
+                                            value={inputs.productCategory}
+                                        ></SearchAndSelectCateory>
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row>
@@ -174,35 +207,55 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                         Product Colors
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Colors'} ArrayofObj={colorOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productColor'} value={inputs.productColor}></DropdownSearchSelection>
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Product Size
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Size'} ArrayofObj={sizeOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSize'} value={inputs.productSize}></DropdownSearchSelection>
-                                    </Table.Cell>
-                                </Table.Row>
-
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Product Supplier
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Supplier'} ArrayofObj={supplierOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSupplier'} value={inputs.productSupplier}></DropdownSearchSelection>
+                                        <SearchAndSelectColor
+                                            placeholder={'Product Color'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'productColor'}
+                                            value={inputs.productColor}
+                                        ></SearchAndSelectColor>
 
                                     </Table.Cell>
                                 </Table.Row>
-
                                 <Table.Row>
                                     <Table.Cell>
                                         Product Type
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Product Type'} ArrayofObj={typeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'productType'} value={inputs.productType}></DropdownSearchSelection>
+                                        <SearchAndSelectProductType
+                                            placeholder={'Product Type'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'productType'}
+                                            value={inputs.productType}
+                                        ></SearchAndSelectProductType>
+                                    </Table.Cell>
+                                </Table.Row>
 
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Product Size
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <SearchAndSelectSize
+                                            placeholder={'Product Size'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'productSize'}
+                                            value={inputs.productSize}
+                                        ></SearchAndSelectSize>
+
+                                    </Table.Cell>
+                                </Table.Row>
+
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Product Suppliers
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <SearchAndSelectSupplier
+                                            placeholder={'Supplier'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'productSupplier'}
+                                            value={inputs.productSupplier}
+                                        ></SearchAndSelectSupplier>
                                     </Table.Cell>
                                 </Table.Row>
 
@@ -211,13 +264,33 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                         Product Brand
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'brand'} ArrayofObj={brandOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productBrand'} value={inputs.productBrand}></DropdownSearchSelection>
+                                        <SearchAndSelectBrand
+                                            placeholder={'brand'}
+                                            handleDropDownChanges={handleDropDownChanges}
+                                            dropdownName={'productBrand'}
+                                            value={inputs.productBrand}
+                                        ></SearchAndSelectBrand>
 
                                     </Table.Cell>
                                 </Table.Row>
 
                             </Table.Cell>
                             <Table.Cell>
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Purchase Price
+                                    </Table.Cell>
+                                    <Table.Cell>
+
+                                        <Input
+                                            labelPosition='right'
+                                            placeholder='Enter Product Purchase Price...'
+                                            name={'productPurchasePrice'}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </Table.Cell>
+                                </Table.Row>
                                 <Table.Row>
                                     <Table.Cell>
                                         Product MRP
@@ -239,8 +312,8 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                     </Table.Cell>
                                     <Table.Cell>
 
-                                    <DropdownSearchSelection placeholder={'Price type'} ArrayofObj={pricetypeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'priceType'} value={inputs.priceType}></DropdownSearchSelection>
-                         
+                                        <DropdownSearchSelection placeholder={'Price type'} ArrayofObj={pricetypeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'priceType'} value={inputs.priceType}></DropdownSearchSelection>
+
                                     </Table.Cell>
                                 </Table.Row>
 
@@ -258,7 +331,6 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                         />
                                     </Table.Cell>
                                 </Table.Row>
-
                                 <Table.Row>
                                     <Table.Cell>
                                         Product Qty
@@ -274,44 +346,11 @@ const AddProduct = ({ addProduct, handleAddProduct, getCategories, categories, c
                                     </Table.Cell>
                                 </Table.Row>
 
-
-
-
-                                {/* <Table.Row>
-                                    <Table.Cell>
-                                        Product Status
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Checkbox
-                                            toggle
-                                            checked={inputs.status}
-                                            label='is Active'
-                                            onChange={() => handleCheckbox('status', (inputs.status ? inputs.status : false))}
-                                        />
-                                    </Table.Cell>
-                                </Table.Row> */}
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Product Season
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Season'} ArrayofObj={seasonOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'season'} value={inputs.season}></DropdownSearchSelection>
-                                    </Table.Cell>
-                                </Table.Row>
-
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Product Store
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <DropdownSearchSelection placeholder={'Store'} ArrayofObj={storeOption} dropdownName={'store'} handleDropDownChanges={handleDropDownChanges} value={inputs.store}></DropdownSearchSelection>
-                                    </Table.Cell>
-                                </Table.Row>
                             </Table.Cell>
 
                         </Table.Row>
 
-                        
+
 
                         <Table.Row>
                             <Table.Cell>
@@ -336,14 +375,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 
     addProduct: (data) => dispatch({ type: ADD_PRODUCT, payload: data }),
-    getCategories: (page, count, searchText) => dispatch({ type: GET_CATEGORY_LIST, payload: { page, count, searchText } }),
-    getColors: (page, count, searchText) => dispatch({ type: GET_COLOR_LIST, payload: { page, count, searchText } }),
-    getSizes: (page, count, searchText) => dispatch({ type: GET_SIZE_LIST, payload: { page, count, searchText } }),
-    getSuppliers: (page, count, searchText) => dispatch({ type: GET_SUPPLIER_LIST, payload: { page, count, searchText } }),
-    getBrands: (page, count, searchText) => dispatch({ type: GET_BRAND_LIST, payload: { page, count, searchText } }),
-    getTypes: (page, count, searchText) => dispatch({ type: GET_TYPE_LIST, payload: { page, count, searchText } }),
-    getOthers: (page, count, searchText) => dispatch({ type: GET_OTHER_LIST, payload: { page, count, searchText } })
-
+    alertMessage: (type, message) => dispatch({ type: ALERT_NOTIFY, payload: { type, message } }),
 
 
 }
@@ -351,14 +383,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 const mapStateToProps = (state) => ({
-    categories: state.category.categories,
-    colors: state.colors.colors,
-    sizes: state.sizes.sizes,
-    suppliers: state.suppliers.suppliers,
-    brands: state.brand.brands,
-    types: state.types.types,
-    others: state.others.others,
-    error: state.products.error
+    error: state.products.error,
+    product: state.products.product
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddProduct);

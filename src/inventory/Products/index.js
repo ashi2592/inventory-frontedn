@@ -7,30 +7,37 @@ import PropTypes from 'prop-types';
 import AddProduct from "./addProduct";
 // bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
-import { GET_PRODUCT_DETAILS, GET_PRODUCT_LIST } from "../../redux/actions";
+import { GET_CATEGORY_LIST, GET_PRODUCT_DETAILS, GET_PRODUCT_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 import ProductBarcode from "./Product-barcode";
 import { useHistory } from "react-router-dom";
+import SearchAndSelectCateory from "../../components/SearchAndSelectCateory";
+import SearchAndSelectBrand from "../../components/SearchAndSelectBrand";
+import SearchAndSelectSupplier from "../../components/SearchAndSelectSupplier";
+import SearchAndSelectSize from "../../components/SearchAndSelectSize";
+import SearchAndSelectProductType from "../../components/SearchAndSelectProductType";
+import SearchAndSelectColor from "../../components/SearchAndSelectColor";
+import SearchAndSelectOthers from "../../components/SearchAndSelectOthers";
 
 
-const Product = ({ getProducts, getProduct, products, product, pagination, error }) => {
+const Product = ({ getProducts, getProduct, products, product, pagination, error, }) => {
 
     const history = useHistory()
     const [createProduct, setCreateProduct] = useState(false)
     const [addProductButton, setAddProductButton] = useState(false);
     const [openAddModal, setOpenAddModal] = useState(false);
     const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
-
+    const [categoriesOptions, setCategoriesOptions] = useState([])
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
-
     const [totalPages, setTotalPages] = useState(0);
 
     // Search 
     const [searchText, setSearchText] = useState('')
+    const [searchInputs, setSearchInputs] = useState({ brand: '', category: '', size: '', type: '', color: '' })
 
     const handleAddProduct = function (value = true) {
         // setCreateProduct(value)
@@ -41,7 +48,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
     }
 
     const handleViewProduct = (id) => {
-             history.push(`/product/${id}`)
+        history.push(`/product/${id}`)
 
     }
 
@@ -58,8 +65,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
     useEffect(() => {
         setOpenAddModal(false)
-        getProducts(1, 10, searchText)
-
+        getProducts(1, 10, searchText, searchInputs)
     }, [])
 
     useEffect(() => {
@@ -89,11 +95,24 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
         handleViewProduct(id)
     }
 
+
+
+    const handleSearchDropDownChanges = (name, value) => {
+
+        let newsearch = { ...searchInputs, [name]: value }
+        setSearchInputs(newsearch)
+
+    }
+
+    useEffect(() => {
+        getProducts(1, 10, searchText, searchInputs)
+    }, [searchInputs])
+
     return (<div>
-        
+
 
         <Segment >
-        <Header>Product</Header>
+            <Header>Product</Header>
 
             <Button active={true} onClick={handleAddProduct}><Icon name="plus"></Icon> Add product</Button>
         </Segment>
@@ -105,17 +124,82 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                     leading: true,
                 })} icon="search" value={searchText}></Input>
 
-
                 <p >
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
                     <TableHeader Headers={['Name', 'Code', 'Category', 'Type ', 'Brand', 'Color', 'Size', 'Qty', 'Selling Price', , 'Action']}></TableHeader>
+                    <Table.Header>
+                        <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell>
+                                <SearchAndSelectCateory
+                                    handleDropDownChanges={handleSearchDropDownChanges}
+                                    placeholder={'Category'}
+                                    dropdownName={'category'}
+                                    value={searchInputs.category}
+                                    clearable={true}
 
+                                ></SearchAndSelectCateory>
+                            </TableCell>
+                            <TableCell>
+
+                                <SearchAndSelectProductType
+                                    handleDropDownChanges={handleSearchDropDownChanges}
+                                    placeholder={'Search Type'}
+                                    dropdownName={'type'}
+                                    value={searchInputs.type}
+                                    clearable={true}
+
+
+                                ></SearchAndSelectProductType>
+
+                            </TableCell>
+                            <TableCell>
+                                <SearchAndSelectBrand
+                                    handleDropDownChanges={handleSearchDropDownChanges}
+                                    placeholder={'Search Brand'}
+                                    dropdownName={'brand'}
+                                    value={searchInputs.brand}
+                                    clearable={true}
+
+
+                                ></SearchAndSelectBrand>
+                            </TableCell>
+                            <TableCell>
+                            <SearchAndSelectColor
+                                    handleDropDownChanges={handleSearchDropDownChanges}
+                                    placeholder={'Search Color'}
+                                    dropdownName={'color'}
+                                    value={searchInputs.color}
+                                    clearable={true}
+
+
+                                ></SearchAndSelectColor>
+
+                            </TableCell>
+                            <TableCell>
+                            <SearchAndSelectSize
+                                    handleDropDownChanges={handleSearchDropDownChanges}
+                                    placeholder={'Search Size'}
+                                    dropdownName={'size'}
+                                    value={searchInputs.size}
+                                    clearable={true}
+
+
+                                ></SearchAndSelectSize>
+
+                            </TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </Table.Header>
 
                     <TableBody>
                         {products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0}>
-                            {/* <TableCell >{x._id}</TableCell> */}
+
                             <TableCell >{x.productName}</TableCell>
                             <TableCell >{x.productCode}</TableCell>
                             <TableCell >{x.productCategoryObj ? x.productCategoryObj.categoryName : ''} </TableCell>
@@ -154,7 +238,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                 </Modal.Header>
                 <Modal.Content image>
 
-                <AddProduct handleAddProduct={handleAddProduct}></AddProduct> 
+                    <AddProduct handleAddProduct={handleAddProduct}></AddProduct>
                 </Modal.Content>
 
             </Modal>
@@ -170,7 +254,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                     {product.productName}
                 </Modal.Header>
                 <Modal.Content>
-                    <ProductBarcode></ProductBarcode>
+                    <ProductBarcode isAutofocusEnable={true}></ProductBarcode>
                 </Modal.Content>
 
             </Modal>
@@ -201,8 +285,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getProducts: (page, count, searchText) => dispatch({ type: GET_PRODUCT_LIST, payload: { page, count, searchText } }),
+    getProducts: (page, count, searchText, searchInputs) => dispatch({ type: GET_PRODUCT_LIST, payload: { page, count, searchText, searchInputs } }),
     getProduct: (id) => dispatch({ type: GET_PRODUCT_DETAILS, payload: { id } }),
+
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Product);

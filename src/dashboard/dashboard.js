@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { GET_CATEGORY_PRODUCT_COUNT, GET_DAY_WISE_TRANSCATION, GET_STATS_DASHBOARD, GET_TOP_SELLING } from '../redux/actions';
+import { ALERT_NOTIFY, GET_CATEGORY_PRODUCT_COUNT, GET_DAY_WISE_TRANSCATION, GET_STATS_DASHBOARD, GET_TOP_SELLING } from '../redux/actions';
 import Apexlinechart from './dashboard-barchart';
 import DashboardCard from './dashboard-card';
 import DashboardOrder from './dashboard-order';
@@ -11,12 +11,13 @@ import DashboardTransaction from './dashboard-transactions';
 
 
 
-const DashboardTabular = ({getDashboardStats,getCategoryWiseProductCount,getTopSelling,dashboardStats,topSelling,productCounts}) => {
+const DashboardTabular = ({getDashboardStats,getCategoryWiseProductCount,getTopSelling,dashboardStats,topSelling,productCounts,alertMessage}) => {
 
     useEffect(()=>{
         getDashboardStats()
         getTopSelling()
-        getCategoryWiseProductCount()
+        getCategoryWiseProductCount();
+        alertMessage('success',"I am dashboard")
     },[])
 
     return (
@@ -28,11 +29,16 @@ const DashboardTabular = ({getDashboardStats,getCategoryWiseProductCount,getTopS
                 <DashboardCard title={"Total Return(month)"} value={"INR 30000"} border={'success'}></DashboardCard>
 
             </div>
+
+            <div className='row'>
+            <DashboardOrder></DashboardOrder>
+                <DashboardTransaction ></DashboardTransaction>
+              
+</div>
+
             <div className='row'>
 
-                <DashboardOrder></DashboardOrder>
-                <DashboardTransaction ></DashboardTransaction>
-                <DashboardTopSelling topSelling={topSelling}></DashboardTopSelling>
+               <DashboardTopSelling topSelling={topSelling}></DashboardTopSelling>
                 <DashboardProducts productCounts={productCounts}></DashboardProducts>
                 <Apexlinechart></Apexlinechart>
             </div>
@@ -56,7 +62,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     getTopSelling: () => dispatch({type: GET_TOP_SELLING}),
     getCategoryWiseProductCount: () => dispatch({type: GET_CATEGORY_PRODUCT_COUNT}),
-    getDashboardStats: () => dispatch({type: GET_STATS_DASHBOARD})
+    getDashboardStats: () => dispatch({type: GET_STATS_DASHBOARD}),
+    alertMessage: (type,message) => dispatch({type: ALERT_NOTIFY, payload:{type,message}}),
 })
 
 

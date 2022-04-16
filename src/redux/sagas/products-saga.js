@@ -7,7 +7,7 @@ import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, searchList, get
 function* getProducts({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        const categories = yield call(getList, payload.page, payload.count, payload.searchText);
+        const categories = yield call(getList, payload.page, payload.count, payload.searchText,payload.searchInputs);
         yield put({ type: GET_PRODUCT_LIST_SUCCESS, payload: categories })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })

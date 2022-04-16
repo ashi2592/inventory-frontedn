@@ -12,10 +12,16 @@ const axios = defaultAxios.create({
  * @returns 
  */
 
-export const getList = async (pageno=1,count=10,searchText = '') => {
+export const getList = async (pageno=1,count=10,searchText = '',searchInputs={}) => {
 
     try {
-        const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
+        let query = `page=${pageno}&count=${count}&searchText=${searchText}`;
+
+        Object.keys(searchInputs).map((key)=>{
+            query = query+`&${key}=${searchInputs[key]}`
+        })
+
+        const response = await axios.get(`${type}?${query}`);
         return response.data
     } catch (error) {
         throw error;

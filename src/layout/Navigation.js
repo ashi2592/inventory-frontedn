@@ -57,6 +57,13 @@ function Navigation() {
                 active={activeItem === 'setting'}
                 onClick={handleItemClick}
             />
+             <Menu.Item
+                as={NavLink} to="/transcation"
+                name='order-history'
+                icon="first order"
+                active={activeItem === 'transcation'}
+                onClick={handleItemClick}
+            />
            
 
 

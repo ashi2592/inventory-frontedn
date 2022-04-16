@@ -8,7 +8,7 @@ const DashboardTopSelling = ({topSelling}) =>{
         console.log(topSelling)
     },[topSelling])
 
-    return ( <div className="col-xl-3 col-md-3 mb-4">
+    return ( <div className="col-xl-4 col-md-3 mb-4">
     <div className='card'>
     <div className="card-header py-3">
                     <h6 className="m-0 font-weight-bold text-primary">Top Selling Products</h6>

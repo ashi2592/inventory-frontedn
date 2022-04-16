@@ -17,7 +17,7 @@ const DashboardTransaction = ({ title, value, border,daywiseSell, getDaywiseSell
         getDaywiseSell()
     },[])
 
-    return (<div className="col-xl-3 col-md-6 mb-4">
+    return (<div className="col-xl-6 col-md-6 mb-4">
         <div className='card'>
         <div className="card-header py-3">
                         <h6 className="m-0 font-weight-bold text-primary">Day Wise Sell Report</h6>

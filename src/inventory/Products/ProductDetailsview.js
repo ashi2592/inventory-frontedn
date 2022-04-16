@@ -1,39 +1,37 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Checkbox, Icon, Input, Table } from "semantic-ui-react";
+import { Button, Icon, Input, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
-import { UPDATE_PRODUCT, DELETE_PRODUCT, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_BRAND_LIST, ADD_PRODUCT, GET_TYPE_LIST, GET_OTHER_LIST, DELETE_BARCODE, GET_PRODUCT_DETAILS } from "../../redux/actions";
+import { UPDATE_PRODUCT, DELETE_PRODUCT, GET_CATEGORY_LIST, GET_COLOR_LIST, GET_SIZE_LIST, GET_SUPPLIER_LIST, GET_BRAND_LIST, ADD_PRODUCT, GET_TYPE_LIST, GET_OTHER_LIST, DELETE_BARCODE, GET_PRODUCT_DETAILS, ALERT_NOTIFY } from "../../redux/actions";
 import _ from "lodash";
 import DropdownSearchSelection from "../../layout/Dropdown";
-import Barcode from "react-barcode";
 import { useParams } from "react-router-dom";
 import ProductBarcode from "./Product-barcode";
+import { useHistory } from "react-router-dom";
+import SearchAndSelectCateory from "../../components/SearchAndSelectCateory";
+import SearchAndSelectBrand from "../../components/SearchAndSelectBrand";
+import SearchAndSelectSupplier from "../../components/SearchAndSelectSupplier";
+import SearchAndSelectSize from "../../components/SearchAndSelectSize";
+import SearchAndSelectProductType from "../../components/SearchAndSelectProductType";
+import SearchAndSelectColor from "../../components/SearchAndSelectColor";
+import SearchAndSelectOthers from "../../components/SearchAndSelectOthers";
 
-const ProdutDetailsView = ({ product, 
+const ProdutDetailsView = ({ product,
     deleteProduct, updateProduct, addProduct,
-    getCategories, categories, colors, getColors,
-    sizes, getSizes, suppliers, getSuppliers, getBrands, brand,
-    types, others, error, getTypes, getOthers,
-    getProduct
+    others, getOthers,
+    getProduct, alertMessage
 }) => {
 
-    const [categoriesOptions, setCategoriesOptions] = useState([])
-    const [colorOptions, setcolorOptions] = useState([])
-    const [sizeOptions, setsizeOption] = useState([])
-    const [supplierOptions, setSupplierOptions] = useState([])
-    const [brandOptions, setBrandOptions] = useState([])
-    const [typeOption, setTypeOption] = useState([])
-    const [seasonOption, setSeasonOption] = useState([])
-    const [storeOption, setStoreOption] = useState([])
     const [check, setCheck] = useState(false);
     const [isChanges, setIsChanges] = useState(false);
     const [productUpdated, setProductUpdated] = useState({})
-
+    const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' }])
+    const history = useHistory()
     let { id } = useParams();
 
-    useEffect(()=>{
+    useEffect(() => {
         getProduct(id)
-    },[id])
+    }, [id])
 
 
 
@@ -41,69 +39,19 @@ const ProdutDetailsView = ({ product,
     // initial apis
 
     useEffect(() => {
-        getCategories(1, 100, '')
-        getColors(1, 100, '')
-        getSizes(1, 100, '')
-        getSuppliers(1, 100, '')
-        getBrands(1, 100, '')
-        getTypes(1, 100, '')
+
         getOthers(1, 100, '')
     }, [])
 
 
-    useEffect(()=>{
+
+
+    useEffect(() => {
+
         setProductUpdated(product)
-    },[product])
 
+    }, [product])
 
-    // initial value set
-    useEffect(() => {
-        // getCategories()
-
-        const categoryOpt = _.map(categories, (data, index) => ({ key: data._id, value: data.categoryName }))
-        setCategoriesOptions(categoryOpt)
-
-    }, [categories])
-
-    useEffect(() => {
-        const colorOpt = _.map(colors, (data, index) => ({ key: data._id, value: data.colorName }))
-        setcolorOptions(colorOpt)
-
-    }, [colors])
-
-
-    useEffect(() => {
-        const sizeOpt = _.map(sizes, (data, index) => ({ key: data._id, value: data.sizeName }))
-        setsizeOption(sizeOpt)
-
-    }, [sizes])
-    useEffect(() => {
-        const sizeOpt = _.map(suppliers, (data, index) => ({ key: data._id, value: data.supplierName }))
-        setSupplierOptions(sizeOpt)
-    }, [suppliers])
-
-    useEffect(() => {
-        const brandOpt = _.map(brand, (data, index) => ({ key: data._id, value: data.brandName }))
-        setBrandOptions(brandOpt)
-    }, [brand])
-
-    useEffect(() => {
-        const typesOpt = _.map(types, (data) => ({ key: data._id, value: data.typeName }))
-        setTypeOption(typesOpt)
-    }, [types])
-
-    useEffect(() => {
-        const seasonOpt = others.filter(data => data.keyName == 'season')
-            .map((data) => ({ key: data._id, value: data.value }))
-        setSeasonOption(seasonOpt)
-    }, [others])
-
-
-    useEffect(() => {
-        const seasonOpt = others.filter(data => data.keyName == 'store')
-            .map((data) => ({ key: data._id, value: data.value }))
-        setStoreOption(seasonOpt)
-    }, [others])
 
 
     const handleDeleteProduct = (id) => {
@@ -117,14 +65,14 @@ const ProdutDetailsView = ({ product,
     const handleUpdateFunction = (id, key, value) => {
         // console.log(id,key,value)
         setProductUpdated({ ...productUpdated, [key]: value })
-         debounceFn(key, value,productUpdated)
+        debounceFn(key, value, productUpdated)
     }
 
 
 
-    function handleDebounceFn(key, value,productUpdated) {
-        let newProduct ={ ...productUpdated, status: true };
-    
+    function handleDebounceFn(key, value, productUpdated) {
+        let newProduct = { ...productUpdated, status: true };
+
         // newProduc.barcodes = product;
         delete newProduct.__v;
         delete newProduct.createdAt
@@ -137,11 +85,13 @@ const ProdutDetailsView = ({ product,
         delete newProduct.barcodes
         setProductUpdated({ ...newProduct, [key]: value })
         setCheck(true)
-
+        setTimeout(() => {
+            alertMessage('success', `${key} update successfully`)
+        }, 5000)
     }
 
     const handleDropDownChanges = (key, value) => {
-        // alert(JSON.stringify({key,value}))
+        alert(JSON.stringify({ key, value }))
         // setInputs(values => { return { ...values, [name]: value } });
         let newProduct = { ...productUpdated, status: true };
         delete newProduct.__v;
@@ -157,6 +107,9 @@ const ProdutDetailsView = ({ product,
         // delete newProduct.priceType
         setProductUpdated({ ...newProduct, [key]: value })
         setCheck(true)
+        setTimeout(() => {
+            alertMessage('success', `${key} update successfully`)
+        }, 5000)
 
     }
 
@@ -192,7 +145,7 @@ const ProdutDetailsView = ({ product,
 
     }
 
-   
+
 
 
     return (
@@ -263,7 +216,12 @@ const ProdutDetailsView = ({ product,
                                     Product Category
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Category'} ArrayofObj={categoriesOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productCategory'} value={product.productCategory}></DropdownSearchSelection>
+                                    <SearchAndSelectCateory
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        placeholder={'Category'}
+                                        dropdownName={'productCategory'}
+                                        value={productUpdated.productCategory}
+                                    ></SearchAndSelectCateory>
                                 </Table.Cell>
                             </Table.Row>
                             <Table.Row>
@@ -271,7 +229,14 @@ const ProdutDetailsView = ({ product,
                                     Product Colors
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Colors'} ArrayofObj={colorOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productColor'} value={product.productColor}></DropdownSearchSelection>
+
+                                    <SearchAndSelectColor
+                                        placeholder={'Product Color'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'productColor'}
+                                        value={productUpdated.productColor}
+                                    ></SearchAndSelectColor>
+
                                 </Table.Cell>
                             </Table.Row>
                             <Table.Row>
@@ -279,7 +244,13 @@ const ProdutDetailsView = ({ product,
                                     Product types
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Product types'} ArrayofObj={typeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'productType'} value={product.productType}></DropdownSearchSelection>
+                                    <SearchAndSelectProductType
+                                        placeholder={'Product Type'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'productType'}
+                                        value={productUpdated.productType}
+                                    ></SearchAndSelectProductType>
+
                                 </Table.Cell>
                             </Table.Row>
 
@@ -288,9 +259,75 @@ const ProdutDetailsView = ({ product,
                                     Product Size
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Product Size'} ArrayofObj={sizeOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSize'} value={product.productSize}></DropdownSearchSelection>
+                                    <SearchAndSelectSize
+                                        placeholder={'Product Size'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'productSize'}
+                                        value={productUpdated.productSize}
+                                    ></SearchAndSelectSize>
+
                                 </Table.Cell>
                             </Table.Row>
+                            <Table.Row>
+                                <Table.Cell>
+                                    Product Supplier
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <SearchAndSelectSupplier
+                                        placeholder={'Supplier'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'productSupplier'}
+                                        value={productUpdated.productSupplier}
+                                    ></SearchAndSelectSupplier>
+
+                                </Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                                <Table.Cell>
+                                    Product Brand
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <SearchAndSelectBrand
+                                        placeholder={'brand'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'productBrand'}
+                                        value={productUpdated.productBrand}
+                                    ></SearchAndSelectBrand>
+
+                                </Table.Cell>
+                            </Table.Row>
+                            <Table.Row>
+                                <Table.Cell>
+                                    Product Season
+                                </Table.Cell>
+                                <Table.Cell>
+                                <SearchAndSelectOthers
+                                        placeholder={'season'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'season'}
+                                        value={productUpdated.season}
+                                        keyName='season'
+                                    ></SearchAndSelectOthers>
+
+                                </Table.Cell>
+                            </Table.Row>
+
+                            <Table.Row>
+                                <Table.Cell>
+                                    Product Store
+                                </Table.Cell>
+                                <Table.Cell>
+                                <SearchAndSelectOthers
+                                        placeholder={'Store'}
+                                        handleDropDownChanges={handleDropDownChanges}
+                                        dropdownName={'store'}
+                                        value={productUpdated.store}
+                                        keyName='store'
+                                    ></SearchAndSelectOthers>
+
+                                </Table.Cell>
+                            </Table.Row>
+
 
 
                         </Table.Cell>
@@ -298,17 +335,18 @@ const ProdutDetailsView = ({ product,
 
                             <Table.Row>
                                 <Table.Cell>
-                                    Product Qty
+                                    Purchase Price
                                 </Table.Cell>
                                 <Table.Cell>
 
                                     <Input
 
-                                        placeholder='Enter Product qty...'
-                                        name={'productQty'}
-                                        onChange={(e) => handleUpdateFunction(product._id, 'productQty', e.target.value)}
-                                        value={productUpdated.productQty}
+                                        placeholder='Enter purchase price'
+                                        name={'productPurchasePrice'}
+                                        onChange={(e) => handleUpdateFunction(product._id, 'productPurchasePrice', e.target.value)}
                                         required
+                                        value={productUpdated.productPurchasePrice}
+
                                     />
                                 </Table.Cell>
                             </Table.Row>
@@ -332,7 +370,19 @@ const ProdutDetailsView = ({ product,
                             </Table.Row>
                             <Table.Row>
                                 <Table.Cell>
-                                    Product Sell Price
+                                    Price Type
+                                </Table.Cell>
+                                <Table.Cell>
+
+                                    <DropdownSearchSelection placeholder={'Price type'} ArrayofObj={pricetypeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'priceType'} value={productUpdated.priceType}></DropdownSearchSelection>
+
+                                </Table.Cell>
+                            </Table.Row>
+
+
+                            <Table.Row>
+                                <Table.Cell>
+                                    Product Price
                                 </Table.Cell>
                                 <Table.Cell>
 
@@ -346,47 +396,31 @@ const ProdutDetailsView = ({ product,
                                     />
                                 </Table.Cell>
                             </Table.Row>
-                            <Table.Row>
-                                <Table.Cell>
-                                    Product Supplier
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Supplier'} ArrayofObj={supplierOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productSupplier'} value={product.productSupplier}></DropdownSearchSelection>
-
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row>
-                                <Table.Cell>
-                                    Product Brand
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'brand'} ArrayofObj={brandOptions} handleDropDownChanges={handleDropDownChanges} dropdownName={'productBrand'} value={product.productBrand}></DropdownSearchSelection>
-
-                                </Table.Cell>
-                            </Table.Row>
-                            <Table.Row>
-                                <Table.Cell>
-                                    Product Season
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Season'} ArrayofObj={seasonOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'season'} value={product.season}></DropdownSearchSelection>
-                                </Table.Cell>
-                            </Table.Row>
 
                             <Table.Row>
                                 <Table.Cell>
-                                    Product Store
+                                    Product Qty
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <DropdownSearchSelection placeholder={'Store'} ArrayofObj={storeOption} dropdownName={'store'} value={product.store}></DropdownSearchSelection>
+
+                                    <Input
+
+                                        placeholder='Enter Product qty...'
+                                        name={'productQty'}
+                                        onChange={(e) => handleUpdateFunction(product._id, 'productQty', e.target.value)}
+                                        value={productUpdated.productQty}
+                                        required
+                                    />
                                 </Table.Cell>
                             </Table.Row>
-                          
+
+
+
                         </Table.Cell>
 
                     </Table.Row>
 
-        
+
 
                 </Table.Body>
 
@@ -394,7 +428,7 @@ const ProdutDetailsView = ({ product,
 
             <div>
                 <div className="row">
-                    <ProductBarcode></ProductBarcode>
+                    <ProductBarcode isAutofocusEnable={false}></ProductBarcode>
                 </div>
             </div>
         </div>
@@ -409,12 +443,6 @@ ProdutDetailsView.propTypes = {
 
 const mapStateToProps = (state) => ({
     product: state.products.product,
-    categories: state.category.categories,
-    colors: state.colors.colors,
-    sizes: state.sizes.sizes,
-    suppliers: state.suppliers.suppliers,
-    brand: state.brand.brands,
-    types: state.types.types,
     others: state.others.others,
     error: state.products.error
 })
@@ -422,14 +450,9 @@ const mapDispatchToProps = (dispatch) => ({
     deleteProduct: (id) => dispatch({ type: DELETE_PRODUCT, payload: id }),
     updateProduct: (id, data) => dispatch({ type: UPDATE_PRODUCT, payload: { id, data } }),
     addProduct: (data) => dispatch({ type: ADD_PRODUCT, payload: data }),
-    getCategories: (page, count, searchText) => dispatch({ type: GET_CATEGORY_LIST, payload: { page, count, searchText } }),
-    getColors: (page, count, searchText) => dispatch({ type: GET_COLOR_LIST, payload: { page, count, searchText } }),
-    getSizes: (page, count, searchText) => dispatch({ type: GET_SIZE_LIST, payload: { page, count, searchText } }),
-    getSuppliers: (page, count, searchText) => dispatch({ type: GET_SUPPLIER_LIST, payload: { page, count, searchText } }),
-    getBrands: (page, count, searchText) => dispatch({ type: GET_BRAND_LIST, payload: { page, count, searchText } }),
-    getTypes: (page, count, searchText) => dispatch({ type: GET_TYPE_LIST, payload: { page, count, searchText } }),
     getOthers: (page, count, searchText) => dispatch({ type: GET_OTHER_LIST, payload: { page, count, searchText } }),
     getProduct: (id) => dispatch({ type: GET_PRODUCT_DETAILS, payload: { id } }),
+    alertMessage: (type, message) => dispatch({ type: ALERT_NOTIFY, payload: { type, message } }),
 
 
 

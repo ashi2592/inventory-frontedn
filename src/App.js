@@ -13,6 +13,8 @@ import TabExampleLoading from './catalogs/Catalogs';
 import DashboardAdmin from './dashboard/dashboard';
 import ProductDetails from './inventory/Products/ProductDetailsview';
 import addProduct from './inventory/Products/addProduct';
+import OrderPrint from './orders/order-print';
+import transcation from './transcation/index';
 
 class App extends Component {
   render() {
@@ -39,6 +41,10 @@ class App extends Component {
              <Route exact path='/order' component={Orders} />
             <Route exact path='/catalog' component={TabExampleLoading} />
             <Route exact path='/dashboard' component={DashboardAdmin} />
+            <Route exact path='/order/print/:orderId' component={OrderPrint} />
+            <Route exact path='/transcation' component={transcation} />
+
+
 
           </SidebarLayout>
 

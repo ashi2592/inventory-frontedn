@@ -78,7 +78,7 @@ BrandDetails.propTypes ={
 }
 
 const mapStateToProps = (state) => ({
-    brand: state.brand.brand
+    brand: state.brands.brand
 })
 const mapDispatchToProps = (dispatch) => ({
     deleteBrand: (id) => dispatch({type: DELETE_BRAND, payload: id}),
