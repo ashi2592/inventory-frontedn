@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import AddOther from "./addOther";
 import OtherDetails from "./otherDetails";
@@ -13,10 +13,15 @@ import { GET_OTHER_DETAILS, GET_OTHER_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
+import SettingSidebarPage from "../settingSidebar";
+import TableLoaderPage from "../../components/TableLoader";
+import TableNoRecordFound from "../../components/TableNoRecordFound";
+import { useHistory } from "react-router-dom";
 
 
-const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
+const Color = ({ getOther, getOthers, others, other, pagination, error, loading }) => {
 
+    const history = useHistory()
     const [createcolor, setCreateOther] = useState(false)
     const [addOtherButton, setAddOtherButton] = useState(false)
 
@@ -29,16 +34,13 @@ const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
     const [searchText, setSearchText] = useState('')
 
     const handleAddOther = function (value = true) {
-        setCreateOther(value)
-        setAddOtherButton(value)
+        history.push(`/others/add`)
     }
 
 
 
     const handleViewOther = (id) => {
-        getOther(id)
-        setCreateOther(false)
-        setAddOtherButton(false)
+        history.push(`/others/${id}`)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
@@ -77,15 +79,23 @@ const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
         handleViewOther(id)
     }
 
-    return (<div>
+    return (<Container>
+        <Header textAlign="left">Other Information</Header>
 
-        <Segment textAlign="right">
-            <Header textAlign="left">Colors</Header>
 
-            <Button active={addOtherButton} onClick={handleAddOther}><Icon name="plus"></Icon> Add Other Values</Button>
-        </Segment>
+        <Grid>
+            <GridRow columns={2}>
+                <GridColumn>
+                    <SettingSidebarPage activeItem={'others'}></SettingSidebarPage>
+                </GridColumn>
+                <GridColumn textAlign="right">
 
-        <Grid columns={2} celled>
+                    <Button active={addOtherButton} onClick={handleAddOther} color="green"><Icon name="plus"></Icon> Add Other Values</Button>
+                </GridColumn>
+            </GridRow>
+        </Grid>
+
+        <Grid columns={1} celled>
             <Grid.Column>
 
                 <Input onChange={_.debounce(handleSearchChange, 500, {
@@ -101,8 +111,9 @@ const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
 
 
                     <TableBody>
-
-                        {others && others.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.keyName}</TableCell><TableCell >{x.value}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewOther(x._id) }}></Icon></TableCell></TableRow>))}
+                        {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
+                        {(loading == false && others.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
+                        {!loading && (others || []).map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.keyName}</TableCell><TableCell >{x.value}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewOther(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -113,13 +124,10 @@ const Color = ({ getOther, getOthers, others, other , pagination, error }) => {
                     handlePaginationChange={handlePaginationChange}
                 ></PaginationCompact>
             </Grid.Column>
-            <Grid.Column>
-                {createcolor ? <AddOther handleAddOther={handleAddOther}></AddOther> : Object.values(other).length ? <OtherDetails handleAddOther={handleAddOther}></OtherDetails> : <div></div>}
 
-            </Grid.Column>
         </Grid>
 
-    </div>)
+    </Container>)
 
 }
 
@@ -137,7 +145,8 @@ const mapStateToProps = (state) => ({
     others: state.others.others,
     other: state.others.other,
     pagination: state.others.pagination,
-    error: state.others.error
+    error: state.others.error,
+    loading: state.others.loading
     // state: state
 })
 

@@ -54,7 +54,7 @@ function* addOther({ payload }) {
 function* updateOther({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const updateddata = yield call(getUpdate, payload.data, payload.id)
+         yield call(getUpdate, payload.data, payload.id)
         yield put({ type: UPDATE_OTHER_SUCCESS, payload: payload })
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })
@@ -66,7 +66,7 @@ function* updateOther({ payload }) {
 function* deleteOther({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const deletedData = yield call(DeleteFunction, payload);
+        yield call(DeleteFunction, payload);
         yield put({ type: DELETE_OTHER_SUCCESS, payload: payload })
 
     }catch(err){

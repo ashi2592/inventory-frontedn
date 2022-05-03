@@ -10,13 +10,16 @@ import {
     GET_STATS_DASHBOARD,
     GET_STATS_DASHBOARD_SUCCESS,
     GET_CATEGORY_PRODUCT_COUNT,
-    GET_DAY_WISE_TRANSCATION
+    GET_DAY_WISE_TRANSCATION,
+    GET_MONTH_WISE_TRANSCATION,
+    GET_MONTH_WISE_TRANSCATION_SUCCESS
 } from '../actions/index';
 import {
     getTopSelling,
     getDaywiseSell,
     getCategoryWiseProductCount,
     getDashboardStats,
+    getMonthwiseSell,
 } from '../services/dashboard';
 
 
@@ -58,6 +61,18 @@ function* getDaywiseSellReport({ payload }) {
 
 }
 
+function* getMonthwiseSellReport({ payload }) {
+    try {
+        yield put({ type: SET_LOADING })
+        const data = yield call(getMonthwiseSell);
+        yield put({ type: GET_MONTH_WISE_TRANSCATION_SUCCESS, payload: data })
+
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
+}
+
 function* getStatsReport() {
     try {
 
@@ -77,6 +92,7 @@ export default function* dashboardSaga() {
     yield takeEvery(GET_TOP_SELLING, getTopSellingProduct)
     yield takeLatest(GET_CATEGORY_PRODUCT_COUNT, getCategorWiseCount)
     yield takeEvery(GET_DAY_WISE_TRANSCATION, getDaywiseSellReport)
+    yield takeEvery(GET_MONTH_WISE_TRANSCATION, getMonthwiseSellReport)
     yield takeLatest(GET_STATS_DASHBOARD, getStatsReport)
 
 }

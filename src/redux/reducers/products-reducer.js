@@ -80,7 +80,7 @@ export default (state = initialState, { type, payload }) => {
                 product: payload,
                 barcodeData:{},
                 products: state.products.map(x => {
-                    if (x._id == payload._id) {
+                    if (x._id === payload._id) {
                         return payload
                     }
                     return x

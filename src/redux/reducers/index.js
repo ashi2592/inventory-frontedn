@@ -14,6 +14,7 @@ import others from "./other-reducer";
 import barcodes from './barcode-reducer'
 import dashboard from './dashboard-reducer';
 import intercomm from './intercomm-reducer';
+import productLengths  from './length-reducer'
 
 
 
@@ -32,5 +33,6 @@ import intercomm from './intercomm-reducer';
     others,
     barcodes,
     dashboard,
-    intercomm
+    intercomm,
+    productLengths
  })

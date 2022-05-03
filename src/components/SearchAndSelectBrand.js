@@ -2,10 +2,10 @@ import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import DropdownSearchSelection from "../layout/Dropdown";
-import { GET_BRAND_LIST } from "../redux/actions";
+import { ADD_BRAND, GET_BRAND_LIST } from "../redux/actions";
 
 
-const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=false }) => {
+const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=false,addBrand }) => {
 
     const [Options, setOptions] = useState([])
 
@@ -20,6 +20,9 @@ const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, 
         setOptions(opt)
 
     }, [brands])
+    const handleAdd = (lengthName)=>{
+        addBrand({lengthName })
+    }
 
     return (<DropdownSearchSelection
         placeholder={placeholder}
@@ -27,7 +30,9 @@ const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, 
         handleDropDownChanges={handleDropDownChanges}
         dropdownName={dropdownName}
         clearable={clearable}
-        value={value}></DropdownSearchSelection>
+        value={value}
+        handleAdditionChanges={handleAdd}
+        ></DropdownSearchSelection>
     )
 
 }
@@ -42,6 +47,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     getBrand: (page, count, searchText) => dispatch({ type: GET_BRAND_LIST, payload: { page, count, searchText } }),
+    addBrand: (data)=> dispatch({type: ADD_BRAND, payload:data})
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchAndSelectBrand);

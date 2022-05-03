@@ -1,4 +1,4 @@
-import { SET_LOADING, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR, GET_PRODUCT_AVAILIBLITY_SUCCESS, UPDATE_TRANSCATION_STATUS_SUCCESS } from '../actions/index';
+import { SET_LOADING, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR, GET_PRODUCT_AVAILIBLITY_SUCCESS, UPDATE_TRANSCATION_STATUS_SUCCESS, GET_TRANSCATION_CUSTOMER_LIST_SUCCESS } from '../actions/index';
 
 
 const initialState = {
@@ -39,6 +39,20 @@ export default (state = initialState, { type, payload }) => {
                 },
                 error: ""
             }
+        case GET_TRANSCATION_CUSTOMER_LIST_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                transcations: payload.docs,
+                transcation: {},
+                pagination: {
+                    totalPages: payload.totalPages,
+                    currentPage: payload.page,
+                    limit: payload.limit,
+                    totalDocs: payload.totalDocs
+                },
+                error: ""
+            }
         case GET_TRANSCATION_DETAILS_SUCCESS:
             return {
                 ...state,
@@ -46,7 +60,7 @@ export default (state = initialState, { type, payload }) => {
                 transcation: payload,
                 error: "",
             }
-       
+
 
         case UPDATE_TRANSCATION_STATUS_SUCCESS:
             return {

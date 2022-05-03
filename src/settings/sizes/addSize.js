@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, Message, Table } from "semantic-ui-react";
+import { Form, Input, Button, Checkbox, Message, Table, Header, Grid, GridRow, GridColumn, Icon, Container } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { ADD_SIZE } from "../../redux/actions";
+import { ALERT_NOTIFY, ADD_SIZE} from "../../redux/actions";
+import SettingSidebarPage from "../settingSidebar";
+import { useHistory } from "react-router-dom";
 
-const AddType = ({ addSize, handleAddSize }) => {
+const AddProductLenghtPage = ({ add, alertMessage }) => {
 
+    const history = useHistory()
     const [formload, setFormLoad] = useState(false);
     const [formError, setFormError] = useState(false);
     const [inputs, setInputs] = useState({})
@@ -22,76 +25,101 @@ const AddType = ({ addSize, handleAddSize }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // alert(JSON.stringify(inputs))
-        addSize(inputs);
-        handleAddSize(false)
+        add(inputs);
+        setTimeout(() => {
+            alertMessage('success', `Add successfully`)
+            history.push('/sizes')
+
+        }, 300);
+
+    }
+
+    const handleAdd = () => {
+        history.push('/sizes')
     }
 
 
-    const validate = () => {
-
-    }
-
-    return (
-
-        <Form loading={formload} error={formError} onSubmit={handleSubmit}>
-            <Form.Group >
-                <Table>
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>
-                                Size Name
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Form.Field
-                                    id="form-input-control-size-name"
-                                    control={Input}
-                                    placeholder='Enter size Name'
-                                    onChange={handleChange}
-                                    name={'sizeName'}
-                                />
-                            </Table.Cell>
-
-                        </Table.Row>
-
-                        <Table.Row>
-                            <Table.Cell>
-                                Size Name
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Checkbox
-                                    toggle
-                                    checked={inputs.status}
-                                    label='is Active'
-                                    onChange={() => handleCheckbox('status', (inputs.status ? inputs.status : false))}
-                                />
-                            </Table.Cell>
-
-                        </Table.Row>
-
-                        <Table.Row>
-                            <Table.Cell>
-                                <Button type='submit'>Save</Button>
-                            </Table.Cell>
+    return (<Container>
+        <Header textAlign="left">Product Size</Header>
 
 
-                        </Table.Row>
-                    </Table.Body>
-                </Table>
+        <Grid>
+            <GridRow columns={2}>
+                <GridColumn>
+                    <SettingSidebarPage activeItem={'sizes'}></SettingSidebarPage>
+                </GridColumn>
+                <GridColumn textAlign="right">
+
+                    <Button color="orange" onClick={handleAdd}><Icon name="left arrow"></Icon> Back to Listing</Button>
+                </GridColumn>
+            </GridRow>
+        </Grid>
+        <Grid>
+            <GridRow columns={1}>
+                <GridColumn>
+                    <Form loading={formload} error={formError} onSubmit={handleSubmit}>
+                        <Form.Group >
+                            <Table>
+                                <Table.Body>
 
 
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Size Name
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-size-name"
+                                                control={Input}
+                                                placeholder='Enter size Name'
+                                                onChange={handleChange}
+                                                name={'sizeName'}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Size Name
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Checkbox
+                                                toggle
+                                                checked={inputs.status}
+                                                label='is Active'
+                                                onChange={() => handleCheckbox('status', (inputs.status ? inputs.status : false))}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
 
 
+                                    <Table.Row>
+                                        <Table.Cell colSpan={2} textAlign="right">
+                                            <Button type='submit' color="green"> <Icon name="add"></Icon>Create</Button>
+                                        </Table.Cell>
 
-            </Form.Group>
-        </Form>
 
+                                    </Table.Row>
+                                </Table.Body>
+                            </Table>
+                        </Form.Group>
+                    </Form>
+                </GridColumn>
+            </GridRow>
+        </Grid>
+
+
+    </Container>
     )
 }
 
 
 const mapDispatchToProps = (dispatch) => ({
-    addSize: (data) => dispatch({ type: ADD_SIZE, payload: data })
+    add: (data) => dispatch({ type: ADD_SIZE, payload: data }),
+    alertMessage: (type, message) => dispatch({ type: ALERT_NOTIFY, payload: { type, message } }),
+
 })
 
 
@@ -99,4 +127,4 @@ const mapStateToProps = (state) => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddType);
+export default connect(mapStateToProps, mapDispatchToProps)(AddProductLenghtPage);

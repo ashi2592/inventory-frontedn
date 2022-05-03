@@ -19,13 +19,12 @@ const LoginForm = () => {
     
       if(username && password)
       {
-        console.log(username,password)
-        login(username,password).then(response=>{
+       login(username,password).then(response=>{
          
           Object.keys(response).map((x,i)=>{
             localStorage.setItem(x,response[x])
           })
-          history.push('/order')
+          history.push('/')
 
         }).catch((err)=>{
           console.log(err)
@@ -38,7 +37,7 @@ const LoginForm = () => {
   <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
     <Grid.Column style={{ maxWidth: 450 }}>
       <Header as='h2' color='teal' textAlign='center'>
-        <Image src='/logo.jpg' />
+        <Image src='/logo.png' />
       </Header>
       <Form size='large'  >
         <Segment stacked>

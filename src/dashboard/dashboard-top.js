@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableRow } from 'semantic-ui-react';
+import { Card, Table, TableBody, TableCell, TableRow } from 'semantic-ui-react';
 import TableHeader from '../layout/TableHeader';
 
 const DashboardTopSelling = ({topSelling}) =>{
@@ -8,15 +8,13 @@ const DashboardTopSelling = ({topSelling}) =>{
         console.log(topSelling)
     },[topSelling])
 
-    return ( <div className="col-xl-4 col-md-3 mb-4">
-    <div className='card'>
-    <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-bold text-primary">Top Selling Products</h6>
-                </div>
-
-        <div className="card-body">
-            <div className="row no-gutters align-items-center">
-                <Table celled>
+    return ( <Card color='blue' fluid>
+        <Card.Content>
+            <Card.Header>
+                Top Selling Product
+            </Card.Header>
+            <Card.Description>
+            <Table celled>
                     <TableHeader Headers={['Product', 'Category','Size','Color','Brand']}></TableHeader>
                     <TableBody>
                         {
@@ -33,10 +31,9 @@ const DashboardTopSelling = ({topSelling}) =>{
                        
                     </TableBody>
                 </Table>
-            </div>
-        </div>
-    </div>
-</div>)
+            </Card.Description>
+        </Card.Content>
+    </Card>)
 }
 
 

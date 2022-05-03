@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { Tab } from 'semantic-ui-react'
 
 
-import Supplier from '../inventory/Supplier';
-import Brand from '../inventory/brand';
-import Category from '../inventory/Category';
-
-
+import Supplier from './Supplier';
+import Brand from './brand';
+import Category from './Category';
 
 const colors = [
     'red',

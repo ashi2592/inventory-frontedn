@@ -5,7 +5,9 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import { GET_CATEGORY_LIST } from "../redux/actions";
 
 
-const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDownChanges, dropdownName, value = '',   clearable=true }) => {
+const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDownChanges, dropdownName, value = '',   clearable=true
+
+ }) => {
 
     const [categoriesOptions, setCategoriesOptions] = useState([])
 
@@ -14,9 +16,7 @@ const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDo
     }, [])
 
     useEffect(() => {
-        // getCategories()
-
-        const categoryOpt = _.map(categories, (data, index) => ({ key: data._id, value: data.categoryName }))
+        const categoryOpt = _.map(categories, (data, index) => ({ key: data._id, value: data.categoryName, }))
         setCategoriesOptions(categoryOpt)
 
     }, [categories])
@@ -27,11 +27,12 @@ const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDo
         handleDropDownChanges={handleDropDownChanges}
         dropdownName={dropdownName}
         clearable={clearable}
-        value={value}></DropdownSearchSelection>
+        value={value}
+        ></DropdownSearchSelection>
+
     )
 
 }
-
 
 
 const mapStateToProps = (state) => ({

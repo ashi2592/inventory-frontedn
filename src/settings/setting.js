@@ -3,7 +3,7 @@ import Colors from "./colors/index";
 import Types from "./types/index";
 import SizeFunction from './sizes/index'
 import Other from "./other";
-import { Tab } from "semantic-ui-react";
+import SettingSidebarPage from "./settingSidebar";
 const colors = [
     'red',
     'orange',
@@ -29,7 +29,9 @@ const panes = [
 
 const Setting = () => {
     const [color, setColor] = useState(colors[Math.floor(Math.random()*colors.length)])
-    return (<Tab menu={{ color, fluid: true, vertical: true, tabular: true }} panes={panes} />)
+    return (
+        <SettingSidebarPage></SettingSidebarPage>)
+    // <Tab menu={{ color, fluid: true, vertical: true, tabular: true }} panes={panes} />)
 }
 
 export default Setting

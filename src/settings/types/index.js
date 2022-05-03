@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import AddType from "./addType";
 import TypeDetails from "./typeDetails";
@@ -13,11 +13,15 @@ import { GET_TYPE_LIST, GET_TYPE_DETAILS } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
-import AlertMessage from "../../layout/AlretMessage";
+import SettingSidebarPage from "../settingSidebar";
+import TableLoaderPage from "../../components/TableLoader";
+import TableNoRecordFound from "../../components/TableNoRecordFound";
+import { useHistory } from "react-router-dom";
 
 
-const Types = ({ getTypes, getType, types, type, pagination, error }) => {
+const Types = ({ getTypes, getType, types, type, pagination, error, loading }) => {
 
+        const history = useHistory()
     const [createtype, setCreatetype] = useState(false)
     const [addtypeButton, setAddtypeButton] = useState(false)
 
@@ -30,16 +34,13 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
     const [searchText, setSearchText] = useState('')
 
     const handleAddType = function (value = true) {
-        setCreatetype(value)
-        setAddtypeButton(value)
+        history.push(`/types/add`)
     }
 
 
 
     const handleViewType = (id) => {
-        getType(id)
-        setCreatetype(false)
-        setAddtypeButton(false)
+        history.push(`/types/${id}`)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
@@ -79,15 +80,22 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
         handleViewType(id)
     }
 
-    return (<div>
-        <Header>types</Header>
+    return (<Container>
+        <Header>Types</Header>
 
-        <Segment textAlign="right">
-            <Button active={addtypeButton} onClick={handleAddType}><Icon name="plus"></Icon> Add type</Button>
-        </Segment>
+        <Grid>
+            <GridRow columns={2}>
+                <GridColumn>
+                    <SettingSidebarPage activeItem={'types'}></SettingSidebarPage>
+                </GridColumn>
+                <GridColumn textAlign="right">
 
+                    <Button active={addtypeButton} onClick={handleAddType} color="green"><Icon name="plus"></Icon> Add type</Button>
+                </GridColumn>
+            </GridRow>
+        </Grid>
 
-        <Grid columns={2} celled>
+        <Grid columns={1} celled>
             <Grid.Column>
 
 
@@ -105,8 +113,9 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
 
 
                     <TableBody>
-
-                        {types.map(x => (<TableRow key={'type-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.typeName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewType(x._id) }}></Icon></TableCell></TableRow>))}
+                        {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
+                        {(loading == false && types.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
+                        {!loading && (types || []).map(x => (<TableRow key={'type-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.typeName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewType(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -117,14 +126,10 @@ const Types = ({ getTypes, getType, types, type, pagination, error }) => {
                     handlePaginationChange={handlePaginationChange}
                 ></PaginationCompact>
             </Grid.Column>
-            <Grid.Column>
-                {error && <AlertMessage title="Unable To Add" desc={error} negative={true}></AlertMessage>}
-                {createtype ? <AddType handleAddType={handleAddType}></AddType> : Object.values(type).length ? <TypeDetails handleAddType={handleAddType}></TypeDetails> : <div></div>}
-
-            </Grid.Column>
+         
         </Grid>
 
-    </div>)
+    </Container>)
 
 }
 
@@ -142,7 +147,8 @@ const mapStateToProps = (state) => ({
     types: state.types.types,
     type: state.types.type,
     pagination: state.types.pagination,
-    error: state.types.error
+    error: state.types.error,
+    loading: state.types.loading
 
     // state: state
 })

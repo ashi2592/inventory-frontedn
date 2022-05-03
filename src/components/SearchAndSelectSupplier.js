@@ -5,7 +5,7 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import {  GET_SUPPLIER_LIST } from "../redux/actions";
 
 
-const SearchAndSelectSupplier = ({ getSuppliers, suppliers, error, handleDropDownChanges, dropdownName, value = '',placeholder,clearable=false}) => {
+const SearchAndSelectSupplier = ({ getSuppliers, suppliers, error, handleDropDownChanges, dropdownName, value = '',placeholder,clearable=true}) => {
 
     const [Options, setOptions] = useState([])
 

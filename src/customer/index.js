@@ -1,52 +1,39 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
-import TableHeader from "../../layout/TableHeader";
-import AddSupplier from "./addCustomer";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import TableHeader from "../layout/TableHeader";
 import PropTypes from 'prop-types';
 
 
 // bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
-import { GET_SUPPLIER_DETAILS, GET_SUPPLIER_LIST } from "../../redux/actions";
-import SupplierDetails from "./cutomerDetails";
-import PaginationCompact from "../../layout/pagination";
+import PaginationCompact from "../layout/pagination";
 import _ from "lodash";
+import { GET_CUSTOMER_LIST } from "../redux/actions";
+import { useHistory } from "react-router-dom";
+import TableLoaderPage from "../components/TableLoader";
+import TableNoRecordFound from "../components/TableNoRecordFound";
 
 
-const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }) => {
+const CustomersListPage = ({ getCustomers, customers, pagination, loading }) => {
 
-    const [createsupplier, setCreatesupplier] = useState(false)
-    const [addSupplierButton, setAddSupplierButton] = useState(false)
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [searchResult, setSearchResult] = useState([])
-
     // Search 
     const [searchText, setSearchText] = useState('')
 
-    const handleAddSupplier = function (value = true) {
-        setCreatesupplier(value)
-        setAddSupplierButton(value)
-    }
-
-
-
-    const handleViewSupplier = (id) => {
-        getSupplier(id)
-        setCreatesupplier(false)
-        setAddSupplierButton(false)
-    }
+    const history = useHistory()
 
     const handlePaginationChange = (e, { activePage }) => {
-        getSuppliers(activePage, 10, searchText)
+        getCustomers(activePage, 10, searchText)
     }
 
 
     useEffect(() => {
-        getSuppliers(1, 10, searchText)
+        getCustomers(1, 10, searchText)
 
     }, [])
 
@@ -56,10 +43,10 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
         setTotalPages(pagination.totalPages)
         SetActivePage(pagination.currentPage)
 
-    }, [suppliers, pagination])
+    }, [customers, pagination])
 
     useEffect(() => {
-        getSuppliers(1, 10, searchText)
+        getCustomers(1, 10, searchText)
     }, [searchText])
 
     const handleSearchChange = (e, data) => {
@@ -70,82 +57,91 @@ const Supplier = ({ getSuppliers, getSupplier, suppliers, supplier, pagination }
     const handleSelectSearchedRow = (id) => {
         setSearchResult([])
         setSearchText('')
-        handleViewSupplier(id)
     }
 
+
+    const handleViewCustomer = id => {
+        history.push(`/customer/${id}`)
+    }
+
+    const handleAddOther = id => {
+        history.push(`/order`)
+    }
+
+
     return (
-        <div>
-            {/* <Button active={addSupplierButton} onClick={handleAddSupplier}><Icon name="plus"></Icon> Add Supplier</Button> */}
-            <div className="row">
-                <div className="col-6">
-                    <Input onChange={_.debounce(handleSearchChange, 500, {
-                        leading: true,
-                    })} icon="search" value={searchText}></Input>
+        <Container>
+            <Header>Customers</Header>
+            <Grid stackable>
+                <GridRow columns={2}>
+                    <GridColumn>
+                    </GridColumn>
+                    <GridColumn textAlign="right">
+
+                        <Button onClick={handleAddOther} color="green"><Icon name="plus"></Icon> Add New Order</Button>
+                    </GridColumn>
+                </GridRow>
+            </Grid>
+
+            <Grid stackable>
+                <GridRow stretched>
+                    <GridColumn>
+                        <Input onChange={_.debounce(handleSearchChange, 500, {
+                            leading: true,
+                        })} icon="search" placeholder="Search Customer" value={searchText}></Input>
 
 
-                    <p >
-                        {searchText && `Search Results of  ${searchText}`}
-                    </p>
-                    <Table celled>
-                        <TableHeader Headers={['Id', 'Name', 'Contact', 'Location', 'Address', 'Action']}></TableHeader>
-
-
-                        <TableBody>
-
-                            {suppliers
-                                .map(x => (<TableRow key={'supplier-' + x._id}><TableCell >{x._id}</TableCell>
-                                    <TableCell >{x.supplierName}</TableCell>
-                                    <TableCell >{x.contact}</TableCell>
-                                    <TableCell >{x.location}</TableCell>
-                                    <TableCell >{x.address}</TableCell>
-
-                                    <TableCell><Icon name="edit" onClick={() => { handleViewSupplier(x._id) }}></Icon></TableCell></TableRow>))}
-                        </TableBody>
-
-                    </Table>
-                    <PaginationCompact
-                        activePage={activePage}
-                        totalPages={totalPages}
-                        ellipsisItem={ellipsisItem}
-                        handlePaginationChange={handlePaginationChange}
-                    ></PaginationCompact>
-                </div>
+                        <p >
+                            {searchText && `Search Results of  ${searchText}`}
+                        </p>
+                        <Table celled>
+                            <TableHeader Headers={['Id', 'Name', 'Contact', 'Action']}></TableHeader>
 
 
 
-            </div>
-            <div className="row">
-                <div className="col">
-                    {createsupplier ? <AddSupplier handleAddSupplier={handleAddSupplier}></AddSupplier> : Object.values(supplier).length ? <SupplierDetails handleAddSupplier={handleAddSupplier}></SupplierDetails> : <div></div>}
+                            <TableBody>
+                                {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
+                                {(loading == false && customers.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
+                                {!loading && (customers|| [])
+                                    .map(x => (<TableRow key={'supplier-' + x._id}><TableCell >{x._id}</TableCell>
+                                        <TableCell >{x.customerName}</TableCell>
+                                        <TableCell >{x.mobile}</TableCell>
 
-                </div>
+                                        <TableCell>
+                                            <Icon name="eye" onClick={() => { handleViewCustomer(x._id) }}></Icon>
+                                        </TableCell>
+                                    </TableRow>))}
+                            </TableBody>
 
-            </div>
-
-        </div>)
+                        </Table>
+                        <PaginationCompact
+                            activePage={activePage}
+                            totalPages={totalPages}
+                            ellipsisItem={ellipsisItem}
+                            handlePaginationChange={handlePaginationChange}
+                        ></PaginationCompact>
+                    </GridColumn>
+                </GridRow>
+            </Grid>
+        </Container>)
 
 }
 
-Supplier.propTypes = {
-    loading: PropTypes.bool,
-    suppliers: PropTypes.array,
-    supplier: PropTypes.object,
-    getSuppliers: PropTypes.func.isRequired,
-    getSupplier: PropTypes.func.isRequired
+CustomersListPage.propTypes = {
+    loading: PropTypes.bool
 }
 
 
 
 const mapStateToProps = (state) => ({
-    suppliers: state.suppliers.suppliers,
-    supplier: state.suppliers.supplier,
-    pagination: state.suppliers.pagination
+    customers: state.customers.customers,
+    pagination: state.customers.pagination,
+    loading: state.customers.loading
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getSuppliers: (page, count, searchText) => dispatch({ type: GET_SUPPLIER_LIST, payload: { page, count, searchText } }),
-    getSupplier: (id) => dispatch({ type: GET_SUPPLIER_DETAILS, payload: { id } }),
+    getCustomers: (page, count, searchText) => dispatch({ type: GET_CUSTOMER_LIST, payload: { page, count, searchText } }),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Supplier);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomersListPage);

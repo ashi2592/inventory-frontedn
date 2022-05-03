@@ -1,6 +1,6 @@
 import { takeLatest, put, call, takeEvery } from 'redux-saga/effects';
-import { ADD_TRANSCATION, GET_TRANSCATION_DETAILS, GET_TRANSCATION_LIST, SET_LOADING, UPDATE_TRANSCATION, DELETE_TRANSCATION, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR, GET_PRODUCT_AVAILIBLITY_SUCCESS, GET_PRODUCT_AVAILIBLITY, UPDATE_TRANSCATION_STATUS_SUCCESS, UPDATE_TRANSCATION_STATUS } from '../actions/index';
-import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, getProductAvailiblity, updateStatus } from '../services/transctions-api'
+import { ADD_TRANSCATION, GET_TRANSCATION_DETAILS, GET_TRANSCATION_LIST, SET_LOADING, UPDATE_TRANSCATION, DELETE_TRANSCATION, GET_TRANSCATION_LIST_SUCCESS, GET_TRANSCATION_DETAILS_SUCCESS, ADD_TRANSCATION_SUCCESS, UPDATE_TRANSCATION_SUCCESS, DELETE_TRANSCATION_SUCCESS, SET_ERROR, GET_PRODUCT_AVAILIBLITY_SUCCESS, GET_PRODUCT_AVAILIBLITY, UPDATE_TRANSCATION_STATUS_SUCCESS, UPDATE_TRANSCATION_STATUS, GET_TRANSCATION_CUSTOMER_LIST, GET_TRANSCATION_CUSTOMER_LIST_SUCCESS } from '../actions/index';
+import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, getProductAvailiblity, updateStatus, getListforCustomer } from '../services/transctions-api'
 
 
 
@@ -9,6 +9,18 @@ function* getTranscations({ payload }) {
         yield put({ type: SET_LOADING })
         const categories = yield call(getList, payload.page, payload.count, payload.searchText);
         yield put({ type: GET_TRANSCATION_LIST_SUCCESS, payload: categories })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
+
+}
+
+
+function* getCustomerWiseTranscations({ payload }) {
+    try {
+        yield put({ type: SET_LOADING })
+        const categories = yield call(getListforCustomer, payload.page, payload.count, payload.searchText,payload.customer);
+        yield put({ type: GET_TRANSCATION_CUSTOMER_LIST_SUCCESS, payload: categories })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })
     }
@@ -76,6 +88,7 @@ function* deleteTranscation({ payload }) {
 
 
 
+
 export default function* transcationSaga() {
     yield takeEvery(GET_TRANSCATION_LIST, getTranscations)
     yield takeEvery(GET_TRANSCATION_DETAILS, getTranscation)
@@ -83,5 +96,6 @@ export default function* transcationSaga() {
     yield takeLatest(UPDATE_TRANSCATION, updateTranscation)
     yield takeLatest(UPDATE_TRANSCATION_STATUS, updateTranscationStatus)
     yield takeEvery(DELETE_TRANSCATION, deleteTranscation)
+    yield takeEvery(GET_TRANSCATION_CUSTOMER_LIST,getCustomerWiseTranscations)
 
 }

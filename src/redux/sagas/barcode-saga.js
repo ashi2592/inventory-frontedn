@@ -63,7 +63,7 @@ function* addBarcode({ payload }) {
 function* updateBarcode({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const updateddata = yield call(getUpdate, payload.data, payload.id)
+         yield call(getUpdate, payload.data, payload.id)
         yield put({ type: UPDATE_BARCODE_SUCCESS, payload: payload })
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })
@@ -75,7 +75,7 @@ function* updateBarcode({ payload }) {
 function* deleteBarcode({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const deletedData = yield call(DeleteFunction, payload);
+      yield call(DeleteFunction, payload);
         yield put({ type: DELETE_BARCODE_SUCCESS, payload: payload })
 
     }catch(err){

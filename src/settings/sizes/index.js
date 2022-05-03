@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import AddSize from "./addSize";
 import SizeDetails from "./sizeDetails";
@@ -13,10 +13,15 @@ import { connect } from 'react-redux'
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 import { GET_SIZE_DETAILS, GET_SIZE_LIST } from "../../redux/actions";
+import SettingSidebarPage from "../settingSidebar";
+import TableLoaderPage from "../../components/TableLoader";
+import TableNoRecordFound from "../../components/TableNoRecordFound";
+import { useHistory } from "react-router-dom";
 
 
-const SizeFunction = ({ getSizes, getSize, sizes, size,pagination,error }) => {
+const SizeFunction = ({ getSizes, getSize, sizes, size, pagination, error, loading }) => {
 
+    const history = useHistory();
     const [createSize, setCreateSize] = useState(false)
     const [addSizeButton, setAddSizeButton] = useState(false)
 
@@ -29,25 +34,26 @@ const SizeFunction = ({ getSizes, getSize, sizes, size,pagination,error }) => {
     const [searchText, setSearchText] = useState('')
 
     const handleAddSize = function (value = true) {
-        setCreateSize(value)
-        setAddSizeButton(value)
+        history.push(`/sizes/add`)
     }
 
 
 
     const handleViewSize = (id) => {
-        getSize(id)
-        setCreateSize(false)
-        setAddSizeButton(false)
+        // getSize(id)
+        // setCreateSize(false)
+        // setAddSizeButton(false)
+        history.push(`/sizes/${id}`)
+
     }
 
     const handlePaginationChange = (e, { activePage }) => {
-        getSizes(activePage,10,searchText)
+        getSizes(activePage, 10, searchText)
 
     }
-    
+
     useEffect(() => {
-        getSizes(1,10,searchText)
+        getSizes(1, 10, searchText)
 
     }, [])
 
@@ -58,49 +64,58 @@ const SizeFunction = ({ getSizes, getSize, sizes, size,pagination,error }) => {
         setTotalPages(pagination.totalPages)
         SetActivePage(pagination.currentPage)
 
-    }, [sizes,pagination])
+    }, [sizes, pagination])
 
-    useEffect(()=>{
-        getSizes(1,10,searchText)
-    },[searchText])
+    useEffect(() => {
+        getSizes(1, 10, searchText)
+    }, [searchText])
 
-    const handleSearchChange = (e,data) => {
+    const handleSearchChange = (e, data) => {
         setSearchText(data.value)
-      
+
     }
 
     const handleSelectSearchedRow = (id) => {
-            setSearchText('')
+        setSearchText('')
         handleViewSize(id)
     }
 
-    return (<div>
+    return (<Container>
         <Header>Sizes</Header>
 
-        <Segment textAlign="right">
-            <Button active={addSizeButton} onClick={handleAddSize}><Icon name="plus"></Icon> Add Size</Button>
-        </Segment>
+        <Grid>
+            <GridRow columns={2}>
+                <GridColumn>
+                    <SettingSidebarPage activeItem={'sizes'}></SettingSidebarPage>
+                </GridColumn>
+                <GridColumn textAlign="right">
+                    <Button active={addSizeButton} onClick={handleAddSize} color="green"><Icon name="plus"></Icon> Add Size</Button>
 
-        <Grid columns={2} celled>
+                </GridColumn>
+            </GridRow>
+        </Grid>
+
+        <Grid columns={1} celled>
             <Grid.Column>
-              
-                <Input onChange={_.debounce(handleSearchChange, 500, {
-                        leading: true,
-                    })} icon="search" value={searchText}></Input>
-               
 
-               <p >
-                  {  searchText && `Search Results of  ${searchText}`} 
-               </p>
+                <Input onChange={_.debounce(handleSearchChange, 500, {
+                    leading: true,
+                })} icon="search" value={searchText}></Input>
+
+
+                <p >
+                    {searchText && `Search Results of  ${searchText}`}
+                </p>
                 <Table celled>
                     <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
 
 
                     <TableBody>
-                       
-                        {sizes.map(x => (<TableRow key={'size-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.sizeName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewSize(x._id) }}></Icon></TableCell></TableRow>))}
+                        {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
+                        {(loading == false && sizes.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
+                        {!loading && (sizes || []).map(x => (<TableRow key={'size-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.sizeName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewSize(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
-                  
+
                 </Table>
                 <PaginationCompact
                     activePage={activePage}
@@ -109,13 +124,10 @@ const SizeFunction = ({ getSizes, getSize, sizes, size,pagination,error }) => {
                     handlePaginationChange={handlePaginationChange}
                 ></PaginationCompact>
             </Grid.Column>
-            <Grid.Column>
-                {createSize ? <AddSize handleAddSize={handleAddSize}></AddSize> : Object.values(size).length ? <SizeDetails handleAddSize={handleAddSize}></SizeDetails> : <div></div>}
-
-            </Grid.Column>
+          
         </Grid>
 
-    </div>)
+    </Container>)
 
 }
 
@@ -134,12 +146,13 @@ const mapStateToProps = (state) => ({
     size: state.sizes.size,
     pagination: state.sizes.pagination,
     error: state.sizes.error,
+    loading: state.sizes.loading
 
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    getSizes: (page,count,searchText) => dispatch({ type: GET_SIZE_LIST, payload:{page,count,searchText} }),
+    getSizes: (page, count, searchText) => dispatch({ type: GET_SIZE_LIST, payload: { page, count, searchText } }),
     getSize: (id) => dispatch({ type: GET_SIZE_DETAILS, payload: { id } }),
 })
 
