@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Label, Search, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import AddColor from "./addColors";
 import ColorDetails from "./colorDetails";
@@ -13,9 +13,17 @@ import { GET_COLOR_DETAILS, GET_COLOR_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
+import SettingSidebarPage from "../settingSidebar";
+import { useParams } from "react-router-dom";
+import TableLoaderPage from "../../components/TableLoader";
+import TableNoRecordFound from "../../components/TableNoRecordFound";
+import { useHistory } from "react-router-dom";
 
 
-const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
+const Color = ({ getColors,  colors, color, pagination, error, loading }) => {
+
+    const history = useHistory()
+
 
     const [createcolor, setCreateColor] = useState(false)
     const [addcolorButton, setAddColorButton] = useState(false)
@@ -29,16 +37,11 @@ const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
     const [searchText, setSearchText] = useState('')
 
     const handleAddColor = function (value = true) {
-        setCreateColor(value)
-        setAddColorButton(value)
+        history.push(`/colors/add`)
     }
 
-
-
     const handleViewColors = (id) => {
-        getColor(id)
-        setCreateColor(false)
-        setAddColorButton(false)
+        history.push(`/colors/${id}`)
     }
 
     const handlePaginationChange = (e, { activePage }) => {
@@ -76,16 +79,25 @@ const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
         setSearchText('')
         handleViewColors(id)
     }
+    
 
-    return (<div>
+    return (<Container>
+        <Header textAlign="left">Colors</Header>
 
-        <Segment textAlign="right">
-            <Header textAlign="left">Colors</Header>
 
-            <Button active={addcolorButton} onClick={handleAddColor}><Icon name="plus"></Icon> Add color</Button>
-        </Segment>
+        <Grid>
+            <GridRow columns={2}>
+                <GridColumn >
+                    <SettingSidebarPage activeItem={'color'}></SettingSidebarPage>
+                </GridColumn>
+                <GridColumn textAlign="right"  >
 
-        <Grid columns={2} celled>
+                    <Button active={addcolorButton} color="green" onClick={handleAddColor}><Icon name="plus"></Icon> Add color</Button>
+                </GridColumn>
+            </GridRow>
+        </Grid>
+
+        <Grid columns={1} celled>
             <Grid.Column>
 
                 <Input onChange={_.debounce(handleSearchChange, 500, {
@@ -99,10 +111,10 @@ const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
                 <Table celled>
                     <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
 
-
                     <TableBody>
-
-                        {!searchText && colors.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.colorName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="edit" onClick={() => { handleViewColors(x._id) }}></Icon></TableCell></TableRow>))}
+                        {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
+                        {(loading == false && colors.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}   
+                        {!loading  && colors.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.colorName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewColors(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -113,13 +125,11 @@ const Color = ({ getColors, getColor, colors, color,pagination,error }) => {
                     handlePaginationChange={handlePaginationChange}
                 ></PaginationCompact>
             </Grid.Column>
-            <Grid.Column>
-                {createcolor ? <AddColor handleAddColor={handleAddColor}></AddColor> : Object.values(color).length ? <ColorDetails handleAddColor={handleAddColor}></ColorDetails> : <div></div>}
-
-            </Grid.Column>
+          
         </Grid>
 
-    </div>)
+    </Container>
+    )
 
 }
 
@@ -128,7 +138,6 @@ Color.propTypes = {
     colors: PropTypes.array,
     color: PropTypes.object,
     getColors: PropTypes.func.isRequired,
-    getColor: PropTypes.func.isRequired
 }
 
 
@@ -137,13 +146,13 @@ const mapStateToProps = (state) => ({
     colors: state.colors.colors,
     color: state.colors.color,
     pagination: state.colors.pagination,
-    error:state.colors.error
+    error: state.colors.error,
+    loading: state.colors.loading
     // state: state
 })
 
 const mapDispatchToProps = (dispatch) => ({
     getColors: (page, count, searchText) => dispatch({ type: GET_COLOR_LIST, payload: { page, count, searchText } }),
-    getColor: (id) => dispatch({ type: GET_COLOR_DETAILS, payload: { id } }),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Color);

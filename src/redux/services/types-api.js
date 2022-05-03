@@ -1,9 +1,15 @@
 import defaultAxios from 'axios';
-const type ='type';
+import { backendUrl } from '../../constant/global';
+const type = 'type';
 
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
-    headers: { 'Content-Type': 'application/json' }
+    baseURL: backendUrl,
+    headers: {
+        'Content-Type': 'application/json',
+        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
+        customer: "54887755",
+        contract: "inventFashion"
+    }
 });
 
 /**
@@ -11,7 +17,7 @@ const axios = defaultAxios.create({
  * @returns 
  */
 
-export const getList = async (pageno=1,count=10,searchText = '') => {
+export const getList = async (pageno = 1, count = 10, searchText = '') => {
 
     try {
         const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
@@ -44,17 +50,17 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
-        const  response= await axios.post(`${type}`, data);
+        const response = await axios.post(`${type}`, data);
         return response.data;
 
     } catch (error) {
-      throw error;
+        throw error;
     }
 }
 
-export const getUpdate = async (data,id) =>{
+export const getUpdate = async (data, id) => {
     try {
-        const  response= await axios.put(`${type}/${id}`, data);
+        const response = await axios.put(`${type}/${id}`, data);
         return response.data;
 
     } catch (error) {
@@ -64,12 +70,12 @@ export const getUpdate = async (data,id) =>{
 
 
 
-export const DeleteFunction = async (id) =>{
+export const DeleteFunction = async (id) => {
     try {
-      await axios.delete(`${type}/${id}`);
-      return true;
+        await axios.delete(`${type}/${id}`);
+        return true;
 
     } catch (error) {
-        console.log("error",error)           
+        console.log("error", error)
     }
 }

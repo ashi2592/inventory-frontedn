@@ -42,7 +42,7 @@ function* addCategory({ payload }) {
 function* updateCategory({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        const updateddata = yield call(getUpdate, payload.data, payload.id)
+         yield call(getUpdate, payload.data, payload.id)
         yield put({ type: UPDATE_CATEGORY_SUCCESS, payload: payload })
 
     } catch (err) {
@@ -55,7 +55,7 @@ function* updateCategory({ payload }) {
 function* deleteCategory({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        const deletedData = yield call(DeleteFunction, payload);
+        yield call(DeleteFunction, payload);
         yield put({ type: DELETE_CATEGORY_SUCCESS, payload: payload })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })

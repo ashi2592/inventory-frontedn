@@ -1,28 +1,43 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
-
-
-
+import { useHistory } from 'react-router-dom';
+import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
+import { login } from '../redux/services/user-api';
 
 const LoginForm = () => {
+  const history =  useHistory();
     const [username,setUserName] = useState('');
     const [password,setPassword] = useState('')
 
     
-    useEffect(()=>{
-        // console.log(username)
-        // console.log(password)
+    useEffect(()=>{        
+    if(localStorage.getItem('store') !== null){
+      history.push('/order')
+    }
     },[username,password])
 
     const submitForm = ()=>{
     
+      if(username && password)
+      {
+       login(username,password).then(response=>{
+         
+          Object.keys(response).map((x,i)=>{
+            localStorage.setItem(x,response[x])
+          })
+          history.push('/')
+
+        }).catch((err)=>{
+          console.log(err)
+        })
+        
+      }
     }
     
     return(
   <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
     <Grid.Column style={{ maxWidth: 450 }}>
       <Header as='h2' color='teal' textAlign='center'>
-        <Image src='/logo.jpg' />
+        <Image src='/logo.png' />
       </Header>
       <Form size='large'  >
         <Segment stacked>

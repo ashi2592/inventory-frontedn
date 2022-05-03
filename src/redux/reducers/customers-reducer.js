@@ -1,10 +1,11 @@
-import { SET_LOADING, GET_CUSTOMER_LIST_SUCCESS, GET_CUSTOMER_DETAILS_SUCCESS, ADD_CUSTOMER_SUCCESS, UPDATE_CUSTOMER_SUCCESS, DELETE_CUSTOMER_SUCCESS, SET_ERROR } from '../actions/index';
+import { SET_LOADING, GET_CUSTOMER_LIST_SUCCESS, GET_CUSTOMER_DETAILS_SUCCESS, ADD_CUSTOMER_SUCCESS, UPDATE_CUSTOMER_SUCCESS, DELETE_CUSTOMER_SUCCESS, SET_ERROR, GET_CUSTOMER_STATS_SUCCESS } from '../actions/index';
 
 
 const initialState = {
     loading: false,
     customers: [],
     customer: {},
+    stats: {},
     pagination: {
         totalPages: 0,
         currentPage: 1,
@@ -43,6 +44,13 @@ export default (state = initialState, { type, payload }) => {
                 ...state,
                 loading: false,
                 customer: payload
+            }
+
+        case GET_CUSTOMER_STATS_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                stats: payload
             }
 
         case ADD_CUSTOMER_SUCCESS:

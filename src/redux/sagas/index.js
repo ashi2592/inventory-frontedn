@@ -11,6 +11,13 @@ import typesSaga from './types-saga';
 import customerSaga from './customer-saga';
 import sizeSaga from './sizes-saga';
 import OtherSaga from './other-saga';
+import barcodeSaga from './barcode-saga';
+import dashboardSaga from './dashboard-saga';
+import interCommSaga from './intercomm-saga';
+import lengthSaga from './lengths-saga';
+
+
+
 
 // Export the root saga
 export default function* rootSaga() {
@@ -19,14 +26,19 @@ export default function* rootSaga() {
   yield spawn(colorSaga)
   yield spawn(productSaga)
   yield spawn(suppliersSaga)
-  // yield spawn(transcationSaga)
+  yield spawn(transcationSaga)
   yield spawn(typesSaga)
   yield spawn(customerSaga)
   yield spawn(brandSaga)
   yield spawn(sizeSaga)
   yield spawn(OtherSaga)
+  yield spawn(barcodeSaga)
+  yield spawn(dashboardSaga)
+  yield spawn(interCommSaga)
+  yield spawn(lengthSaga)
 
+  
 
-
+  
 
 }

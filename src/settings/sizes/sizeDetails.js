@@ -1,87 +1,105 @@
 import React, { useEffect } from "react";
-import { Button, Checkbox, Icon, Table } from "semantic-ui-react";
+import { Button, Checkbox, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
-import PropTypes from 'prop-types';
-import { DELETE_SIZE, UPDATE_SIZE } from "../../redux/actions";
+import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import SettingSidebarPage from "../settingSidebar";
+import { DELETE_SIZE, GET_SIZE_DETAILS, UPDATE_SIZE } from "../../redux/actions";
 
-const SizeDetails = ({ size, handleAddSize, deleteSize, updateSize }) => {
+const SizeDetailsPage = ({ 
+    deletesize,
+updatesize,
+getsize,
+size
 
+ }) => {
+
+
+    const history = useHistory();
+    const { id } = useParams();
     useEffect(() => {
-        handleAddSize(false)
-    }, [])
+        getsize(id)
+     }, [id])
 
-    const handleDeleteSize = (id) => {
-        deleteSize(id)
+    const handleAdd = ()=>{
+        history.push(`/sizes/add`)
+    }
+
+    const handleBack = ()=>{
+        history.push(`/sizes`)
+    }
+
+    const handleLengthColor = (id) => {
+        deletesize(id)
     }
 
     const handleUpdateFunction = (id, key, value) => {
-        updateSize(id, { ...size, [key]: value })
+        updatesize(id, { ...size, [key]: value })
     }
 
 
 
     return (
-        <div >
-            <Table>
-                <Table.Header>
-                    <Table.Row>
+        <Container>
+            <Header>size Static Data</Header>
+            <Grid>
+                <GridRow columns={2}>
+                    <GridColumn>
+                        <SettingSidebarPage activeItem={'sizes'}></SettingSidebarPage>
+                    </GridColumn>
+                    <GridColumn textAlign="right">
+                    <Button color="orange" onClick={handleBack}><Icon name="left arrow"></Icon> Back to Listing</Button>
+                        <Button color="green" onClick={handleAdd}><Icon name="plus"></Icon> Add size</Button>
+                        <Button color='red' onClick={() => { handleLengthColor(size._id) }}> <Icon name="close"></Icon> Delete</Button>
+                    </GridColumn>
+                </GridRow>
+            </Grid>
+            <Divider></Divider>
+            <Grid>
+                <GridRow>
+                    <GridColumn>
+                        <Table>
 
-                        <Table.HeaderCell>{size.size}</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="right"> <Button color='red' onClick={() => { handleDeleteSize(size._id) }}> <Icon name="delete"></Icon> Delete</Button></Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    <Table.Row>
-                        <Table.Cell>
-                            Size ID
-                        </Table.Cell>
-                        <Table.Cell>
-                            {size._id}
-                        </Table.Cell>
+                            <Table.Body>
+                                <Table.Row>
+                                    <Table.Cell>
+                                        size ID
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {size._id}
+                                    </Table.Cell>
 
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Size Name
-                        </Table.Cell>
-                        <Table.Cell>
-                            {size.sizeName}
-                        </Table.Cell>
-                        <Table.Cell>
-                            <Icon name="edit" onClick={{}}></Icon>
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Size Status
-                        </Table.Cell>
-                        <Table.Cell>
-                            <Checkbox
-                                toggle
-                                checked={size.status}
-                                label='is Active'
-                                onChange={() => handleUpdateFunction(size._id, 'status', !size.status)}
-                            />
-                        </Table.Cell>
-                    </Table.Row>
-                </Table.Body>
+                                </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell>
+                                     Size Name
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {size.sizeName}
+                                    </Table.Cell>
 
-            </Table>
-        </div>
+                                </Table.Row>
+                                
+
+                            </Table.Body>
+
+                        </Table>
+                    </GridColumn>
+                </GridRow>
+            </Grid>
+        </Container>
+
     )
 }
 
-SizeDetails.propTypes = {
-    deleteSize: PropTypes.func.isRequired,
-    updateSize: PropTypes.func.isRequired,
-}
 
 const mapStateToProps = (state) => ({
     size: state.sizes.size
 })
 const mapDispatchToProps = (dispatch) => ({
-    deleteSize: (id) => dispatch({ type: DELETE_SIZE, payload: id }),
-    updateSize: (id, data) => dispatch({ type: UPDATE_SIZE, payload: { id, data } })
+    deletesize: (id) => dispatch({ type: DELETE_SIZE, payload: id }),
+    updatesize: (id, data) => dispatch({ type: UPDATE_SIZE, payload: { id, data } }),
+    getsize: (id) => dispatch({ type: GET_SIZE_DETAILS, payload: { id } }),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SizeDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(SizeDetailsPage);

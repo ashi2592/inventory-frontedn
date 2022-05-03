@@ -1,9 +1,15 @@
 import defaultAxios from 'axios';
+import { backendUrl } from '../../constant/global';
 const type = 'brand';
-
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
-    headers: { 'Content-Type': 'application/json' }
+    baseURL: backendUrl,
+
+    headers: {
+        'Content-Type': 'application/json',
+        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
+        customer: "54887755",
+        contract: "inventFashion"
+    }
 });
 
 /**

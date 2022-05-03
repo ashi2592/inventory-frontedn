@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 
+import 'react-pro-sidebar/dist/css/styles.css';
 import 'semantic-ui-css/semantic.min.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { applyMiddleware, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
@@ -21,6 +21,7 @@ sagaMiddleware.run(rootSaga);
 ReactDOM.render(<Provider store={store}>
     <BrowserRouter>
         <App />
-    </BrowserRouter></Provider>, document.getElementById('root'));
+    </BrowserRouter>
+    </Provider>, document.getElementById('root'));
 
 if (module.hot) { module.hot.accept(App); }

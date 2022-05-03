@@ -54,7 +54,7 @@ function* addBrand({ payload }) {
 function* updateBrand({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const updateddata = yield call(getUpdate, payload.data, payload.id)
+      yield call(getUpdate, payload.data, payload.id)
         yield put({ type: UPDATE_BRAND_SUCCESS, payload: payload })
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })
@@ -66,7 +66,7 @@ function* updateBrand({ payload }) {
 function* deleteBrand({ payload }) {
     try{
         yield put({ type: SET_LOADING })
-        const deletedData = yield call(DeleteFunction, payload);
+        yield call(DeleteFunction, payload);
         yield put({ type: DELETE_BRAND_SUCCESS, payload: payload })
 
     }catch(err){

@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 
 // Reducers
 import category from './category-reducer';
-import brand from './brand-reducer';
+import brands from './brand-reducer';
 import products from './products-reducer';
 import colors from './colors-reducer';
 import customers from './customers-reducer';
@@ -11,12 +11,18 @@ import suppliers from './suppliers-reducer';
 import transcation from "./transcation-reducer";
 import sizes from "./sizes-reducer";
 import others from "./other-reducer";
+import barcodes from './barcode-reducer'
+import dashboard from './dashboard-reducer';
+import intercomm from './intercomm-reducer';
+import productLengths  from './length-reducer'
+
+
 
 
 
  export default combineReducers({
     category,
-    brand,
+    brands,
     products,
     colors,
     customers,
@@ -25,5 +31,8 @@ import others from "./other-reducer";
     transcation,
     sizes,
     others,
-
+    barcodes,
+    dashboard,
+    intercomm,
+    productLengths
  })

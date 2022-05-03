@@ -1,9 +1,16 @@
 import defaultAxios from 'axios';
+import { backendUrl } from '../../constant/global';
 const type = 'customer';
 
 const axios = defaultAxios.create({
-    baseURL: 'http://localhost:3001/',
-    headers: { 'Content-Type': 'application/json' }
+    baseURL: backendUrl,
+    
+    headers: {
+        'Content-Type': 'application/json',
+        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
+        customer: "54887755",
+        contract: "inventFashion"
+    }
 });
 
 /**
@@ -15,6 +22,24 @@ export const getList = async (pageno = 1, count = 10, searchText = '') => {
 
     try {
         const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+
+
+/**
+ * Get All  list
+ * @returns 
+ */
+
+ export const getStats = async (id) => {
+
+    try {
+        const response = await axios.get(`${type}/stats/${id}`);
         return response.data
     } catch (error) {
         throw error;
