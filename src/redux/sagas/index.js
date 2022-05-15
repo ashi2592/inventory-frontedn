@@ -15,6 +15,12 @@ import barcodeSaga from './barcode-saga';
 import dashboardSaga from './dashboard-saga';
 import interCommSaga from './intercomm-saga';
 import lengthSaga from './lengths-saga';
+import patternSaga from './patterns-saga';
+import variantSaga from './variant-saga';
+import purchaseSage from './purchases-saga';
+
+
+
 
 
 
@@ -36,9 +42,9 @@ export default function* rootSaga() {
   yield spawn(dashboardSaga)
   yield spawn(interCommSaga)
   yield spawn(lengthSaga)
+  yield spawn(patternSaga)
+  yield spawn(variantSaga) 
+  yield spawn(purchaseSage) 
 
-  
-
-  
 
 }

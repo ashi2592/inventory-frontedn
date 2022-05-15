@@ -5,7 +5,7 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import {  ADD_LENGTH, GET_LENGTH_LIST } from "../redux/actions";
 
 
-const SearchAndSelectLength = ({ getLengths, productLengths, error, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=true ,addLength}) => {
+const SearchAndSelectLength = ({ getLengths, productLengths,  error=false, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=true ,addLength}) => {
 
     const [Options, setOptions] = useState([])
 
@@ -33,6 +33,7 @@ const SearchAndSelectLength = ({ getLengths, productLengths, error, handleDropDo
         clearable={clearable}
         value={value}
         handleAdditionChanges={handleAdd}
+        error={error}
         ></DropdownSearchSelection>
     )
 

@@ -13,6 +13,8 @@ const AlertMessage = ({ alterMessageText }) => {
       toast.error(alterMessageText.message)
     }
 
+    console.log(alterMessageText)
+
   }, [alterMessageText])
   return (
     <div>

@@ -64,7 +64,7 @@ export default (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 loading: false,
-                barcodes: state.barcodes.filter(x => x.barcode !== payload),
+                barcodes: state.barcodes.filter(x => x._id !== payload),
                 barcode: {}
             }
         default:

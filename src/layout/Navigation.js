@@ -54,10 +54,7 @@ function Navigation() {
                         Order History
                         <Link to="/transcation" />
                     </MenuItem>
-                    <MenuItem icon={<Icon name={"cart"}></Icon>}>
-                        Catalog
-                        <Link to="/catalog" />
-                    </MenuItem>
+                   
                     <MenuItem icon={<Icon name={"gem"}></Icon>}>
                         Settings
                         <Link to="/setting" />

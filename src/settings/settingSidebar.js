@@ -39,13 +39,37 @@ const SettingSidebarPage = ({ activeItem }) => {
             active={activeItem === 'length'}
             onClick={() => handleItemClick('length')}
         />
-         <Menu.Item
+        <Menu.Item
             name='Others'
             color="red"
             active={activeItem === 'others'}
             onClick={() => handleItemClick('others')}
         />
-
+        <Menu.Item
+            name='Category'
+            color="red"
+            active={activeItem === 'category'}
+            onClick={() => handleItemClick('category')}
+        />
+        <Menu.Item
+            name='Brand'
+            color="red"
+            as="a"
+            active={activeItem === 'brand'}
+            onClick={() => handleItemClick('brand')}
+        />
+        <Menu.Item
+            name='Supplier'
+            color="red"
+            active={activeItem === 'supplier'}
+            onClick={() => handleItemClick('supplier')}
+        />
+         <Menu.Item
+            name='Pattern'
+            color="red"
+            active={activeItem === 'pattern'}
+            onClick={() => handleItemClick('pattern')}
+        />
     </Menu>)
 }
 

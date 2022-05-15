@@ -1,16 +1,6 @@
-import defaultAxios from 'axios';
-import { backendUrl } from '../../constant/global';
-const type = 'product-length';
 
-const axios = defaultAxios.create({
-    baseURL: backendUrl,
-    headers: {
-        'Content-Type': 'application/json',
-        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
-        customer: "54887755",
-        contract: "inventFashion"
-    }
-});
+import DispatchRequest from "./service-dispatch";
+const type = 'product-length';
 
 /**
  * Get All  list
@@ -20,7 +10,7 @@ const axios = defaultAxios.create({
 export const getList = async (pageno = 1, count = 10, searchText = '') => {
 
     try {
-        const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
+        const response = await DispatchRequest.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
         return response.data
     } catch (error) {
         throw error;
@@ -37,7 +27,7 @@ export const getList = async (pageno = 1, count = 10, searchText = '') => {
 export const getDeatils = async (id) => {
 
     try {
-        const response = await axios.get(`${type}/${id}`);
+        const response = await DispatchRequest.get(`${type}/${id}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -50,7 +40,7 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
-        const response = await axios.post(`${type}`, data);
+        const response = await DispatchRequest.post(`${type}`, data);
         return response.data;
 
     } catch (error) {
@@ -60,7 +50,7 @@ export const getAdd = async (data) => {
 
 export const getUpdate = async (data, id) => {
     try {
-        const response = await axios.put(`${type}/${id}`, data);
+        const response = await DispatchRequest.put(`${type}/${id}`, data);
         return response.data;
 
     } catch (error) {
@@ -72,7 +62,7 @@ export const getUpdate = async (data, id) => {
 
 export const DeleteFunction = async (id) => {
     try {
-        await axios.delete(`${type}/${id}`);
+        await DispatchRequest.delete(`${type}/${id}`);
         return true;
 
     } catch (error) {

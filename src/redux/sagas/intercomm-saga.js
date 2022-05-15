@@ -7,8 +7,9 @@ import {
 
 function* alterNotify({ payload }) {
     try{
+        console.log(payload)
         yield put({ type: ALERT_NOTIFY_SUCCESS, payload: payload })
-
+           
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })
     }

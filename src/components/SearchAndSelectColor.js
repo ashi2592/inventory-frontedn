@@ -5,7 +5,10 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import { ADD_COLOR, GET_COLOR_LIST } from "../redux/actions";
 
 
-const SearchAndSelectColor = ({ getColors, colors, error, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=true, addColors }) => {
+const SearchAndSelectColor = ({ getColors, colors,  error=false, handleDropDownChanges, 
+    dropdownName, value = '',placeholder, clearable=true, addColors,
+    disabled= false
+ }) => {
 
     const [Options, setOptions] = useState([])
 
@@ -33,6 +36,8 @@ const SearchAndSelectColor = ({ getColors, colors, error, handleDropDownChanges,
         value={value}
         allowAdditions= {true}
         handleAdditionChanges={handleAdd}
+        disabled={disabled}
+        error={error}
         ></DropdownSearchSelection>
     )
 

@@ -3,11 +3,14 @@ import React from 'react'
 import { Dropdown } from 'semantic-ui-react'
 
 
-const DropdownSearchSelection = ({ ArrayofObj, placeholder, dropdownName, value, handleDropDownChanges, isSearchable, allowAdditions = false, handleAdditionChanges,
+const DropdownSearchSelection = ({ ArrayofObj, placeholder, dropdownName, value, handleDropDownChanges,
+     isSearchable, allowAdditions = false, handleAdditionChanges,
     clearable = false
     , upward = true
     , floating = true
-    , inline = true
+    , inline = true,
+    disabled= false,
+    error=false
 }) => {
 
     const Options = _.map(ArrayofObj, (data, index) => ({
@@ -31,6 +34,9 @@ const DropdownSearchSelection = ({ ArrayofObj, placeholder, dropdownName, value,
         selection={true}
         clearable={clearable}
         direction='right'
+        disabled={disabled}
+        
+       
 
     />)
 }

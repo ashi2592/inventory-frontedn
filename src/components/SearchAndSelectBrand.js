@@ -5,7 +5,8 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import { ADD_BRAND, GET_BRAND_LIST } from "../redux/actions";
 
 
-const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, dropdownName, value = '',placeholder, clearable=false,addBrand }) => {
+const SearchAndSelectBrand = ({ getBrand, brands,  error=false, handleDropDownChanges, dropdownName, value = '',placeholder, 
+clearable=false,addBrand }) => {
 
     const [Options, setOptions] = useState([])
 
@@ -32,6 +33,7 @@ const SearchAndSelectBrand = ({ getBrand, brands, error, handleDropDownChanges, 
         clearable={clearable}
         value={value}
         handleAdditionChanges={handleAdd}
+        error={error}
         ></DropdownSearchSelection>
     )
 

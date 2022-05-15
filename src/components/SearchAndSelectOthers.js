@@ -5,7 +5,7 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import { GET_OTHER_LIST } from "../redux/actions";
 
 
-const SearchAndSelectOthers = ({ getOthers, others, error, handleDropDownChanges, dropdownName, value = '', placeholder, keyName ,clearable=true}) => {
+const SearchAndSelectOthers = ({ getOthers, others,  error=false, handleDropDownChanges, dropdownName, value = '', placeholder, keyName ,clearable=true}) => {
 
     const [Options, setOptions] = useState([])
 
@@ -26,7 +26,7 @@ const SearchAndSelectOthers = ({ getOthers, others, error, handleDropDownChanges
         handleDropDownChanges={handleDropDownChanges}
         dropdownName={dropdownName}
         clearable={clearable}
-        
+        error={error}        
         value={value}></DropdownSearchSelection>
     )
 

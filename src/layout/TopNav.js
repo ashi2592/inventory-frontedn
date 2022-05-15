@@ -35,6 +35,10 @@ const NavBarMobile = ({ children }) => {
                     <Link to="/order" > <Icon name={"first order"}></Icon> Order</Link>
                 </MenuItem>
                 <MenuItem as='a'>
+                    <Link to="/purchase/" > <Icon name={"first order"}></Icon> Purchase </Link>
+                </MenuItem>
+
+                <MenuItem as='a'>
                     <Link to="/product" > <Icon name={"first order"}></Icon>  Product</Link>
                 </MenuItem>
                 <MenuItem as='a'>

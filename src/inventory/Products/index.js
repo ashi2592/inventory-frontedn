@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Header, Icon, Input, Table, TableBody, TableCell, TableRow, Modal, Container, GridRow, GridColumn, Label, Divider } from "semantic-ui-react";
+import { Button, Grid, Header, Icon, Input, Table, TableBody, TableCell, TableRow, Modal, Container, GridRow, GridColumn, Label, Divider, Image } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 
 import PropTypes from 'prop-types';
@@ -28,7 +28,7 @@ import { getProductName } from "../../constant/global";
 const Product = ({ getProducts, getProduct, products, product, pagination, error, loading }) => {
 
     const history = useHistory()
-   const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
+    const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
     // Pagination
     const [ellipsisItem, setEllipsisItem] = useState(null);
     const [activePage, SetActivePage] = useState(1);
@@ -154,11 +154,14 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
         <Divider></Divider>
         <Table celled >
-            <TableHeader Headers={['Brand', 'Category', 'Type ', 'Color', 'Size', 'Qty', 'Selling Price', , 'Action']}></TableHeader>
+            <TableHeader Headers={['Image','Product Name', 'Brand', 'Category', 'Action']}></TableHeader>
 
 
             <TableBody>
+        
                 <TableRow>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
                     <TableCell>
                         <SearchAndSelectBrand
                             handleDropDownChanges={handleSearchDropDownChanges}
@@ -179,45 +182,6 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                             clearable={true}
                         ></SearchAndSelectCateory>
                     </TableCell>
-
-                    <TableCell>
-                        <SearchAndSelectProductType
-                            handleDropDownChanges={handleSearchDropDownChanges}
-                            placeholder={'Search Type'}
-                            dropdownName={'type'}
-                            value={searchInputs.type}
-                            clearable={true}
-
-
-                        ></SearchAndSelectProductType>
-                    </TableCell>
-
-                    <TableCell>
-                        <SearchAndSelectColor
-                            handleDropDownChanges={handleSearchDropDownChanges}
-                            placeholder={'Search Color'}
-                            dropdownName={'color'}
-                            value={searchInputs.color}
-                            clearable={true}
-
-
-                        ></SearchAndSelectColor>
-
-                    </TableCell>
-
-
-
-                    <TableCell>
-                        <SearchAndSelectSize
-                            handleDropDownChanges={handleSearchDropDownChanges}
-                            placeholder={'Search Size'}
-                            dropdownName={'size'}
-                            value={searchInputs.size}
-                            clearable={true}
-
-
-                        ></SearchAndSelectSize>
-                    </TableCell>
                     <TableCell>
 
                     </TableCell>
@@ -230,26 +194,17 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
                 </TableRow>
 
-                {loading && <TableLoaderPage colSpan={"10"}></TableLoaderPage>}
+                {loading && <TableLoaderPage colSpan={"3"}></TableLoaderPage>}
                 {(loading === false && products.length === 0) && (<TableNoRecordFound></TableNoRecordFound>)}
 
-
                 {loading === false && products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0}>
-
-                    {/* <TableCell>{x.productName}</TableCell> */}
-                    {/* <TableCell>{x.productCode}</TableCell> */}
+                <TableCell><Image src="./thumb/Jeans.png" size="mini"></Image></TableCell>
+                    <TableCell>{x.productName}</TableCell>
                     <TableCell>{x.productBrandObj ? x.productBrandObj.brandName : ''} </TableCell>
-
                     <TableCell>{x.productCategoryObj ? x.productCategoryObj.categoryName : ''} </TableCell>
-                    <TableCell>{x.productTypeObj ? x.productTypeObj.typeName : ''} </TableCell>
-                    <TableCell> {x.productColorObj ? x.productColorObj.colorName : ''}   </TableCell>
-                    <TableCell> {x.productSizeObj ? x.productSizeObj.sizeName : ''}  </TableCell>
-                    <TableCell>{x.barcodes ? x.barcodes.length : 0}</TableCell>
-                    <TableCell>{x.productPrice}</TableCell>
                     <TableCell>
                         <Icon name="eye" onClick={() => { handleViewProduct(x._id) }}></Icon>
-                        <Icon name="barcode" onClick={() => { handleBarcodeProduct(x._id) }}></Icon>
-
+                      
                     </TableCell></TableRow>))}
             </TableBody>
             <Table.Footer fullWidth>
@@ -281,7 +236,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
             <Modal.Header>
                 {getProductName(product)}
                 <Icon name="close" onClick={handleClosePopup}></Icon>
-                
+
             </Modal.Header>
             <Modal.Content scrolling>
                 <ProductBarcode isAutofocusEnable={true}></ProductBarcode>

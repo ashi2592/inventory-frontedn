@@ -5,7 +5,8 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import {  ADD_TYPE, GET_TYPE_LIST } from "../redux/actions";
 
 
-const SearchAndSelectProductType = ({ getTypes, types, error, handleDropDownChanges, dropdownName, value = '',placeholder,clearable=true,addType }) => {
+const SearchAndSelectProductType = ({ getTypes, types, error=false, handleDropDownChanges, dropdownName, 
+    value = '',placeholder,clearable=true,addType }) => {
 
     const [Options, setOptions] = useState([])
 
@@ -32,6 +33,7 @@ const SearchAndSelectProductType = ({ getTypes, types, error, handleDropDownChan
         clearable={clearable}
         handleAdditionChanges={handleAdd}
         allowAdditions={true}
+        error={error}
         ></DropdownSearchSelection>
 
     )

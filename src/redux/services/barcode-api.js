@@ -1,24 +1,16 @@
-import defaultAxios from 'axios';
-import { backendUrl } from '../../constant/global';
+import DispatchRequest from "./service-dispatch";
+
 const type = 'barcode';
-const axios = defaultAxios.create({
-    baseURL: backendUrl,
-    headers: { 'Content-Type': 'application/json',
-     storeId: localStorage.getItem('storeId')?localStorage.getItem('storeId'):null,
-     customer:"54887755",
-     contract:"inventFashion"
-    }
-});
 
 /**
  * Get All  list
  * @returns 
  */
 
-export const getList = async (pageno = 1, count = 10, searchText = '') => {
+export const getList = async (pageno = 1, count = 10, purchaseId = '',variantId='',productId='') => {
 
     try {
-        const response = await axios.get(`${type}?page=${pageno}&count=${count}&searchText=${searchText}`);
+        const response = await DispatchRequest.get(`${type}?page=${pageno}&count=${count}&purchaseId=${purchaseId}&variantId=${variantId}&productId=${productId}`);
         return response.data
     } catch (error) {
         throw error;
@@ -35,7 +27,7 @@ export const getList = async (pageno = 1, count = 10, searchText = '') => {
 export const getDeatils = async (id) => {
 
     try {
-        const response = await axios.get(`${type}/${id}`);
+        const response = await DispatchRequest.get(`${type}/${id}`);
         return response.data;
     } catch (error) {
         throw error;
@@ -48,7 +40,7 @@ export const getDeatils = async (id) => {
 
 export const getAdd = async (data) => {
     try {
-        const response = await axios.post(`${type}`, data);
+        const response = await DispatchRequest.post(`${type}`, data);
         return response.data;
 
     } catch (error) {
@@ -58,7 +50,7 @@ export const getAdd = async (data) => {
 
 export const getUpdate = async (data, id) => {
     try {
-        const response = await axios.put(`${type}/${id}`, data);
+        const response = await DispatchRequest.put(`${type}/${id}`, data);
         return response.data;
 
     } catch (error) {
@@ -70,7 +62,7 @@ export const getUpdate = async (data, id) => {
 
 export const DeleteFunction = async (barcode) => {
     try {
-        await axios.delete(`${type}/${barcode}`);
+        await DispatchRequest.delete(`${type}/${barcode}`);
         return true;
 
     } catch (error) {

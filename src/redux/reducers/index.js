@@ -14,7 +14,13 @@ import others from "./other-reducer";
 import barcodes from './barcode-reducer'
 import dashboard from './dashboard-reducer';
 import intercomm from './intercomm-reducer';
-import productLengths  from './length-reducer'
+import productLengths  from './length-reducer';
+import patterns  from './patterns-reducer';
+import variants  from './variants-reducer';
+import purchases  from './purchases-reducer';
+
+
+
 
 
 
@@ -34,5 +40,8 @@ import productLengths  from './length-reducer'
     barcodes,
     dashboard,
     intercomm,
-    productLengths
+    productLengths,
+    patterns,
+    variants,
+    purchases
  })

@@ -115,7 +115,6 @@ const mapDispatchToProps = (dispatch) => ({
     updateProduct: (id, data) => dispatch({ type: UPDATE_PRODUCT, payload: { id, data } }),
     getBarcodes: (page, count, searchText) => dispatch({ type: GET_BARCODE_LIST, payload: { page, count, searchText } }),
     addBarcode: (data) => dispatch({ type: ADD_BARCODE, payload: data }),
-    getProduct: (id) => dispatch({ type: GET_PRODUCT_DETAILS, payload: { id } }),
     deleteBarcode: (barcode) => dispatch({ type: DELETE_BARCODE, payload: barcode })
 })
 

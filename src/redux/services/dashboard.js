@@ -1,17 +1,6 @@
-import defaultAxios from 'axios';
-import { backendUrl } from '../../constant/global';
+
+import DispatchRequest from "./service-dispatch";
 const type = 'dashboard';
-const axios = defaultAxios.create({
-    baseURL: backendUrl,
-
-    headers: {
-        'Content-Type': 'application/json',
-        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
-        customer: "54887755",
-        contract: "inventFashion"
-    }
-});
-
 /**
  * Get All  list
  * @returns 
@@ -19,7 +8,7 @@ const axios = defaultAxios.create({
 
 export const getTopSelling = async () => {
     try {
-        const response = await axios.get(`/${type}/top-selling-product`);
+        const response = await DispatchRequest.get(`/${type}/top-selling-product`);
         return response.data
     } catch (error) {
         throw error;
@@ -30,7 +19,7 @@ export const getTopSelling = async () => {
 
 export const getDaywiseSell = async () => {
     try {
-        const response = await axios.get(`/${type}/day-wise-sale`);
+        const response = await DispatchRequest.get(`/${type}/day-wise-sale`);
         return response.data
     } catch (error) {
         throw error;
@@ -42,7 +31,7 @@ export const getDaywiseSell = async () => {
 
 export const getMonthwiseSell = async () => {
     try {
-        const response = await axios.get(`/${type}/month-wise-sale`);
+        const response = await DispatchRequest.get(`/${type}/month-wise-sale`);
         return response.data
     } catch (error) {
         throw error;
@@ -54,7 +43,7 @@ export const getMonthwiseSell = async () => {
 
 export const getCategoryWiseProductCount = async () => {
     try {
-        const response = await axios.get(`/${type}/product-count`);
+        const response = await DispatchRequest.get(`/${type}/product-count`);
         return response.data
     } catch (error) {
         throw error;
@@ -66,7 +55,7 @@ export const getCategoryWiseProductCount = async () => {
 
 export const getDashboardStats = async () => {
     try {
-        const response = await axios.get(`/${type}/stats`);
+        const response = await DispatchRequest.get(`/${type}/stats`);
         return response.data
     } catch (error) {
         throw error;

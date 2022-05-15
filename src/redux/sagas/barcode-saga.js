@@ -22,8 +22,8 @@ import {  getDeatils as getProductDetail} from '../services/products-api';
 function* getBarcodes({payload}) {
     try{
         yield put({ type: SET_LOADING })
-        const categories =yield call(getList,payload.page,payload.count,payload.searchText);
-        yield put({ type: GET_BARCODE_LIST_SUCCESS, payload: categories })
+        const barcodes =yield call(getList,payload.page,payload.count,payload.purchaseId, payload.variantId,payload.productId);
+        yield put({ type: GET_BARCODE_LIST_SUCCESS, payload: barcodes })
 
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })
@@ -47,8 +47,8 @@ function* addBarcode({ payload }) {
         yield put({ type: SET_LOADING })
         const newdata = yield call(getAdd, payload);
         yield put({ type: ADD_BARCODE_SUCCESS, payload: newdata })
-        const newdata1 = yield call(getProductDetail, payload.productId);
-        yield put({ type: GET_PRODUCT_DETAILS_SUCCESS, payload: newdata1 })
+        // const barcodes = yield  call(getList,1,100,payload.purchaseId, payload.variantId,'');
+        // yield put({ type: GET_BARCODE_LIST_SUCCESS, payload: barcodes })
 
         
         

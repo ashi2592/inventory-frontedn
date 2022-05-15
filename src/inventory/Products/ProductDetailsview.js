@@ -1,22 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Input, Table } from "semantic-ui-react";
+import { Button, Card, Container, Divider, Form, Grid, GridColumn, GridRow, Header, Icon, Input, Step, Table, TextArea } from "semantic-ui-react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import { UPDATE_PRODUCT, DELETE_PRODUCT, ADD_PRODUCT, GET_OTHER_LIST, GET_PRODUCT_DETAILS, ALERT_NOTIFY } from "../../redux/actions";
 import _ from "lodash";
-import DropdownSearchSelection from "../../layout/Dropdown";
 import { useParams } from "react-router-dom";
-import ProductBarcode from "./Product-barcode";
 import { useHistory } from "react-router-dom";
 import SearchAndSelectCateory from "../../components/SearchAndSelectCateory";
 import SearchAndSelectBrand from "../../components/SearchAndSelectBrand";
-import SearchAndSelectSupplier from "../../components/SearchAndSelectSupplier";
-import SearchAndSelectSize from "../../components/SearchAndSelectSize";
-import SearchAndSelectProductType from "../../components/SearchAndSelectProductType";
-import SearchAndSelectColor from "../../components/SearchAndSelectColor";
 import SearchAndSelectOthers from "../../components/SearchAndSelectOthers";
-import SearchAndSelectLength from "../../components/SearchAndSelectLength";
 import { getProductName } from "../../constant/global";
+import ProductVariantPage from '../variants/variants'
+import Productviewsteps from "./Productviewsteps";
 
 const ProdutDetailsView = ({ product,
     deleteProduct, updateProduct, addProduct,
@@ -25,11 +20,11 @@ const ProdutDetailsView = ({ product,
 }) => {
 
 
-
+    const [formload, setFormLoad] = useState(false);
+    const [formError, setFormError] = useState(false);
     const [check, setCheck] = useState(false);
     const [isChanges, setIsChanges] = useState(false);
-    const [productUpdated, setProductUpdated] = useState({})
-    const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' }])
+    const [inputs, setinputs] = useState({})
     const history = useHistory()
     let { id } = useParams();
 
@@ -39,7 +34,7 @@ const ProdutDetailsView = ({ product,
 
 
     useEffect(() => {
-        setProductUpdated(product)
+        setinputs(product)
     }, [product])
 
 
@@ -54,14 +49,14 @@ const ProdutDetailsView = ({ product,
 
     const handleUpdateFunction = (id, key, value) => {
         // console.log(id,key,value)
-        setProductUpdated({ ...productUpdated, [key]: value })
-        debounceFn(key, value, productUpdated)
+        setinputs({ ...inputs, [key]: value })
+        debounceFn(key, value, inputs)
     }
 
 
 
-    function handleDebounceFn(key, value, productUpdated) {
-        let newProduct = { ...productUpdated, status: true };
+    function handleDebounceFn(key, value, inputs) {
+        let newProduct = { ...inputs, status: true };
 
         // newProduc.barcodes = product;
         delete newProduct.__v;
@@ -73,14 +68,14 @@ const ProdutDetailsView = ({ product,
         delete newProduct.productCategoryObj
         delete newProduct.productBrandObj;
         delete newProduct.barcodes
-        setProductUpdated({ ...newProduct, [key]: value })
+        setinputs({ ...newProduct, [key]: value })
 
     }
 
     const handleDropDownChanges = (key, value) => {
-        // alert(JSON.stringify({ key, value }))
+        // alert(JSON.stringify({ key, value }))s
         // setInputs(values => { return { ...values, [name]: value } });
-        let newProduct = { ...productUpdated, status: true };
+        let newProduct = { ...inputs, status: true };
         delete newProduct.__v;
         delete newProduct.createdAt
         delete newProduct.productSupplierObj
@@ -92,7 +87,7 @@ const ProdutDetailsView = ({ product,
         delete newProduct.barcodes
         delete newProduct.productPurchasePrice
         // delete newProduct.priceType
-        setProductUpdated({ ...newProduct, [key]: value })
+        setinputs({ ...newProduct, [key]: value })
 
 
     }
@@ -105,7 +100,7 @@ const ProdutDetailsView = ({ product,
 
     useEffect(() => {
         if (check) {
-            updateProduct(product._id, productUpdated)
+            updateProduct(product._id, inputs)
             setTimeout(() => {
                 alertMessage('success', `Product update successfully`)
             }, 1000)
@@ -145,285 +140,125 @@ const ProdutDetailsView = ({ product,
     return (
         (<Container>
 
-            <Header>
-                {getProductName(product)}  <p>{product._id}</p>
 
-
-                {/* {isChanges && (<Button color='primary' onClick={handleCheck}> <Icon name="plus"></Icon>  Update Save</Button>)} */}
-
-            </Header>
-
-            <Grid stackable>
+            <Grid columns={2} stackable>
                 <GridRow>
-                    <GridColumn largeScreen={3} mobile={6}>
-                        <Button color='orange' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back to List</Button>
+                    <GridColumn largeScreen={8} mobile={6} >
+                        <Productviewsteps productId={product._id} page='product'></Productviewsteps>
                     </GridColumn>
-                    <GridColumn largeScreen={6} mobile={6} textAlign="right">
-                        <Button color='green' onClick={() => { createDuplicateProduct(product._id) }}> <Icon name="plus"></Icon> Duplicate </Button>
-                        {/* <Button color='green' onClick={() => { createDuplicateProduct(product._id) }}> <Icon name="plus"></Icon> Create Sizes</Button> */}
-                     
-                    </GridColumn>
-                    <GridColumn largeScreen={7} mobile={6} textAlign="right">
-                    <Button color='blue' onClick={() => { handleCheck() }}> <Icon name="save"></Icon> Save</Button>
-                    <Button color='red' onClick={() => { handleDeleteProduct(product._id) }}> <Icon name="trash"></Icon> Delete</Button>
-
+                    <GridColumn largeScreen={8} mobile={6} textAlign="right">
+                        <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back</Button>
+                        <Button color='blue' onClick={() => { handleCheck() }}> <Icon name="save"></Icon> Save</Button>
                     </GridColumn>
                 </GridRow>
             </Grid>
-            <Divider></Divider>
-            <Table celled >
-
-                <Table.Row>
 
 
-                </Table.Row>
-                <Table.Body >
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Name
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <Input
-                                placeholder='Enter Product Name...'
-                                name={'productName'}
-                                onChange={(e) => handleUpdateFunction(product._id, 'productName', e.target.value)}
-                                value={productUpdated.productName}
-                                required
-                            />
-                        </Table.Cell>
+            <Form loading={formload} error={formError} >
+                <Grid columns={2} divided>
+                    <Grid.Row stretched>
+                        <Grid.Column>
+                            <Card fluid>
 
-                    </Table.Row>
+                                <Card.Content>
+                                    <Card.Header>Basic Info</Card.Header>
+                                    <Divider></Divider>
+                                    <Card.Description>
 
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Code
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <Input
+                                        <Form.Field>
+                                            <label>  Product Name</label>
+                                            <Input
 
-                                placeholder='Enter Product code...'
-                                name={'productCode'}
-                                onChange={(e) => handleUpdateFunction(product._id, 'productCode', e.target.value)}
-                                value={productUpdated.productCode}
-                                required
-                            />
-                        </Table.Cell>
+                                                placeholder='Enter Product Name'
+                                                name={'productName'}
+                                                onChange={handleUpdateFunction}
+                                                value={inputs.productName}
+                                                required
+                                            />
+                                        </Form.Field>
 
-                    </Table.Row>
+                                        <Form.Field>
+                                            <label>  Product Description</label>
+                                            <TextArea placeholder='Tell us more' />
+                                        </Form.Field>
 
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Category
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectCateory
-                                handleDropDownChanges={handleDropDownChanges}
-                                placeholder={'Category'}
-                                dropdownName={'productCategory'}
-                                value={productUpdated.productCategory}
-                            ></SearchAndSelectCateory>
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Colors
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
+                                    </Card.Description>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Card fluid>
+                                <Card.Content>
+                                    <Card.Header>Require Info</Card.Header>
+                                    <Divider></Divider>
+                                    <Card.Description>
+                                        <Form.Field>
+                                            <label>  Product Category</label>
+                                            <SearchAndSelectCateory
+                                                handleDropDownChanges={handleDropDownChanges}
+                                                placeholder={'Select Category'}
+                                                dropdownName={'productCategory'}
+                                                value={inputs.productCategory}
+                                                clearable={true}
+                                            ></SearchAndSelectCateory>
 
-                            <SearchAndSelectColor
-                                placeholder={'Product Color'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productColor'}
-                                value={productUpdated.productColor}
-                            ></SearchAndSelectColor>
+                                        </Form.Field>
 
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Product types
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectProductType
-                                placeholder={'Product Type'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productType'}
-                                value={productUpdated.productType}
-                            ></SearchAndSelectProductType>
-
-                        </Table.Cell>
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Size
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectSize
-                                placeholder={'Product Size'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productSize'}
-                                value={productUpdated.productSize}
-                            ></SearchAndSelectSize>
-
-                        </Table.Cell>
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Length
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectLength
-                                placeholder={'Product Length'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productLength'}
-                                value={productUpdated.productLength}
-                            ></SearchAndSelectLength>
-
-                        </Table.Cell>
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Supplier
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectSupplier
-                                placeholder={'Supplier'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productSupplier'}
-                                value={productUpdated.productSupplier}
-                            ></SearchAndSelectSupplier>
-
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Brand
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectBrand
-                                placeholder={'brand'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'productBrand'}
-                                value={productUpdated.productBrand}
-                            ></SearchAndSelectBrand>
-
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Season
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectOthers
-                                placeholder={'season'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'season'}
-                                value={productUpdated.season}
-                                keyName='season'
-                            ></SearchAndSelectOthers>
-
-                        </Table.Cell>
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Store
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-                            <SearchAndSelectOthers
-                                placeholder={'Store'}
-                                handleDropDownChanges={handleDropDownChanges}
-                                dropdownName={'store'}
-                                value={productUpdated.store}
-                                keyName='store'
-                            ></SearchAndSelectOthers>
-
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row error={true}>
-
-                        <Table.Cell>
-                            <strong>Price Information</strong>
-                        </Table.Cell>
-                        <Table.Cell></Table.Cell>
-
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Purchase Price
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-
-                            <Input
-
-                                placeholder='Enter purchase price'
-                                name={'productPurchasePrice'}
-                                onChange={(e) => handleUpdateFunction(product._id, 'productPurchasePrice', e.target.value)}
-                                required
-                                value={productUpdated.productPurchasePrice}
-
-                            />
-                        </Table.Cell>
-                    </Table.Row>
-
-                    <Table.Row>
-                        <Table.Cell>
-                            Product MRP
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-
-                            <Input
-
-                                placeholder='Enter Product MRP...'
-                                name={'productMrp'}
-                                onChange={(e) => handleUpdateFunction(product._id, 'productMRP', e.target.value)}
-                                required
-                                value={productUpdated.productMrp}
-
-                            />
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>
-                            Price Type
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
-
-                            <DropdownSearchSelection placeholder={'Price type'} ArrayofObj={pricetypeOption} handleDropDownChanges={handleDropDownChanges} dropdownName={'priceType'} value={productUpdated.priceType}></DropdownSearchSelection>
-
-                        </Table.Cell>
-                    </Table.Row>
+                                        <Form.Field>
+                                            <label>  Product Brand</label>
+                                            <SearchAndSelectBrand
+                                                placeholder={'Select Brand'}
+                                                handleDropDownChanges={handleDropDownChanges}
+                                                dropdownName={'productBrand'}
+                                                value={inputs.productBrand}
+                                                clearable={true}
+                                            ></SearchAndSelectBrand>
 
 
-                    <Table.Row>
-                        <Table.Cell>
-                            Product Price
-                        </Table.Cell>
-                        <Table.Cell textAlign="right">
+                                        </Form.Field>
+                                    </Card.Description>
+                                </Card.Content>
+                            </Card>
+                            <Card fluid>
+                                <Card.Content>
+                                    <Card.Header>Optional Info</Card.Header>
+                                    <Divider></Divider>
+                                    <Card.Description>
+                                        <Form.Field>
+                                            <label> Store </label>
+                                            <SearchAndSelectOthers
+                                                placeholder={'Store'}
+                                                handleDropDownChanges={handleDropDownChanges}
+                                                dropdownName={'store'}
+                                                value={inputs.store}
+                                                keyName='store'
+                                            ></SearchAndSelectOthers>
 
-                            <Input
+                                        </Form.Field>
 
-                                placeholder='Enter Product Selling Priice...'
-                                name={'productPrice'}
-                                value={productUpdated.productPrice}
-                                required
-                                onChange={(e) => handleUpdateFunction(product._id, 'productPrice', e.target.value)}
-                            />
-                        </Table.Cell>
-                    </Table.Row>
+                                        <Form.Field>
+                                            <label> Season</label>
+                                            <SearchAndSelectOthers
+                                                placeholder={'season'}
+                                                handleDropDownChanges={handleDropDownChanges}
+                                                dropdownName={'season'}
+                                                value={inputs.season}
+                                                keyName='season'
+
+                                            ></SearchAndSelectOthers>
 
 
 
+                                        </Form.Field>
+                                    </Card.Description>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
 
-                </Table.Body>
-
-            </Table>
-
-            <ProductBarcode isAutofocusEnable={false}></ProductBarcode>
+                    </Grid.Row>
+                </Grid>
+            </Form>
+            {/* <ProductVariantPage productId={inputs._id}></ProductVariantPage> */}
         </Container>)
     )
 }

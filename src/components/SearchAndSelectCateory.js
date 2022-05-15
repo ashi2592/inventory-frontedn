@@ -5,9 +5,10 @@ import DropdownSearchSelection from "../layout/Dropdown";
 import { GET_CATEGORY_LIST } from "../redux/actions";
 
 
-const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDownChanges, dropdownName, value = '',   clearable=true
+const SearchAndSelectCateory = ({ getCategories, categories, error = false, handleDropDownChanges,
+    dropdownName, value = '', clearable = true
 
- }) => {
+}) => {
 
     const [categoriesOptions, setCategoriesOptions] = useState([])
 
@@ -28,7 +29,8 @@ const SearchAndSelectCateory = ({ getCategories, categories, error, handleDropDo
         dropdownName={dropdownName}
         clearable={clearable}
         value={value}
-        ></DropdownSearchSelection>
+        error={error}
+    ></DropdownSearchSelection>
 
     )
 
