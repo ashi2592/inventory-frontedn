@@ -4,10 +4,10 @@ const DispatchRequest =defaultAxios.create({
     baseURL: backendUrl,
     headers: {
         'Content-Type': 'application/json',
-        storeId: localStorage.getItem('storeId') ? localStorage.getItem('storeId') : null,
+        storeId:  window.localStorage.getItem('storeId') ?  window.localStorage.getItem('storeId') : null,
         customer: "54887755",
         contract: "inventFashion",
-        token:localStorage.getItem('token')
+        token: window.localStorage.getItem('token')
     }
 });
 

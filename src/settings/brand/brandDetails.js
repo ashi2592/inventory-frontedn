@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button, Checkbox, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Table } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Container, Divider, Form, Grid, GridColumn, GridRow, Header, Icon, Input, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import { useParams } from "react-router-dom";
@@ -14,20 +14,39 @@ const BrandDetails = ({ brand,deleteBrand,updateBrand,getBrand }) => {
     const { id } = useParams();
     const history = useHistory()
 
-    
+    const [inputs, setInputs] = useState({})   
 
     useEffect(() => {
         getBrand(id)
     }, [id]) 
       
+
+    useEffect(() => {
+        setInputs(brand)
+    }, [brand])
+
     const handleDeleteBrand = (id) =>{
         deleteBrand(id)
+        history.push(`/brand`)
+    }
+    const handleChange = (event) => {
+        event.preventDefault()
+        let name = event.target.name;
+        let value = event.target.value;
+        setInputs(values => { return { ...values, [name]: value, } });
     }
 
-    const handleUpdateFunction = (id,key,value) =>{
-        updateBrand(id,{...brand, [key]:value})
-    }
+    
 
+    const handleUpdateFunction = () => {
+        let {brandName, imageUrl} = inputs;
+        updateBrand(id, {brandName, imageUrl})
+    }
+ 
+ 
+
+
+ 
 
     const handleBack = ()=>{
         history.push(`/brand`)
@@ -83,6 +102,35 @@ const BrandDetails = ({ brand,deleteBrand,updateBrand,getBrand }) => {
 
                                 </Table.Row>
 
+                                <Table.Row>
+                                    <Table.Cell>
+                                       Brand Image
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {brand.imageUrl}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Form.Group widths={'equal'}>
+
+                                        <Form.Field
+                                            id="form-input-control-color-code"
+                                            control={Input}
+                                            placeholder='Enter brand url'
+                                            onChange={handleChange}
+                                            name={'imageUrl'}
+                                            autoFocus={true}
+                                            value={inputs.imageUrl}
+                                        />
+
+                                       
+                                        </Form.Group>
+                                        
+                                    </Table.Cell>
+                                    
+                                    <Table.Cell>
+                                    <Button onClick={handleUpdateFunction} color="orange"> <Icon name="save"></Icon></Button>
+                                    </Table.Cell>
+                                </Table.Row>
                             </Table.Body>
 
                         </Table>

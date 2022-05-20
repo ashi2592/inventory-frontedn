@@ -20,7 +20,7 @@ import TableNoRecordFound from "../../components/TableNoRecordFound";
 import { useHistory } from "react-router-dom";
 
 
-const Color = ({ getColors,  colors, color, pagination, error, loading }) => {
+const Color = ({ getColors, colors, color, pagination, error, loading }) => {
 
     const history = useHistory()
 
@@ -79,7 +79,7 @@ const Color = ({ getColors,  colors, color, pagination, error, loading }) => {
         setSearchText('')
         handleViewColors(id)
     }
-    
+
 
     return (<Container>
         <Header textAlign="left">Colors</Header>
@@ -109,12 +109,19 @@ const Color = ({ getColors,  colors, color, pagination, error, loading }) => {
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
+                    <TableHeader Headers={['Id', 'image', 'Name', 'Status', 'Action']}></TableHeader>
 
                     <TableBody>
                         {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
-                        {(loading == false && colors.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}   
-                        {!loading  && colors.map(x => (<TableRow key={'color-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.colorName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewColors(x._id) }}></Icon></TableCell></TableRow>))}
+
+                        {(loading == false && colors.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
+                        {!loading && colors.map(x => (<TableRow key={'color-' + x._id}>
+                            <TableCell >{x._id}</TableCell>
+                            <TableCell><button class="circular ui icon button"  style={{'background':x.colorCode || 'grey'}}>
+                               
+                            </button>
+                            </TableCell>
+                            <TableCell >{x.colorName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewColors(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>
@@ -125,7 +132,7 @@ const Color = ({ getColors,  colors, color, pagination, error, loading }) => {
                     handlePaginationChange={handlePaginationChange}
                 ></PaginationCompact>
             </Grid.Column>
-          
+
         </Grid>
 
     </Container>

@@ -47,7 +47,7 @@ const TranscationDetails = ({ transcation, getTransaction, updateTranscationStat
         updateTranscationStatus(id, false)
     }
     const handleSettleAmount = (id) => {
-        updateTranscationStatus(id, true,transcation.totalVal, 0, 0 )
+        updateTranscationStatus(id, true, transcation.totalVal, 0, 0)
     }
 
 
@@ -72,7 +72,7 @@ const TranscationDetails = ({ transcation, getTransaction, updateTranscationStat
                         <Button color="yellow" onClick={() => handleViewOrder(transcation._id)}> <Icon name="eye"></Icon>  View </Button>
                         <Button color="green" onClick={() => handleAddOrder()} > <Icon name="plus"></Icon> New Order</Button>
                         {transcation.status == true && (<Button color="red" onClick={() => handleCancelOrder(transcation._id)} > <Icon name="delete"></Icon> Cancel </Button>)}
-                        { transcation.creditAmount!== 0  && (<Button color="pink" onClick={() => handleSettleAmount(transcation._id)} > <Icon name="setting"></Icon> Settel </Button>)}
+                        {transcation.creditAmount !== 0 && (<Button color="pink" onClick={() => handleSettleAmount(transcation._id)} > <Icon name="setting"></Icon> Settel </Button>)}
 
                     </Grid.Column>
                 </Grid.Row>
@@ -82,55 +82,54 @@ const TranscationDetails = ({ transcation, getTransaction, updateTranscationStat
             <Divider></Divider>
             <Header>Product Information</Header>
             <Table celled>
-                <TableHeader Headers={["Product Name", "codes", "Qty", "Price", "Total Value", "Action"]}></TableHeader>
+                <TableHeader Headers={["Product Name", "Qty", "Price", "Total Value", ]}></TableHeader>
                 <TableBody>
                     {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
                     {(loading == false && transcation.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
-                    {!loading &&(transcation.products || []).map((prod) => (<TableRow key={`ordered-products-${prod._id}`}>
-                        <TableCell ><Link to={`/product/${prod._id}`}>{prod.productName}</Link></TableCell>
-                        <TableCell>{prod.codes}</TableCell>
+                    {!loading && (transcation.products || []).map((prod) => (<TableRow key={`ordered-products-${prod._id}`}>
+                        <TableCell ><Link to={`/product/${prod._id}`}>      {prod.productText}-{prod.variantText}</Link></TableCell>
                         <TableCell>{prod.productQty}</TableCell>
-                        <TableCell>{prod.productPrice}</TableCell>
-                        <TableCell>{prod.productQty * prod.productPrice}</TableCell>
+                        <TableCell>{prod.sellPrice}</TableCell>
+                        <TableCell>{prod.productQty * prod.sellPrice}</TableCell>
 
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>))}
 
-                   { !loading &&( <TableRow>
+                    {!loading && (<TableRow>
 
-                        <TableHeaderCell colSpan={3}></TableHeaderCell>
+                        <TableHeaderCell colSpan={2}></TableHeaderCell>
                         <TableCell>Discount</TableCell>
                         <TableCell>{transcation.discount}</TableCell>
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>)}
-                    {!loading &&(<TableRow active={true}>
-                        <TableHeaderCell colSpan={3}></TableHeaderCell>
+                    {!loading && (<TableRow active={true}>
+                        <TableHeaderCell colSpan={2}></TableHeaderCell>
                         <TableCell>Final Amount</TableCell>
                         <TableCell>{transcation.totalVal}</TableCell>
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>)}
                     {!loading && transcation.paidAmount !== 0 && (<TableRow>
-                        <TableHeaderCell colSpan={3}></TableHeaderCell>
+                        <TableHeaderCell colSpan={2}></TableHeaderCell>
                         <TableCell>Paid Amount</TableCell>
                         <TableCell>{transcation.paidAmount}</TableCell>
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>)}
-                    { !loading && transcation.creditAmount!== 0 && (<TableRow error={true}>
-                        <TableHeaderCell colSpan={3}></TableHeaderCell>
+                    {!loading && transcation.creditAmount !== 0 && (<TableRow error={true}>
+                        <TableHeaderCell colSpan={2}></TableHeaderCell>
                         <TableCell>Credit Amount</TableCell>
                         <TableCell>{transcation.creditAmount}</TableCell>
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>)}
-                    { !loading&& transcation.returnAmount !== 0 && (<TableRow active={true}>
-                        <TableHeaderCell colSpan={3}></TableHeaderCell>
+                    {!loading && transcation.returnAmount !== 0 && (<TableRow active={true}>
+                        <TableHeaderCell colSpan={2}></TableHeaderCell>
                         <TableCell>Return Amount</TableCell>
                         <TableCell>{transcation.returnAmount}</TableCell>
-                        <TableCell></TableCell>
+                        
 
                     </TableRow>)}
                 </TableBody>
@@ -150,7 +149,7 @@ const mapStateToProps = (state) => ({
 
 })
 const mapDispatchToProps = (dispatch) => ({
-    updateTranscationStatus: (id, status,paidAmount,returnAmount,creditAmount) => dispatch({ type: UPDATE_TRANSCATION_STATUS, payload: { id, data: { status,creditAmount ,paidAmount,returnAmount} } }),
+    updateTranscationStatus: (id, status, paidAmount, returnAmount, creditAmount) => dispatch({ type: UPDATE_TRANSCATION_STATUS, payload: { id, data: { status, creditAmount, paidAmount, returnAmount } } }),
     getTransaction: (id) => dispatch({ type: GET_TRANSCATION_DETAILS, payload: { id } })
 
 })

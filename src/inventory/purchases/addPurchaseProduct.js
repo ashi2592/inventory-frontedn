@@ -29,9 +29,6 @@ const AddPurchaseProductpage = ({
             setOpenAddModal(false)
         })
             .catch(function (err) {
-                err.name; // => 'ValidationError'
-                err.errors; // => ['Deve ser maior que 18']
-                console.log(err)
                 alertMessage('error', err.message)
             });
     }

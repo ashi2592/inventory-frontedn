@@ -4,14 +4,15 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { ADD_VARIANT, ALERT_NOTIFY, GET_VARIANT_LIST } from "../../redux/actions";
 import ProductVariantListPage from "./variantList";
-import TableLoaderPage from "../../components/TableLoader";
 import TableNoRecordFound from "../../components/TableNoRecordFound";
 import CreateVariantPageModal from "./addVariants";
 import { useParams } from "react-router-dom";
 import Productviewsteps from "../Products/Productviewsteps";
+import { useHistory } from "react-router-dom";
 
 const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, loading }) => {
 
+    const history  = useHistory()
     const { id } = useParams()
     let [inputs, setInputs] = useState({});
     let [openVarintModel, setVariantModel] = useState(false);
@@ -35,13 +36,15 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
         setOpen(true)
     }
 
+    const handleNavigateList = () => {
+        history.push('/product')
+    }
+
 
 
     return (
-        (<Container >
-            <Header>
-                Product Variants
-            </Header>
+        (<Container fluid>
+          
 
             <Grid columns={2} stackable>
                 <GridRow>
@@ -49,7 +52,8 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
                         <Productviewsteps productId={id} page='variant'></Productviewsteps>
                     </GridColumn>
                     <GridColumn largeScreen={8} mobile={6} textAlign="right">
-                        <Button color="blue" size="mini" onClick={handleAddVariant}><Icon name="plus"></Icon>Add New Variants</Button>
+                    <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back</Button>
+                        <Button color="blue"  onClick={handleAddVariant}><Icon name="plus"></Icon>Add New Variants</Button>
                     </GridColumn>
                 </GridRow>
             </Grid>

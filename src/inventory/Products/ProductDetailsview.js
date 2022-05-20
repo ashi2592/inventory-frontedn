@@ -44,49 +44,25 @@ const ProdutDetailsView = ({ product,
         deleteProduct(id)
     }
 
-    const debounceFn = useCallback(_.debounce(handleDebounceFn, 1000), []);
 
-
-    const handleUpdateFunction = (id, key, value) => {
+    const handleUpdateFunction = (event) => {
         // console.log(id,key,value)
-        setinputs({ ...inputs, [key]: value })
-        debounceFn(key, value, inputs)
+        event.preventDefault()
+
+        let name = event.target.name;
+        let value = event.target.value;
+
+        setinputs({ ...inputs, [name]: value })
     }
 
 
 
-    function handleDebounceFn(key, value, inputs) {
-        let newProduct = { ...inputs, status: true };
 
-        // newProduc.barcodes = product;
-        delete newProduct.__v;
-        delete newProduct.createdAt
-        delete newProduct.productSupplierObj
-        delete newProduct.productSizeObj
-        delete newProduct.productTypeObj
-        delete newProduct.productColorObj
-        delete newProduct.productCategoryObj
-        delete newProduct.productBrandObj;
-        delete newProduct.barcodes
-        setinputs({ ...newProduct, [key]: value })
-
-    }
 
     const handleDropDownChanges = (key, value) => {
         // alert(JSON.stringify({ key, value }))s
         // setInputs(values => { return { ...values, [name]: value } });
-        let newProduct = { ...inputs, status: true };
-        delete newProduct.__v;
-        delete newProduct.createdAt
-        delete newProduct.productSupplierObj
-        delete newProduct.productSizeObj
-        delete newProduct.productTypeObj
-        delete newProduct.productColorObj
-        delete newProduct.productCategoryObj
-        delete newProduct.productBrandObj
-        delete newProduct.barcodes
-        delete newProduct.productPurchasePrice
-        // delete newProduct.priceType
+        let newProduct = { ...inputs};
         setinputs({ ...newProduct, [key]: value })
 
 
@@ -100,7 +76,15 @@ const ProdutDetailsView = ({ product,
 
     useEffect(() => {
         if (check) {
-            updateProduct(product._id, inputs)
+            console.log(inputs)
+            let newProduct = { ...inputs };
+            delete newProduct.__v;
+            delete newProduct._id;
+            delete newProduct.createdAt
+            delete newProduct.productBrandObj
+            delete newProduct.productCategoryObj
+            delete newProduct.barcodes
+            updateProduct(product._id, newProduct)
             setTimeout(() => {
                 alertMessage('success', `Product update successfully`)
             }, 1000)
@@ -138,7 +122,7 @@ const ProdutDetailsView = ({ product,
 
 
     return (
-        (<Container>
+        (<Container fluid>
 
 
             <Grid columns={2} stackable>

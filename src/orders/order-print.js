@@ -5,11 +5,12 @@ import { useParams } from "react-router-dom";
 import { GET_TRANSCATION_DETAILS } from "../redux/actions";
 
 import ReactToPrint from 'react-to-print';
-import InvoiceTemplaate from "./invoice";
+
 import "./order-print.css";
 import { Button, Card, Container, Grid, Icon } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
-import TwoInchInvoiceTemplaate from "./twoinchinvoice";
+import TwoInchInvoiceTemplaate from "./invoice/twoinchinvoice";
+import InvoiceTemplaate from "./invoice/invoice";
 
 const OrderPrint = ({
     transcation,
@@ -51,12 +52,9 @@ const OrderPrint = ({
                    
                     <Button color="green" onClick={() => handleAddOrder()} > <Icon name={'plus'}></Icon>  Add New Order</Button>
                     <Button color="orange" onClick={() => handleViewOrder(orderId)} > <Icon name={'eye'}></Icon>  View Order</Button>
-                    <ReactToPrint
-                        trigger={() => <Button  color={"red"}> <Icon name={'print'}></Icon> Print</Button>}
-                        content={() => componentRef.current}
-                    />
+                   
                      <ReactToPrint
-                        trigger={() => <Button  color={"red"}> <Icon name={'print'}></Icon> Print 2 inch Invoice</Button>}
+                        trigger={() => <Button  color={"red"}> <Icon name={'print'}></Icon> Print Invoice</Button>}
                         content={() => samllInvoicecomponentRef.current}
                     />
                 </Grid.Column>
@@ -65,9 +63,7 @@ const OrderPrint = ({
         </Grid>
 
         <Card fluid>
-            <Card.Content>
-                <InvoiceTemplaate transcation={transcation} ref={componentRef}></InvoiceTemplaate>
-            </Card.Content>
+           
             <Card.Content>
                 <TwoInchInvoiceTemplaate transcation={transcation} ref={samllInvoicecomponentRef}></TwoInchInvoiceTemplaate>
             </Card.Content>

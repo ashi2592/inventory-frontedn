@@ -70,10 +70,10 @@ export const DeleteFunction = async (id) => {
 }
 
 
-export const getPurchaseTransaction = async (id) => {
+export const getPurchaseTransaction = async (id,pageno,count) => {
 
     try {
-        const response = await DispatchRequest.get(`${type}/purchase/${id}`);
+        const response = await DispatchRequest.get(`${type}/purchase/${id}?page=${pageno}&count=${count}`);
         return response.data;
     } catch (error) {
         throw error;

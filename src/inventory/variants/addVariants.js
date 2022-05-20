@@ -50,8 +50,6 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
         })
 
             .catch(function (err) {
-                err.name; // => 'ValidationError'
-                err.errors; // => ['Deve ser maior que 18']
                 setErrorText(err.name + "=>" + err.errors)
                 setFormError(true)
             });

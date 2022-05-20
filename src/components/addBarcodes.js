@@ -8,10 +8,13 @@ const AddBarcodesMOdal = ({
     setOpen,
     open,
     product,
-    purchaseId,
     addBarcode,
     barcodes,
-    deleteBarcode
+    deleteBarcode,
+    variantId,
+    productId,
+    purchaseProductId,
+    purchaseId,
 }) => {
 
     const [barcode, setBarcode] = useState('');
@@ -37,13 +40,11 @@ const AddBarcodesMOdal = ({
     useEffect(() => {
         if (updatedBarcode) {
 
-            let { variantId, productId, _id } = product;
-
             let data = {
                 variantId,
                 productId,
                 barcode,
-                purchaseProductId: _id,
+                purchaseProductId,
                 purchaseId
 
             }

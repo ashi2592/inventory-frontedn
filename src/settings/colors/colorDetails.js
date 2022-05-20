@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button, Checkbox, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Table } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Container, Divider, Form, Grid, GridColumn, GridRow, Header, Icon, Input, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import { DELETE_COLOR, GET_COLOR_DETAILS, UPDATE_COLOR } from "../../redux/actions";
@@ -12,8 +12,12 @@ const ColorDetails = ({ color, deleteColor, updateColor, getColor }) => {
 
     const { id } = useParams();
     const history = useHistory()
+    const [inputs, setInputs] = useState({})
 
-    
+
+    useEffect(() => {
+        setInputs(color)
+    }, [color])
 
     useEffect(() => {
         getColor(id)
@@ -23,11 +27,19 @@ const ColorDetails = ({ color, deleteColor, updateColor, getColor }) => {
         deleteColor(id)
     }
 
-    const handleUpdateFunction = (id, key, value) => {
-        updateColor(id, { ...color, [key]: value })
+    const handleChange = (event) => {
+        event.preventDefault()
+        let name = event.target.name;
+        let value = event.target.value;
+        setInputs(values => { return { ...values, [name]: value, } });
     }
 
-    const handleBack = ()=>{
+    const handleUpdateFunction = () => {
+        let {colorName, colorCode} = inputs
+        updateColor(id, {colorName, colorCode})
+    }
+
+    const handleBack = () => {
         history.push(`/colors`)
     }
     const handleAddColor = () => {
@@ -79,6 +91,35 @@ const ColorDetails = ({ color, deleteColor, updateColor, getColor }) => {
                                         {color.colorName}
                                     </Table.Cell>
 
+                                </Table.Row>
+                                <Table.Row>
+                                    <Table.Cell>
+                                        Color Code
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {color.colorCode}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Form.Group widths={'equal'}>
+
+                                        <Form.Field
+                                            id="form-input-control-color-code"
+                                            control={Input}
+                                            placeholder='Enter Color Code'
+                                            onChange={handleChange}
+                                            name={'colorCode'}
+                                            autoFocus={true}
+                                            value={inputs.colorCode}
+                                        />
+
+                                       
+                                        </Form.Group>
+                                        
+                                    </Table.Cell>
+                                    
+                                    <Table.Cell>
+                                    <Button onClick={handleUpdateFunction} color="orange"> <Icon name="save"></Icon></Button>
+                                    </Table.Cell>
                                 </Table.Row>
 
                             </Table.Body>

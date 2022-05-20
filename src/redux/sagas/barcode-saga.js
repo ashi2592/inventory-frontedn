@@ -34,7 +34,7 @@ function* getBarcodes({payload}) {
 function* getBarcode({ payload }) {
     try{
         yield put({type: SET_LOADING})
-        const category = yield call(getDeatils,payload.id);
+        const category = yield call(getDeatils,payload.barcode);
         yield put({ type: GET_BARCODE_DETAILS_SUCCESS, payload: category })
     }catch(err){
         yield put({ type: SET_ERROR, payload: err })

@@ -58,8 +58,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
 
         let name = event.target.name;
         let value = event.target.value;
-        // alert(name + '==========' + value)
-        setInputs(values => { return { ...values, [name]: value } });
+         setInputs(values => { return { ...values, [name]: value } });
 
     }
 
@@ -87,7 +86,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
         })
 
         let x = { ...inputs, productName: name }
-        alert(JSON.stringify(x))
+       
         addProduct(x);
 
     }
@@ -109,15 +108,16 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
 
 
     return (
-        <Container>
+        <Container fluid>
             <Header>Add Product</Header>
             <Grid stackable>
                 <GridRow>
-                    <GridColumn largeScreen={6}>
-                        <Button color='orange' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back to Product List</Button>
+                    <GridColumn largeScreen={8}>
                     </GridColumn>
                     <GridColumn largeScreen={8} textAlign="right">
-                        <Button color='green' onClick={() => { handleSubmit() }}> <Icon name="arrow plus"></Icon> Create Product</Button>
+                    <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back </Button>
+                    
+                        <Button color='blue' onClick={() => { handleSubmit() }}> <Icon name="save"></Icon> Save</Button>
 
                     </GridColumn>
                 </GridRow>

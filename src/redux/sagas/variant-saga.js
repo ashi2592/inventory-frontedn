@@ -83,7 +83,7 @@ function* deletePattern({ payload }) {
 function* getPurchaseTranscation({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        const data = yield call(getPurchaseTransaction, payload.id);
+        const data = yield call(getPurchaseTransaction, payload.id,payload.page,payload.count);
         yield put({ type: VARIANT_PURCHASE_SUCCESS, payload: data })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })

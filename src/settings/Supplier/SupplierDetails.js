@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Table } from "semantic-ui-react";
+import React, { useEffect, useState } from "react";
+import { Button, Container, Divider, Form, Grid, GridColumn, GridRow, Header, Icon, Input, Table } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
@@ -14,14 +14,27 @@ const CategoryDetailsPage = ({ supplier, deleteSupplier, updateSupplier, getSupp
     const history = useHistory()
 
 
+    const [inputs, setInputs] = useState({})
 
     useEffect(() => {
         getSupplier(id)
     }, [id])
 
+    useEffect(()=>{
+        setInputs(supplier)
+    },[supplier])
+
+
+
     const handleDeleteCategory = (id) => {
         deleteSupplier(id)
     }
+
+    const handleChange = (key,value) => {
+        setInputs(values => { return { ...values, [key]: value } })
+  
+    }
+
 
     const handleUpdateFunction = (id, key, value) => {
         updateSupplier(id, { ...supplier, [key]: value })
@@ -63,62 +76,86 @@ const CategoryDetailsPage = ({ supplier, deleteSupplier, updateSupplier, getSupp
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Supplier ID
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {supplier._id}
-                                    </Table.Cell>
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier Name
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-name"
+                                                control={Input}
+                                                placeholder='Enter Supplier Name'
+                                                onChange={handleChange}
+                                                name={'supplierName'}
+                                                autoFocus={true}
+                                                value={inputs.supplierName}
+                                            />
+                                        </Table.Cell>
 
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Supplier Name
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {supplier.supplierName}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name="edit" onClick={{}}></Icon>
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Supplier Contact
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {supplier.contact}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name="edit" onClick={{}}></Icon>
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Supplier location
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {supplier.location}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name="edit" onClick={{}}></Icon>
-                                    </Table.Cell>
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        Supplier address
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {supplier.address}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Icon name="edit" onClick={{}}></Icon>
-                                    </Table.Cell>
-                                </Table.Row>
-                                
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier contact
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-contact"
+                                                control={Input}
+                                                placeholder='Enter Supplier Contact'
+                                                onChange={handleChange}
+                                                name={'contact'}
+                                                autoFocus={true}
+                                                value={inputs.contact}
+                                            />
+                                        </Table.Cell>
 
-                            </Table.Body>
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier location
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-contact"
+                                                control={Input}
+                                                placeholder='Enter Supplier location'
+                                                onChange={handleChange}
+                                                name={'location'}
+                                                autoFocus={true}
+                                                value={inputs.location}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier Address
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-address"
+                                                control={Input}
+                                                placeholder='Enter Supplier Address'
+                                                onChange={handleChange}
+                                                name={'address'}
+                                                autoFocus={true}
+                                                value={inputs.address}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
+
+                                    <Table.Row>
+                                        <Table.Cell colSpan={2} textAlign="right">
+                                            <Button type='submit' color="green"> <Icon name="add"></Icon>Create</Button>
+                                        </Table.Cell>
+
+
+                                    </Table.Row>
+                                </Table.Body>
 
                         </Table>
                     </GridColumn>

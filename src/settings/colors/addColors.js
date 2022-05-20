@@ -77,6 +77,22 @@ const AddColor = ({ add,alertMessage }) => {
                                         </Table.Cell>
 
                                     </Table.Row>
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Color Code
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-color-code"
+                                                control={Input}
+                                                placeholder='Enter Color Code'
+                                                onChange={handleChange}
+                                                name={'colorCode'}
+                                                autoFocus={true}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
 
                                 
 

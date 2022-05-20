@@ -78,6 +78,23 @@ const AddBrandPage = ({ add,alertMessage }) => {
 
                                     </Table.Row>
 
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Brand Image
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-brand-name"
+                                                control={Input}
+                                                placeholder='Enter image url'
+                                                onChange={handleChange}
+                                                name={'imageUrl'}
+                                                autoFocus={true}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
                                 
 
                                     <Table.Row>

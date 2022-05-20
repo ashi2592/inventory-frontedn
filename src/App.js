@@ -5,13 +5,12 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import Product from './inventory/Products'
 import BarCodeExample from './orders/barcode';
 
-import Orders from './orders/orders';
+import Orders from './inventory/Order';
 import DashboardAdmin from './dashboard/dashboard';
 import ProductDetails from './inventory/Products/ProductDetailsview';
 import addProduct from './inventory/Products/addProduct';
 import ProductVariantPage from './inventory/variants/variants'
 import OrderPrint from './orders/order-print';
-import InvoiceSmallPrint from './orders/order-small-print';
 
 import transcation from './inventory/transcation/index';
 import TranscationDetails from './inventory/transcation/transcationDetails';
@@ -54,6 +53,7 @@ import PatternDetailsPage from './settings/patterns/patternDetails';
 import AddPuchasepage from './inventory/purchases/addPurchase'
 import purchases from './inventory/purchases';
 import ViewPuchasepage from './inventory/purchases/viewPurchaseProduct';
+import VariantPurchaseProduct from './inventory/purchases/VariantPurchaseProduct';
 
 
 
@@ -91,7 +91,6 @@ class App extends Component {
 
           <PrivateRoute exact path='/order' component={Orders} />
           <PrivateRoute exact path='/order/print/:orderId' component={OrderPrint} />
-          <PrivateRoute exact path='/order/print2/:orderId' component={InvoiceSmallPrint} />
           <PrivateRoute exact path='/order/thanks' component={OrderThanks} />
 
           <PrivateRoute exact path='/customer' component={CustomersListPage} />
@@ -139,10 +138,8 @@ class App extends Component {
 
           <PrivateRoute exact path='/purchase' component={purchases} />
           <PrivateRoute exact path='/purchase/add' component={AddPuchasepage} />
+          <PrivateRoute exact path='/purchase/variant/:id' component={VariantPurchaseProduct} />
           <PrivateRoute exact path='/purchase/:id' component={ViewPuchasepage} />
-
-
-
 
           <PrivateRoute exact path='/logout' component={Logout} />
           <PrivateRoute component={NoMatch} path="*" />

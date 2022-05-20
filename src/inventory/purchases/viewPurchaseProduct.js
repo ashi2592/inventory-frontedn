@@ -35,11 +35,14 @@ const ViewPuchasepage = ({
     return (
         <Container>
             <AddBarcodes
-                product={selectedProduct}
-                purchaseId={id}
                 setOpen={setBarcodeModal}
                 open={openBarcodeModal}
                 barcodes={barcodes}
+                variantId={selectedProduct.variantId}
+                productId={selectedProduct.productId}
+                purchaseProductId={selectedProduct._id}
+                purchaseId={id}
+
             ></AddBarcodes>
             <Grid columns={3} stackable>
 

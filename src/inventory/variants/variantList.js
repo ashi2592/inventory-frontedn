@@ -11,6 +11,7 @@ import SearchAndSelectPatterns from "../../components/SearchAndSelectPatterns";
 import { connect } from "react-redux";
 import { DELETE_VARIANT, GET_VARIANT_LIST, UPDATE_VARIANT } from "../../redux/actions";
 import UpdateVariantPageModal from "./updateVariants";
+import { Link } from "react-router-dom";
 
 const ProductVariantListPage = ({ productId, variant, updateVariants, deleteVariants }) => {
 
@@ -57,7 +58,7 @@ const ProductVariantListPage = ({ productId, variant, updateVariants, deleteVari
                
             </TableCell>
             <TableCell>
-                {inputs.qty}
+                <Link to={`/purchase/variant/${inputs._id}`}> {inputs.qty}</Link>
             </TableCell>
 
             <TableCell>

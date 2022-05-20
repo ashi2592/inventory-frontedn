@@ -1,0 +1,13 @@
+[data-simplebar] {
+    /* position: relative; */
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+}
+* {
+    font-size: 13px;
+    font-weight: 500;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }

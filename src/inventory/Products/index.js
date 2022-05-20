@@ -146,7 +146,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                         (Object.keys(searchInputsText) || []).map(x => (<Label>{x.toUpperCase()} :  {searchInputsText[x]} <Icon onClick={() => handledeleteFiltericon(searchInputsText[x], x)} name={'close'}></Icon></Label>))
                     }
                     </div>
-                    <Button active={true} onClick={handleAddProduct} color={'green'}><Icon name="plus"></Icon> Add product</Button>
+                    <Button active={true} onClick={handleAddProduct} color={'blue'}><Icon name="plus"></Icon> Add product</Button>
                 </GridColumn>
             </GridRow>
         </Grid>
@@ -154,14 +154,14 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
         <Divider></Divider>
         <Table celled >
-            <TableHeader Headers={['Image','Product Name', 'Brand', 'Category', 'Action']}></TableHeader>
+            <TableHeader Headers={['Image', 'Product Name', 'Brand', 'Category', 'Action']}></TableHeader>
 
 
             <TableBody>
-        
+
                 <TableRow>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
                     <TableCell>
                         <SearchAndSelectBrand
                             handleDropDownChanges={handleSearchDropDownChanges}
@@ -185,12 +185,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                     <TableCell>
 
                     </TableCell>
-                    <TableCell>
 
-                    </TableCell>
-                    <TableCell>
-
-                    </TableCell>
 
                 </TableRow>
 
@@ -198,15 +193,15 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
                 {(loading === false && products.length === 0) && (<TableNoRecordFound></TableNoRecordFound>)}
 
                 {loading === false && products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0}>
-                <TableCell><Image src="./thumb/Jeans.png" size="mini"></Image></TableCell>
+                    <TableCell><Image src={x.productCategoryObj ? x.productCategoryObj.imageUrl : ''} size="mini"></Image></TableCell>
                     <TableCell>{x.productName}</TableCell>
                     <TableCell>{x.productBrandObj ? x.productBrandObj.brandName : ''} </TableCell>
                     <TableCell>{x.productCategoryObj ? x.productCategoryObj.categoryName : ''} </TableCell>
                     <TableCell>
                         <Icon name="eye" onClick={() => { handleViewProduct(x._id) }}></Icon>
-                      
+
                     </TableCell></TableRow>))}
-            </TableBody>
+            </TableBody>    
             <Table.Footer fullWidth>
                 <TableRow>
                     <TableCell>

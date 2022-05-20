@@ -1,5 +1,6 @@
 // LOGIN STATUS
 export const isLogin = () => {
-    if (localStorage.getItem('storeId')) return true;
+    let token =  window.localStorage.getItem('token');
+    if (window.localStorage.getItem('storeId') &&  token && token != null ) return true;
     return false;
 }

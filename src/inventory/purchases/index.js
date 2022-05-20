@@ -11,7 +11,7 @@ const PurchasePage = ({ getPurchase, purchases }) => {
    
     const history = useHistory();
     const handleAdd = () => {
-        history.push('add')
+        history.push('/purchase/add')
     }
     useEffect(() => {
         getPurchase(1, 100, '')
@@ -24,19 +24,19 @@ const PurchasePage = ({ getPurchase, purchases }) => {
     }
    
 
-    return (<Container>
+    return (<Container fluid>
 
-      
+<Header>Purchases</Header>
 
         <Grid columns={2} stackable>
             <GridRow >
                 <GridColumn>
-                    <Header>Purchases</Header>
+                    
                 </GridColumn>
 
                 <GridColumn textAlign="right">
 
-                    <Button size="small" color="green" onClick={() => handleAdd()}> <Icon name="plus"></Icon> Create New Order</Button>
+                    <Button color="blue" onClick={() => handleAdd()}> <Icon name="plus"></Icon> Add New</Button>
                 </GridColumn>
 
             </GridRow>

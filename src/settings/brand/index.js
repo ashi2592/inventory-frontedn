@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Input, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Segment, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import AddBrand from "./addBrand";
 import BrandDetails from "./brandDetails";
@@ -101,13 +101,19 @@ const Brand = ({ getBrands, getBrand, brands, brand, pagination, loading }) => {
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Id', 'Name', 'Status', 'Action']}></TableHeader>
+                    <TableHeader Headers={['Id','Image', 'Name', 'Status', 'Action']}></TableHeader>
 
 
                     <TableBody>
                         {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
                         {(loading == false && brands.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
-                        {!loading && (brands || []).map(x => (<TableRow key={'brand-' + x._id}><TableCell >{x._id}</TableCell><TableCell >{x.brandName}</TableCell><TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell><TableCell><Icon name="eye" onClick={() => { handleViewBrand(x._id) }}></Icon></TableCell></TableRow>))}
+                        {!loading && (brands || []).map(x => (
+                        <TableRow key={'brand-' + x._id}>
+                            <TableCell >{x._id}</TableCell>
+                            <TableCell ><Image src={x.imageUrl} size="tiny"></Image></TableCell>
+                            <TableCell >{x.brandName}</TableCell>
+                            <TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell>
+                            <TableCell><Icon name="eye" onClick={() => { handleViewBrand(x._id) }}></Icon></TableCell></TableRow>))}
                     </TableBody>
 
                 </Table>

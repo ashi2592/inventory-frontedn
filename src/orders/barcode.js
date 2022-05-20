@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import CreateBarcode from "./CreateBarcode";
 import ReactToPrint from 'react-to-print';
-import "./print-component.css";
 
 function BarCodeApp() {
   const componentRef = useRef();

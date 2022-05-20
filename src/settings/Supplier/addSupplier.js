@@ -5,7 +5,7 @@ import { ADD_SUPPLIER, ALERT_NOTIFY } from "../../redux/actions";
 import { useHistory } from "react-router-dom";
 import SettingSidebarPage from "../settingSidebar";
 
-const AddSupplierPage = ({ add,alertMessage }) => {
+const AddSupplierPage = ({ add, alertMessage }) => {
 
     const history = useHistory()
     const [formload, setFormLoad] = useState(false);
@@ -29,9 +29,9 @@ const AddSupplierPage = ({ add,alertMessage }) => {
         setTimeout(() => {
             alertMessage('success', `Add successfully`)
             history.push('/supplier')
-           
+
         }, 300);
-        
+
     }
 
     const handleAdd = () => {
@@ -50,7 +50,7 @@ const AddSupplierPage = ({ add,alertMessage }) => {
                 </GridColumn>
                 <GridColumn textAlign="right">
 
-                <Button color="orange" onClick={handleAdd}><Icon name="left arrow"></Icon> Back to Listing</Button>
+                    <Button color="orange" onClick={handleAdd}><Icon name="left arrow"></Icon> Back to Listing</Button>
                 </GridColumn>
             </GridRow>
         </Grid>
@@ -63,7 +63,7 @@ const AddSupplierPage = ({ add,alertMessage }) => {
                                 <Table.Body>
                                     <Table.Row>
                                         <Table.Cell>
-                                        Supplier Name
+                                            Supplier Name
                                         </Table.Cell>
                                         <Table.Cell>
                                             <Form.Field
@@ -73,12 +73,65 @@ const AddSupplierPage = ({ add,alertMessage }) => {
                                                 onChange={handleChange}
                                                 name={'supplierName'}
                                                 autoFocus={true}
+                                                value={inputs.supplierName}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier contact
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-contact"
+                                                control={Input}
+                                                placeholder='Enter Supplier Contact'
+                                                onChange={handleChange}
+                                                name={'contact'}
+                                                autoFocus={true}
+                                                value={inputs.contact}
                                             />
                                         </Table.Cell>
 
                                     </Table.Row>
 
-                                
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier location
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-contact"
+                                                control={Input}
+                                                placeholder='Enter Supplier location'
+                                                onChange={handleChange}
+                                                name={'location'}
+                                                autoFocus={true}
+                                                value={inputs.location}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            Supplier Address
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Field
+                                                id="form-input-control-supplier-address"
+                                                control={Input}
+                                                placeholder='Enter Supplier Address'
+                                                onChange={handleChange}
+                                                name={'address'}
+                                                autoFocus={true}
+                                                value={inputs.address}
+                                            />
+                                        </Table.Cell>
+
+                                    </Table.Row>
+
 
                                     <Table.Row>
                                         <Table.Cell colSpan={2} textAlign="right">

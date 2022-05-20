@@ -1,6 +1,7 @@
 import _, { parseInt } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { Button, Card, Container, Divider, Grid, GridColumn, GridRow, Header, Icon, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from "semantic-ui-react";
 import { purchaseProductSchema } from "../../constant/validationSchema";
 import { ADD_PURCHASE, ALERT_NOTIFY } from "../../redux/actions";
@@ -11,6 +12,7 @@ const AddPuchasepage = ({
     alertMessage,
     addPurchase
 }) => {
+    const history = useHistory()
     const [purchases, setPurchases] = useState({delivery:0})
     const [products, setProducts] = useState([])
     const [inputs, setInputs] = useState({ productId: "", variantId: "", qty: 1, purchasePrice: "", tax: 5, mrp: "", sellPrice: "", productText: "", variantText: "" });
@@ -65,6 +67,7 @@ const AddPuchasepage = ({
 
         purchaseProductSchema.validate(purchases).then(res=>{
             addPurchase(purchases)
+            history.push('/purchase')
         }).catch(err=>{
             console.log(err)
         })
@@ -74,12 +77,13 @@ const AddPuchasepage = ({
 
 
     return (
-        <Container>
+        <Container fluid>
+               <Header>Add Purchase Invoice</Header>
 
             <Grid columns={2} stackable>
                 <GridRow >
                     <GridColumn>
-                        <Header>Add Purchase Invoice</Header>
+                     
                     </GridColumn>
 
                     <GridColumn textAlign="right">

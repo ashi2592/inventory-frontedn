@@ -1,24 +1,31 @@
 import React, { useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { isLogin } from './Auth';
-
 import { useEffect } from "react";
-import AlertMessage from "../components/AlretMessage";
-import { Container } from "semantic-ui-react";
-import Loader from '../components/Loader';
-import NavBarMobile from '../layout/TopNav';
+import Navbar from '../layout/Navbar'
+import Sidebar from '../layout/Sidebar';
+import { Container, Grid, Loader } from 'semantic-ui-react';
+import SimpleBar from 'simplebar-react';
 
-const MainLayout = ({ children }) => {  
+const MainLayout = ({ children }) => {
 
+    const [toggleBtn, setToggleBtn] = useState(true);
+    const toggle = () => setToggleBtn(val => !val);
 
-    return (<NavBarMobile>
-        <Container className='topheadermargin' >
-
+    return (
+        <Container className="top-wrapper" >
+            <Navbar setToggle={toggle} />
+            <Sidebar toggleBtn={toggleBtn} />
             <Loader></Loader>
-            <AlertMessage></AlertMessage>
-            {children}
+            <div className={`${toggleBtn ? "app-wrapper collapse" : "app-wrapper"}`}>
+                <SimpleBar style={{ maxHeight: 650 }}>
+                    {children}
+                </SimpleBar>
+
+            </div>
         </Container>
-    </NavBarMobile>)
+    )
+
 }
 
 
@@ -42,7 +49,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     return (
         // Show the component only when the user is logged in
         // Otherwise, redirect the user to /signin page
-        <Route {...rest} render={props => (isLogin() ? <MainLayout><Component {...props} isMobile={isMobile}/></MainLayout> : <Redirect to="/" />)} />
+        <Route {...rest} render={props => (isLogin() ? <MainLayout><Component {...props} isMobile={isMobile} /></MainLayout> : <Redirect to="/" />)} />
     )
 }
 export default PrivateRoute;

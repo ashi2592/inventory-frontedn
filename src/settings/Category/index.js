@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Input, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
+import { Button, Container, Grid, GridColumn, GridRow, Header, Icon, Image, Input, Table, TableBody, TableCell, TableRow } from "semantic-ui-react";
 import TableHeader from "../../layout/TableHeader";
 import PropTypes from 'prop-types';
 
@@ -37,22 +37,22 @@ const Category = ({ getCategories, getCategory, categories, category, pagination
         history.push(`/category/${id}`)
     }
     const handlePaginationChange = (e, { activePage }) => {
-        getCategories(activePage, 10, searchText)
+        getCategories(activePage, 50, searchText)
     }
 
     useEffect(() => {
-        getCategories(1, 10, searchText)
+        getCategories(1, 50, searchText)
     }, [])
 
     useEffect(() => {
-        let ellipsis = pagination.totalPages > 10 ? undefined : null;
+        let ellipsis = pagination.totalPages > 50 ? undefined : null;
         setEllipsisItem(ellipsis)
         setTotalPages(pagination.totalPages)
         SetActivePage(pagination.currentPage)
     }, [categories, pagination])
 
     useEffect(() => {
-        getCategories(1, 10, searchText)
+        getCategories(1, 50, searchText)
 
     }, [searchText])
 
@@ -93,17 +93,15 @@ const Category = ({ getCategories, getCategory, categories, category, pagination
                     {searchText && `Search Results of  ${searchText}`}
                 </p>
                 <Table celled>
-                    <TableHeader Headers={['Id', 'Name', 'Parent', 'TAX (Gst)', 'HSN Code','Status', 'Action']}></TableHeader>
+                    <TableHeader Headers={['Image', 'Name','Status', 'Action']}></TableHeader>
                     <TableBody>
                         {loading && <TableLoaderPage colSpan={4}></TableLoaderPage>}
                         {(loading == false && categories.length == 0) && (<TableNoRecordFound></TableNoRecordFound>)}
                         {categories.map(x => (<TableRow key={'category-' + x._id}>
-                            <TableCell >{x._id}</TableCell>
+                         
+                            <TableCell ><Image src={x.imageUrl} size="mini"></Image></TableCell>
                             <TableCell >{x.categoryName}</TableCell>
-                            <TableCell >{x.parent?x.parent:''}</TableCell>
-                            <TableCell >{x.taxPercent}</TableCell>
-                            <TableCell >{x.hsncode}</TableCell>
-                        
+                            
 
                             <TableCell >{x.status ? 'Enable' : 'Disable'}</TableCell>
                             <TableCell><Icon name="eye" onClick={() => { handleViewCategory(x._id) }}></Icon></TableCell>

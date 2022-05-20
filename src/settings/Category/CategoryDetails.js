@@ -27,16 +27,12 @@ const CategoryDetailsPage = ({ category, deleteCategory, updateCategory, getCate
 
     const handleDeleteCategory = (id) => {
         deleteCategory(id)
+        history.push(`/category`)
     }
 
     const handleChange = (key,value) => {
         let values = { ...inputs, [key]: value }
-        if(value == '')
-        {
-            delete values[key]
-        }
-        console.log(values)
-        // setInputs(values => { return { ...values, [key]: value } })
+        setInputs(values => { return { ...values, [key]: value } })
   
     }
 
@@ -48,7 +44,8 @@ const CategoryDetailsPage = ({ category, deleteCategory, updateCategory, getCate
 
         // console.log(inputs)
         let Categorydata = {...inputs}
-        updateCategory(id, Categorydata)
+        updateCategory(id, Categorydata);
+        handleBack()
     }
 
     const handleBack = () => {
@@ -127,54 +124,20 @@ const CategoryDetailsPage = ({ category, deleteCategory, updateCategory, getCate
 
                                 </Table.Row>
 
+                               
                                 <Table.Row>
                                     <Table.Cell>
-                                        Parent Category
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <SearchAndSelectCateory
-                                            handleDropDownChanges={handleSearchDropDownChanges}
-                                            placeholder={'Select Parent Category'}
-                                            dropdownName={'parent'}
-                                            value={inputs.parent}
-                                            clearable={true}
-
-                                        >
-
-                                        </SearchAndSelectCateory>
-                                    </Table.Cell>
-
-                                </Table.Row>
-
-                                <Table.Row>
-                                    <Table.Cell>
-                                        GST Tax Percent
+                                        Image Url
                                     </Table.Cell>
                                     <Table.Cell>
                                         <Form.Field
-                                            id="form-input-control-taxPercent"
+                                            id="form-input-control-imageUrl"
                                             control={Input}
-                                            placeholder='Enter Tax Percentage'
-                                            onChange={(e)=> handleChange('taxPercent', e.target.value)}
-                                            name={'taxPercent'}
-                                            value={inputs.taxPercent}
-
-                                        />
-                                    </Table.Cell>
-
-                                </Table.Row>
-                                <Table.Row>
-                                    <Table.Cell>
-                                        HSN Code
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <Form.Field
-                                            id="form-input-control-hsncode"
-                                            control={Input}
-                                            placeholder='Enter HSN Code'
-                                            onChange={(e)=> handleChange('hsncode', e.target.value)}
-                                            name={'hsncode'}
-                                            value={inputs.hsncode}
+                                            placeholder='Enter Image url'
+                                            onChange={(e)=> handleChange('imageUrl', e.target.value)}
+                                            name={'imageUrl'}
+                                            value={inputs.imageUrl}
+                                            defaultValue={`./thumb/${inputs.categoryName?inputs.categoryName.toLowerCase():''}.png`}
                                         />
                                     </Table.Cell>
 

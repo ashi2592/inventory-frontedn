@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import "simplebar/dist/simplebar.css";
+import 'semantic-ui-css/semantic.min.css'
 import './index.css';
 import App from './App';
-
-import 'react-pro-sidebar/dist/css/styles.css';
-import 'semantic-ui-css/semantic.min.css'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { applyMiddleware, createStore } from 'redux';
