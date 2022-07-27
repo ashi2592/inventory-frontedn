@@ -20,6 +20,8 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
         }
     };
 
+    // changes
+
     const history = useHistory()
     const [transcationData, setTranscation] = useState({})
     const [cart, setCart] = useState([])
