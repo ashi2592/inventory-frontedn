@@ -85,7 +85,11 @@ const AddPurchaseProductpage = ({
             newsearch = { ...newsearch, 'productText': textContent }
         }
         else {
-            newsearch = { ...newsearch, 'variantText': textContent }
+
+            let articleNoOnj = textContent.split(":");
+            let articleNo = articleNoOnj?articleNoOnj[0]:"fhub"
+
+            newsearch = { ...newsearch, 'variantText': textContent,'articleNo':articleNo }
         }
         setInputs(newsearch)
     }
@@ -258,9 +262,6 @@ const AddPurchaseProductpage = ({
                                             ></Input>
                                         </Form.Field>
                                     </Form.Group>
-
-
-
 
                                 </GridColumn>
                             </GridRow>

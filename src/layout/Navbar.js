@@ -26,7 +26,7 @@ const Navbar = ({ setToggle }) => {
         </div>
       </div>
       <div className="left">
-        <Icon name="logout" onClick={handleLogout}></Icon>
+        <Icon name="sign-out" onClick={handleLogout}></Icon>
       </div>
     </div>
   );

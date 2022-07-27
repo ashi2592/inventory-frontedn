@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Message, Modal } from 'semantic-ui-react'
+import { Button, Form, Input, Message, Modal } from 'semantic-ui-react'
 import SearchAndSelectColor from '../../components/SearchAndSelectColor'
 import SearchAndSelectLength from '../../components/SearchAndSelectLength';
 import SearchAndSelectPatterns from '../../components/SearchAndSelectPatterns';
@@ -15,7 +15,7 @@ let validtionOptions = {
     recursive: true
 }
 
-function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, alertMessage }) {
+function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, alertMessage,handleUpdateList }) {
 
     let [inputs, setInputs] = useState({
         productPattern: '',
@@ -25,15 +25,22 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
         productColor: '',
 
     });
-   let [formError, setFormError] = useState(false);
+    let [formError, setFormError] = useState(false);
     let [errorText, setErrorText] = useState('');
 
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(inputs)
-    },[inputs])
+    }, [inputs])
 
 
+    const handleChange = (event) => {
+        event.preventDefault()
+        let name = event.target.name;
+        let value = event.target.value;
+         setInputs(values => { return { ...values, [name]: value } });
+
+    }
 
     const handleDropDownChanges = (key, value, text) => {
         let newProduct = { ...inputs };
@@ -42,9 +49,10 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
 
     const handleSubmit = () => {
         variantSchema.validate(inputs, validtionOptions).then((res) => {
-            let inputs = {...res,'productId': productId }
+            let inputs = { ...res, 'productId': productId }
             // console.log(inputs)
             addVariant(inputs)
+            handleUpdateList()
             setOpen(false)
             setFormError(false)
         })
@@ -53,7 +61,7 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
                 setErrorText(err.name + "=>" + err.errors)
                 setFormError(true)
             });
-        
+
     }
 
     const handleClose = () => {
@@ -73,11 +81,7 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
                 <Modal.Description>
 
                     <Form error={formError}>
-                        <Message
-                            onDismiss={formError}
-                            error={formError}
-                            content={errorText}
-                        />
+
 
 
                         <Form.Group widths='equal'>
@@ -125,7 +129,7 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
                                 ></SearchAndSelectPatterns>
                             </Form.Field>
                         </Form.Group>
-                        <Form.Group >
+                        <Form.Group widths='equal'>
                             <Form.Field>
                                 <label>Product Size</label>
                                 <SearchAndSelectSize
@@ -135,6 +139,16 @@ function CreateVariantPageModal({ open = false, setOpen, productId, addVariant, 
                                     value={inputs.productSize}
                                     clearable={true}
                                 ></SearchAndSelectSize>
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Article No</label>
+                                <Input
+
+                                    placeholder='Enter Article No'
+                                    name={'articleNo'}
+                                    onChange={handleChange}
+                                    required
+                                />
                             </Form.Field>
                         </Form.Group>
                     </Form>

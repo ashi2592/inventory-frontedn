@@ -1,4 +1,4 @@
-import { SET_LOADING, GET_VARIANT_LIST_SUCCESS, GET_VARIANT_DETAILS_SUCCESS, ADD_VARIANT_SUCCESS, UPDATE_VARIANT_SUCCESS, DELETE_VARIANT_SUCCESS, SET_ERROR, VARIANT_PURCHASE_SUCCESS } from '../actions/index';
+import { SET_LOADING, GET_VARIANT_LIST_SUCCESS, GET_VARIANT_DETAILS_SUCCESS, ADD_VARIANT_SUCCESS, UPDATE_VARIANT_SUCCESS, DELETE_VARIANT_SUCCESS, SET_ERROR, VARIANT_PURCHASE_SUCCESS, VARIANT_SELL, VARIANT_SELL_SUCCESS } from '../actions/index';
 
 
 const initialState = {
@@ -6,6 +6,8 @@ const initialState = {
     variants: [],
     variant: {},
     purchases: [],
+    sells: [],
+
     pagination: {
         totalPages: 0,
         currentPage: 1,
@@ -13,6 +15,12 @@ const initialState = {
         totalDocs: 0
     },
     purchasepagination: {
+        totalPages: 0,
+        currentPage: 1,
+        limit: 10,
+        totalDocs: 0
+    },
+    sellpagination: {
         totalPages: 0,
         currentPage: 1,
         limit: 10,
@@ -51,6 +59,18 @@ export default (state = initialState, { type, payload }) => {
                 loading: false,
                 purchases: payload.docs,
                 purchasepagination: {
+                    totalPages: payload.totalPages,
+                    currentPage: payload.page,
+                    limit: payload.limit,
+                    totalDocs: payload.totalDocs
+                }
+            }
+        case VARIANT_SELL_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                sells: payload.docs,
+                sellpagination: {
                     totalPages: payload.totalPages,
                     currentPage: payload.page,
                     limit: payload.limit,

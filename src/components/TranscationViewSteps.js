@@ -18,7 +18,7 @@ const TranscationViewSteps = ({ variantId,page }) => {
             </Step.Content>
         </Step>
 
-        <Step active ={ page =='sell' } onClick={()=>handleClick('transaction')}>
+        <Step active ={ page =='sell' } onClick={()=>handleClick('transcation')}>
             {/* <Icon name='payment' /> */}
             <Step.Content>
                 <Step.Title>Sell</Step.Title>

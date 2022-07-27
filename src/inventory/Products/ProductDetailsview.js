@@ -163,12 +163,42 @@ const ProdutDetailsView = ({ product,
 
                                         <Form.Field>
                                             <label>  Product Description</label>
-                                            <TextArea placeholder='Tell us more' />
+                                            <TextArea placeholder='Tell us more'
+                                              onChange={handleUpdateFunction} 
+                                              name={'productDescription'}
+                                              value={inputs.productDescription} />
+
                                         </Form.Field>
 
                                     </Card.Description>
                                 </Card.Content>
                             </Card>
+
+                            <Card fluid>
+
+                                <Card.Content>
+                                    <Card.Header>Product Price</Card.Header>
+                                    <Divider></Divider>
+                                    <Card.Description>
+
+                                        <Form.Field>
+                                            <label>  Product Selling Price</label>
+                                            <Input
+
+                                                placeholder='Enter Product Name'
+                                                name={'productPrice'}
+                                                onChange={handleUpdateFunction}
+                                                value={inputs.productPrice}
+                                                defaultValue ={0}
+                                            />
+                                        </Form.Field>
+
+                                       
+
+                                    </Card.Description>
+                                </Card.Content>
+                            </Card>
+
                         </Grid.Column>
                         <Grid.Column>
                             <Card fluid>

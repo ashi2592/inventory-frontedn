@@ -54,6 +54,7 @@ import AddPuchasepage from './inventory/purchases/addPurchase'
 import purchases from './inventory/purchases';
 import ViewPuchasepage from './inventory/purchases/viewPurchaseProduct';
 import VariantPurchaseProduct from './inventory/purchases/VariantPurchaseProduct';
+import variantTranscation from './inventory/transcation/variantTranscation';
 
 
 
@@ -134,6 +135,7 @@ class App extends Component {
 
           <PrivateRoute exact path='/transcation' component={transcation} />
           <PrivateRoute exact path='/transcation/:id' component={TranscationDetails} />
+          <PrivateRoute exact path='/transcation/variant/:id' component={variantTranscation} />
 
 
           <PrivateRoute exact path='/purchase' component={purchases} />

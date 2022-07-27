@@ -7,7 +7,7 @@ import AddBarcodes from "../../components/addBarcodes";
 import TranscationViewSteps from "../../components/TranscationViewSteps";
 import { purchaseProductSchema } from "../../constant/validationSchema";
 import PaginationCompact from "../../layout/pagination";
-import { ADD_PURCHASE, ALERT_NOTIFY, GET_BARCODE_LIST, GET_PURCHASE_DETAILS, VARIANT_PURCHASE } from "../../redux/actions";
+import { ALERT_NOTIFY, GET_BARCODE_LIST, VARIANT_PURCHASE } from "../../redux/actions";
 
 const VariantPurchaseProduct = ({
     alertMessage,
@@ -38,8 +38,13 @@ const VariantPurchaseProduct = ({
     const handleAddBarcode = (puc) => {
         setSelectedProduct(puc)
         setBarcodeModal(true);
-        getBarcodes(1, 1000, id, selectedProduct.variantId, '')
+        // 
     }
+
+
+    useEffect(()=>{
+        getBarcodes(1, 1000, selectedProduct.purchaseId, selectedProduct.variantId, '')
+    },[selectedProduct])
 
 
     useEffect(() => {
@@ -48,15 +53,15 @@ const VariantPurchaseProduct = ({
         setEllipsisItem(ellipsis)
         setTotalPages(purchasepagination.totalPages)
         SetActivePage(purchasepagination.currentPage)
-
+      
     }, [purchases, purchasepagination])
 
 
 
     return (
-        <Container>
+        <Container fluid>
 
-
+            <Header>Variant Wise Purchase</Header>
             <AddBarcodes
                 setOpen={setBarcodeModal}
                 open={openBarcodeModal}
@@ -65,19 +70,21 @@ const VariantPurchaseProduct = ({
                 productId={selectedProduct.productId}
                 purchaseProductId={selectedProduct._id}
                 purchaseId={selectedProduct.purchaseId}
+                qty={selectedProduct.qty}
+                articleNo={selectedProduct.articleNo}
 
             ></AddBarcodes>
             <Grid columns={2} stackable>
 
                 <GridColumn>
-                    <Header>Variant Wise Purchase</Header>
+
                 </GridColumn>
 
                 <GridColumn textAlign="right" >
                     {/* Supplier: <Header color="red">{purchases.supplierText}</Header> */}
                     <TranscationViewSteps
-                    variantId={id}
-                    page='purchase'
+                        variantId={id}
+                        page='purchase'
                     ></TranscationViewSteps>
                 </GridColumn>
             </Grid>
@@ -85,7 +92,7 @@ const VariantPurchaseProduct = ({
             <Card fluid>
                 <Card.Content>
                     <Card.Header></Card.Header>
-                    <Divider></Divider>
+                  
                     <Card.Description>
                         <Table celled striped selectable>
                             <TableHeader>
@@ -105,26 +112,26 @@ const VariantPurchaseProduct = ({
 
                             </TableHeader>
                             <TableBody>
-                                {(purchases || []).map((product, index) => (
-                                    <TableRow>
+                                {(purchases || []).map((pro, index) => (
+                                    <TableRow key={`variant-purchase${pro._id}`}>
                                         <TableCell>
-                                            {product.productText}
+                                            {pro.productText}
 
                                         </TableCell>
                                         <TableCell>
-                                            {product.variantText}
+                                            {pro.variantText}
                                         </TableCell>
                                         <TableCell>
-                                            {product.purchases.supplier.supplierName}
+                                            {pro.purchases.supplier.supplierName}
                                         </TableCell>
 
-                                        <TableCell>{product.mrp}</TableCell>
-                                        <TableCell>{product.purchasePrice}</TableCell>
-                                        <TableCell>{product.taxAmount}</TableCell>
-                                        <TableCell>{product.qty}</TableCell>
-                                        <TableCell>{product.sellPrice}</TableCell>
-                                        <TableCell>{product.totalAmount}</TableCell>
-                                        <TableCell> <Icon name="barcode" onClick={() => handleAddBarcode(product)}></Icon></TableCell>
+                                        <TableCell>{pro.mrp}</TableCell>
+                                        <TableCell>{pro.purchasePrice}</TableCell>
+                                        <TableCell>{pro.taxAmount}</TableCell>
+                                        <TableCell>{pro.qty}</TableCell>
+                                        <TableCell>{pro.sellPrice}</TableCell>
+                                        <TableCell>{pro.totalAmount}</TableCell>
+                                        <TableCell> <Icon name="barcode" onClick={() => handleAddBarcode(pro)}></Icon></TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

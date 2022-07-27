@@ -70,12 +70,24 @@ export const DeleteFunction = async (id) => {
 }
 
 
-export const getPurchaseTransaction = async (id,pageno,count) => {
+export const getPurchaseTransaction = async (id,pageno,count,sortkey,sortval,filterName="",filtervalue="") => {
 
     try {
-        const response = await DispatchRequest.get(`${type}/purchase/${id}?page=${pageno}&count=${count}`);
+        const response = await DispatchRequest.get(`${type}/purchase/${id}?page=${pageno}&count=${count}&sortkey=${sortkey}&sortval=${sortval}&filter=${filterName}&filtervalue=${filtervalue}`);
         return response.data;
     } catch (error) {
+        throw error;
+    }
+}
+
+export const getVariantTransactionApi = async (id,pageno,count,sortkey,sortval,filterName="",filtervalue="")  => {
+
+    try {
+        console.log("I am here",id,pageno,count,sortkey,sortval,filterName="",filtervalue="")
+        const response = await DispatchRequest.get(`variants/transcation/${id}?page=${pageno}&count=${count}&sortkey=${sortkey}&sortval=${sortval}&filter=${filterName}&filtervalue=${filtervalue}`);
+        return response.data;
+    } catch (error) {
+        console.log(error.message)
         throw error;
     }
 }

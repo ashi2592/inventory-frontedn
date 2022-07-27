@@ -22,7 +22,7 @@ const SearchAndSelectVariant = ({ getVariants, variants, productId,  error=false
             return (
                 {
                     key: data._id,
-                    value: `${data.productColorObj ? data.productColorObj.colorName + '/' : ''}${data.productTypeObj ? data.productTypeObj.typeName + '/' : ""}${data.productSizeObj ? data.productSizeObj.sizeName + '/' : ""}${data.productPatternObj ? data.productPatternObj.patternName + '/' : ""}${data.productLengthObj ? data.productLengthObj.lengthName : ""}`
+                    value: `${data.articleNo}:${data.productColorObj ? data.productColorObj.colorName + '/' : ''}${data.productTypeObj ? data.productTypeObj.typeName + '/' : ""}${data.productSizeObj ? data.productSizeObj.sizeName + '/' : ""}${data.productPatternObj ? data.productPatternObj.patternName + '/' : ""}${data.productLengthObj ? data.productLengthObj.lengthName : ""}`
                 })
         })
         setOptions(opt)

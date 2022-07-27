@@ -39,6 +39,10 @@ const ProductVariantListPage = ({ productId, variant, updateVariants, deleteVari
     const handleCancel = () => setdialogState(false)
     return (
         <TableRow >
+                        <TableCell>
+               {inputs.articleNo}
+
+            </TableCell>
             <TableCell>
                {inputs.productColorObj?inputs.productColorObj.colorName:""}
 

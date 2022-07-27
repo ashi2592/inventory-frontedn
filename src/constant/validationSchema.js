@@ -31,6 +31,7 @@ let variantSchema = yup.object().shape({
     productLength: yup.string().required(),
     productSize: yup.string().required(),
     productPattern: yup.string().required(),
+    articleNo: yup.string().required(),
 });
 
 let validtionOptions = {

@@ -77,6 +77,8 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
     useEffect(() => {
         barcodeDebounce(barcode);
     }, [barcode])
+
+
     function handleDebounBarcodeceFn(value) {
         if (value) {
             setScanBarcodd(value)
@@ -109,38 +111,33 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
 
     const handleAddToCart = (scanedbarcode) => {
         const isExisting = cart.findIndex(x => x.purchaseProductId === selectedProducts.purchaseProductId)
-        if (isExisting >= 0) {
-            let cartvalue = cart.map(x => {
-                if (x.purchaseProductId === selectedProducts.purchaseProductId) {
-                    x.productQty = x.productQty + 1;
-                    x.sellPrice = (x.sellPrice * parseInt(x.productQty));
-                    x.mrp = (x.mrp * parseInt(x.productQty));
-                    x.singleItem = (x.singleItem * parseInt(x.productQty));
-                    x.barcode = x.barcode + ',' + scanedbarcode;
+        if(scanedbarcode)
+        {
+            if (isExisting >= 0) {
+                let cartvalue = cart.map(x => {
+                    if (x.purchaseProductId === selectedProducts.purchaseProductId) {
+                        x.productQty = x.productQty + 1;
+                        x.sellPrice = (x.sellPrice * parseInt(x.productQty));
+                    }
+                    return x
+                });
+                setCart(cartvalue)
+            } else {
+    
+                let preparecart = {
+                    productId: selectedProducts.productId,
+                    variantId: selectedProducts.variantId,
+                    barcode: selectedProducts.barcode,
+                    productQty: 1,
+                    productName:selectedProducts.product && selectedProducts.product.productName?selectedProducts.product.productName:"",
+                    sellPrice: selectedProducts.product && selectedProducts.product.productPrice ? selectedProducts.product.productPrice : 0,
                 }
-                return x
-            });
-            setCart(cartvalue)
-        } else {
-
-            let preparecart = {
-                productId: selectedProducts.productId,
-                variantId: selectedProducts.variantId,
-                purchaseId: selectedProducts.purchaseId,
-                purchaseProductId: selectedProducts.purchaseProductId,
-                barcode: selectedProducts.barcode,
-                mrp: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.mrp : 0,
-                productText: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.productText : "",
-                singleItem: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.singleItem : 0,
-                tax: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.tax : 0,
-                variantText: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.variantText : "",
-                productQty: 1,
-                sellPrice: selectedProducts.purchaseproduct ? selectedProducts.purchaseproduct.sellPrice : 0,
+                let cartvalue = [...cart, preparecart];
+                setCart(cartvalue)
+                setSelectedProducts({})
             }
-            let cartvalue = [...cart, preparecart];
-            setCart(cartvalue)
-            setSelectedProducts({})
         }
+      
     }
 
 
@@ -159,12 +156,11 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
 
             data = {
                 totalQty: data.totalQty ?data.totalQty + x.productQty : x.productQty,
-                totalMrp: data.totalMrp ? data.totalMrp + mrp : mrp,
                 totalPrice: data.totalPrice  ? data.totalPrice  + sellPrice : sellPrice,
-                totalVal: data.totalPrice  ? data.totalPrice  + sellPrice : sellPrice,
-                totalPurchase: data.totalPurchase  ? data.totalPurchase  + purchase : purchase,
-
+               
             };
+
+            data.totalVal = (data.totalQty* data.totalPrice)
         })
         setOrderRecords({ ...orderRecords, ...data })
 
@@ -313,12 +309,11 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
             </Grid>
 
             <Table >
-                {cart.length > 0 && <TableHeader Headers={['Product', 'Qty', 'MRP', 'Price', 'Action']}></TableHeader>}
+                {cart.length > 0 && <TableHeader Headers={['Product', 'Qty',  'Price', 'Action']}></TableHeader>}
                 <Table.Body>
                     {cart.map((x, i) => (<TableRow key={'cart-' + i + x.productId}>
-                        <TableCell >{x.productText} -({x.variantText})-{x.singleItem}</TableCell>
+                        <TableCell >{x.productName}</TableCell>
                         <TableCell >{x.productQty} x</TableCell>
-                        <TableCell >{x.mrp}</TableCell>
                         <TableCell>{x.sellPrice}</TableCell>
                         <TableCell>
                             {(steps < 3) && <Button color="red" onClick={() => handleDelete(x.productId)}>Delete</Button>}
@@ -330,9 +325,7 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
                         <TableCell collapsig={2}>
                             Total Qty:  {orderRecords.totalQty}
                         </TableCell>
-                        <TableCell>
-                            Total MRP : {orderRecords.totalMrp}
-                        </TableCell>
+            
                         <TableCell>
                             Total Price: {orderRecords.totalPrice}
                         </TableCell>
@@ -340,11 +333,8 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
                     {/* && steps == 3 */}
                     {(cart.length > 0 && steps >= 2) && (<TableRow>
                         <TableCell ></TableCell>
-                        <TableCell>
-
-                        </TableCell>
-                        <TableCell>
-                        </TableCell>
+                       
+                       
 
                         <TableCell>
                             Discount
@@ -363,10 +353,8 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
                     </TableRow>)}
 
                     {(cart.length > 0) && (<TableRow>
-                        <TableCell ></TableCell>
-                        <TableCell>
-
-                        </TableCell>
+                      
+                       
                         <TableCell>
 
                         </TableCell>
@@ -381,10 +369,8 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
 
                     {(isCreditAvailable && steps === 3) && (
                         (<TableRow>
-                            <TableCell ></TableCell>
-                            <TableCell>
-
-                            </TableCell>
+                      
+                           
                             <TableCell>
                             </TableCell>
 
@@ -407,10 +393,7 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
 
                     {(isCreditAvailable && steps === 3) && (
                         (<TableRow warning={true}>
-                            <TableCell ></TableCell>
-                            <TableCell>
-
-                            </TableCell>
+                            
                             <TableCell>
                             </TableCell>
 
@@ -426,7 +409,7 @@ const Orders = ({ getCustomers, customers, customer, getCustomer, addCustomer,
 
                     {(isCreditAvailable && steps === 3) && (
                         (<TableRow>
-                            <TableCell colSpan={3}></TableCell>
+                            <TableCell ></TableCell>
                             <TableCell>
                                 Return Amount
                             </TableCell>

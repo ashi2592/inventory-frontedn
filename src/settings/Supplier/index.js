@@ -115,8 +115,6 @@ const Supplier = ({ getSuppliers,  suppliers,  pagination, loading }) => {
                                         <TableCell >{x.supplierName}</TableCell>
                                         <TableCell >{x.contact}</TableCell>
                                         <TableCell >{x.location}</TableCell>
-                                        {/* <TableCell >{x.address}</TableCell> */}
-
                                         <TableCell><Icon name="eye" onClick={() => { handleViewSupplier(x._id) }}></Icon></TableCell></TableRow>))}
                             </TableBody>
 

@@ -13,7 +13,7 @@ const AddPuchasepage = ({
     addPurchase
 }) => {
     const history = useHistory()
-    const [purchases, setPurchases] = useState({delivery:0})
+    const [purchases, setPurchases] = useState({ delivery: 0 })
     const [products, setProducts] = useState([])
     const [inputs, setInputs] = useState({ productId: "", variantId: "", qty: 1, purchasePrice: "", tax: 5, mrp: "", sellPrice: "", productText: "", variantText: "" });
     const [prices, setPrices] = useState({ taxAmount: "", totalAmount: "", singleItem: "" });
@@ -56,19 +56,18 @@ const AddPuchasepage = ({
 
     const handleSupplierChange = (name, value, textContent) => {
         let newsearch = { ...purchases, [name]: value };
-        if(name === 'supplier')
-        {
-            newsearch = {...newsearch,'supplierText':textContent}
+        if (name === 'supplier') {
+            newsearch = { ...newsearch, 'supplierText': textContent }
         }
         setPurchases(newsearch)
     }
 
     const handleSubmit = () => {
 
-        purchaseProductSchema.validate(purchases).then(res=>{
+        purchaseProductSchema.validate(purchases).then(res => {
             addPurchase(purchases)
             history.push('/purchase')
-        }).catch(err=>{
+        }).catch(err => {
             console.log(err)
         })
 
@@ -78,12 +77,12 @@ const AddPuchasepage = ({
 
     return (
         <Container fluid>
-               <Header>Add Purchase Invoice</Header>
+            <Header>Add Purchase Invoice</Header>
 
-            <Grid columns={2} stackable>
+            {products.length > 0 && (<Grid columns={2} stackable>
                 <GridRow >
                     <GridColumn>
-                     
+
                     </GridColumn>
 
                     <GridColumn textAlign="right">
@@ -101,7 +100,7 @@ const AddPuchasepage = ({
                     </GridColumn>
 
                 </GridRow>
-            </Grid>
+            </Grid>)}
 
             <AddPurchaseProductpage
                 products={products}
@@ -122,9 +121,9 @@ const AddPuchasepage = ({
                 setOpenSupplierModel={setOpenSupplierModel}
             ></AddPurchaseSupplierpage>
 
+            { products.length == 0 && (<Button color="blue" textAlign="center" onClick={() => setOpenAddModal(true)}> <Icon name="plus"></Icon>Add Product</Button>)}
 
-
-            <Card fluid>
+            {products.length > 0 && (<Card fluid>
                 <Card.Content>
                     <Card.Header></Card.Header>
                     <Grid columns={5} stackable stretched>
@@ -187,7 +186,7 @@ const AddPuchasepage = ({
                     </Card.Description>
                 </Card.Content>
 
-            </Card>
+            </Card>)}
 
 
 

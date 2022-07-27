@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button,  Container, Header, GridRow, GridColumn, Grid, Icon, Divider,  Card, TextArea } from "semantic-ui-react";
+import { Form, Input, Button, Container, Header, GridRow, GridColumn, Grid, Icon, Divider, Card, TextArea } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { ADD_PRODUCT, ALERT_NOTIFY, } from "../../redux/actions";
 import DropdownSearchSelection from "../../layout/Dropdown";
@@ -19,7 +19,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
     const [pricetypeOption, setPricetypeOption] = useState([{ key: 'flat', value: 'Flat' }])
     const history = useHistory()
     const [productName, setProductName] = useState('')
-    const [productNameObj, setProductNameObj] = useState({})
+    const [productNameObj, setProductNameObj] = useState({});
 
     // initial apis
 
@@ -45,9 +45,9 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
     useEffect(() => {
         // { ...inputs, productCode: generateCode() }
         // x = { ...x, priceType: 'flat' }
-       let x = { ...inputs, season: localStorage.getItem('season') }
+        let x = { ...inputs, season: localStorage.getItem('season') }
         x = { ...x, store: localStorage.getItem('store') }
-       
+
         setInputs(x)
     }, [])
 
@@ -58,7 +58,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
 
         let name = event.target.name;
         let value = event.target.value;
-         setInputs(values => { return { ...values, [name]: value } });
+        setInputs(values => { return { ...values, [name]: value } });
 
     }
 
@@ -86,7 +86,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
         })
 
         let x = { ...inputs, productName: name }
-       
+
         addProduct(x);
 
     }
@@ -115,8 +115,8 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
                     <GridColumn largeScreen={8}>
                     </GridColumn>
                     <GridColumn largeScreen={8} textAlign="right">
-                    <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back </Button>
-                    
+                        <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back </Button>
+
                         <Button color='blue' onClick={() => { handleSubmit() }}> <Icon name="save"></Icon> Save</Button>
 
                     </GridColumn>
@@ -136,7 +136,7 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
                                     <Card.Description>
 
                                         <Form.Field>
-                                            <label>  Product Name</label> 
+                                            <label>  Product Name</label>
                                             <Input
 
                                                 placeholder='Enter Product Name'
@@ -148,8 +148,37 @@ const AddProduct = ({ addProduct, alertMessage, product }) => {
 
                                         <Form.Field>
                                             <label>  Product Description</label>
-                                            <TextArea placeholder='Tell us more' />
+                                            <TextArea placeholder='Tell us more' 
+                                            onChange={handleChange} 
+                                            name={'productDescription'}
+                                            value={inputs.productDescription}
+                                            
+                                            />
                                         </Form.Field>
+
+                                    </Card.Description>
+                                </Card.Content>
+                            </Card>
+                            <Card fluid>
+
+                                <Card.Content>
+                                    <Card.Header>Product Price</Card.Header>
+                                    <Divider></Divider>
+                                    <Card.Description>
+
+                                        <Form.Field>
+                                            <label>  Product Selling Price</label>
+                                            <Input
+
+                                                placeholder='Enter Product Price'
+                                                name={'productPrice'}
+                                                onChange={handleChange}
+                                                value={inputs.productPrice}
+                                                defaultValue={0}
+                                            />
+                                        </Form.Field>
+
+
 
                                     </Card.Description>
                                 </Card.Content>

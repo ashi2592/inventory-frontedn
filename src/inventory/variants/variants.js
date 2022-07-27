@@ -12,7 +12,7 @@ import { useHistory } from "react-router-dom";
 
 const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, loading }) => {
 
-    const history  = useHistory()
+    const history = useHistory()
     const { id } = useParams()
     let [inputs, setInputs] = useState({});
     let [openVarintModel, setVariantModel] = useState(false);
@@ -39,12 +39,15 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
     const handleNavigateList = () => {
         history.push('/product')
     }
+    const handleUpdateList =() =>{
+        getVariants(id, 1, 100, '')
+    } 
 
 
 
     return (
         (<Container fluid>
-          
+
 
             <Grid columns={2} stackable>
                 <GridRow>
@@ -52,8 +55,8 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
                         <Productviewsteps productId={id} page='variant'></Productviewsteps>
                     </GridColumn>
                     <GridColumn largeScreen={8} mobile={6} textAlign="right">
-                    <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back</Button>
-                        <Button color="blue"  onClick={handleAddVariant}><Icon name="plus"></Icon>Add New Variants</Button>
+                        <Button color='blue' onClick={() => { handleNavigateList() }}> <Icon name="arrow left"></Icon> Back</Button>
+                        <Button color="blue" onClick={handleAddVariant}><Icon name="plus"></Icon>Add New Variants</Button>
                     </GridColumn>
                 </GridRow>
             </Grid>
@@ -65,6 +68,7 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
                         <Table selectable singleLine celled>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHeaderCell>Article No</TableHeaderCell>
                                     <TableHeaderCell>Product color</TableHeaderCell>
                                     <TableHeaderCell>Product Type</TableHeaderCell>
                                     <TableHeaderCell>Product Length</TableHeaderCell>
@@ -80,14 +84,14 @@ const ProductVariantPage = ({ alertMessage, addVariant, getVariants, variants, l
                                 {(variants || []).map(x => (<ProductVariantListPage
                                     variant={x}
                                     productId={id}
-                                  
+
                                 ></ProductVariantListPage>))}
                             </TableBody>
                         </Table>
                     </Card.Description>
                 </Card.Content>
             </Card>
-            <CreateVariantPageModal open={open} setOpen={setOpen} productId={id} addVariant={addVariant} alertMessage={alertMessage}></CreateVariantPageModal>
+            <CreateVariantPageModal open={open} setOpen={setOpen} productId={id} addVariant={addVariant} handleUpdateList={handleUpdateList} alertMessage={alertMessage}></CreateVariantPageModal>
         </Container>)
     )
 }

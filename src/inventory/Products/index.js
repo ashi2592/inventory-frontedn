@@ -7,25 +7,21 @@ import PropTypes from 'prop-types';
 import AddProduct from "./addProduct";
 // bring connect from react-redux, it's the bridge for connecting component to redux
 import { connect } from 'react-redux'
-import { GET_PRODUCT_DETAILS, GET_PRODUCT_LIST } from "../../redux/actions";
+import { DELETE_PRODUCT, GET_PRODUCT_DETAILS, GET_PRODUCT_LIST } from "../../redux/actions";
 
 import PaginationCompact from "../../layout/pagination";
 import _ from "lodash";
 import ProductBarcode from "./Product-barcode";
 import { useHistory } from "react-router-dom";
-
-import ProductFliterFloatedContent from "../../components/productfilter";
 import TableLoaderPage from "../../components/TableLoader";
 import TableNoRecordFound from "../../components/TableNoRecordFound";
 import SearchAndSelectCateory from "../../components/SearchAndSelectCateory";
 import SearchAndSelectBrand from "../../components/SearchAndSelectBrand";
-import SearchAndSelectSize from "../../components/SearchAndSelectSize";
-import SearchAndSelectProductType from "../../components/SearchAndSelectProductType";
-import SearchAndSelectColor from "../../components/SearchAndSelectColor";
+
 import { getProductName } from "../../constant/global";
 
 
-const Product = ({ getProducts, getProduct, products, product, pagination, error, loading }) => {
+const Product = ({ getProducts, getProduct, products, product, pagination, error, loading,deleteProduct }) => {
 
     const history = useHistory()
     const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
@@ -126,6 +122,11 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
         getProducts(1, 10, searchText, searchInputs)
     }, [searchInputs])
 
+
+
+    const handleRemoveButton = (id) =>{
+        deleteProduct(id)
+    }
     return (<Container fluid>
 
 
@@ -153,7 +154,7 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
 
         <Divider></Divider>
-        <Table celled >
+        <Table celled selectable>
             <TableHeader Headers={['Image', 'Product Name', 'Brand', 'Category', 'Action']}></TableHeader>
 
 
@@ -189,16 +190,17 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
 
                 </TableRow>
 
-                {loading && <TableLoaderPage colSpan={"3"}></TableLoaderPage>}
+                {loading && <TableLoaderPage colSpan={"5"}></TableLoaderPage>}
                 {(loading === false && products.length === 0) && (<TableNoRecordFound></TableNoRecordFound>)}
 
-                {loading === false && products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0}>
+                {loading === false && products.map(x => (<TableRow key={'product-' + x._id} error={x.productQty <= 0} >
                     <TableCell><Image src={x.productCategoryObj ? x.productCategoryObj.imageUrl : ''} size="mini"></Image></TableCell>
                     <TableCell>{x.productName}</TableCell>
                     <TableCell>{x.productBrandObj ? x.productBrandObj.brandName : ''} </TableCell>
                     <TableCell>{x.productCategoryObj ? x.productCategoryObj.categoryName : ''} </TableCell>
                     <TableCell>
                         <Icon name="eye" onClick={() => { handleViewProduct(x._id) }}></Icon>
+                        <Icon name="delete" onClick={() => { handleRemoveButton(x._id) }}></Icon>
 
                     </TableCell></TableRow>))}
             </TableBody>    
@@ -218,9 +220,6 @@ const Product = ({ getProducts, getProduct, products, product, pagination, error
             ellipsisItem={ellipsisItem}
             handlePaginationChange={handlePaginationChange}
         ></PaginationCompact>
-
-
-
 
         <Modal
             onClose={() => setOpenBarcodeModal(false)}
@@ -267,6 +266,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     getProducts: (page, count, searchText, searchInputs) => dispatch({ type: GET_PRODUCT_LIST, payload: { page, count, searchText, searchInputs } }),
     getProduct: (id) => dispatch({ type: GET_PRODUCT_DETAILS, payload: { id } }),
+    deleteProduct: (id) => dispatch({type: DELETE_PRODUCT, payload:id})
 
 })
 

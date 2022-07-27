@@ -15,16 +15,18 @@ import {
     ALERT_NOTIFY,
     ALERT_NOTIFY_SUCCESS,
     VARIANT_PURCHASE,
-    VARIANT_PURCHASE_SUCCESS
+    VARIANT_PURCHASE_SUCCESS,
+    VARIANT_SELL,
+    VARIANT_SELL_SUCCESS
 } from '../actions/index';
-import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, getPurchaseTransaction } from '../services/variant-api'
+import { getAdd, getDeatils, DeleteFunction, getList, getUpdate, getPurchaseTransaction, getVariantTransactionApi } from '../services/variant-api'
 
 
 
 function* getPatterns({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-              const data = yield call(getList, payload.productId,payload.page, payload.count, payload.searchText);
+        const data = yield call(getList, payload.productId, payload.page, payload.count, payload.searchText);
         yield put({ type: GET_VARIANT_LIST_SUCCESS, payload: data })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })
@@ -47,7 +49,7 @@ function* addPattern({ payload }) {
     try {
         yield put({ type: SET_LOADING })
         const newdata = yield call(getAdd, payload);
-       
+
         yield put({ type: ADD_VARIANT_SUCCESS, payload: newdata })
 
     } catch (err) {
@@ -83,12 +85,22 @@ function* deletePattern({ payload }) {
 function* getPurchaseTranscation({ payload }) {
     try {
         yield put({ type: SET_LOADING })
-        const data = yield call(getPurchaseTransaction, payload.id,payload.page,payload.count);
+        const data = yield call(getPurchaseTransaction, payload.id, payload.page, payload.count);
         yield put({ type: VARIANT_PURCHASE_SUCCESS, payload: data })
     } catch (err) {
         yield put({ type: SET_ERROR, payload: err })
     }
 
+}
+function* getVariantTransction({ payload }) {
+    try {
+
+        yield put({ type: SET_LOADING })
+        const data = yield call(getVariantTransactionApi, payload.id, payload.page, payload.count)
+        yield put({ type: VARIANT_SELL_SUCCESS, payload: data })
+    } catch (err) {
+        yield put({ type: SET_ERROR, payload: err })
+    }
 }
 
 
@@ -99,6 +111,7 @@ export default function* variantSaga() {
     yield takeLatest(UPDATE_VARIANT, updatePattern)
     yield takeEvery(DELETE_VARIANT, deletePattern)
     yield takeEvery(VARIANT_PURCHASE, getPurchaseTranscation)
+    yield takeEvery(VARIANT_SELL, getVariantTransction)
 
 
 }
